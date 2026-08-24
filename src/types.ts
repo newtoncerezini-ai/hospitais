@@ -5,6 +5,8 @@ export type MoneyValue = {
   label: string | null;
 };
 
+export type HealthUnitStatus = "Em funcionamento" | "Em construção" | "Não informado";
+
 export type HealthUnit = {
   id: string;
   ibgeCode: string | null;
@@ -14,33 +16,42 @@ export type HealthUnit = {
   rd: string;
   geres: string;
   address: string | null;
-  status: string | null;
+  status: HealthUnitStatus;
   type: string;
   managementType: string | null;
   management: string | null;
   beds: number | null;
+  plannedBeds: number | null;
   profile: string | null;
   professionals: string | null;
   calledProfessionals: number | null;
   maintenanceContract: MoneyValue;
   managementInvestment: MoneyValue;
+  constructionInvestment: MoneyValue;
   mainAdvances: string | null;
   latitude: number | null;
   longitude: number | null;
-  source: { sheet: string; row: number };
+  source: {
+    sheet: string;
+    row: number;
+    supplemental: { sheet: string; row: number } | null;
+  };
   enrichment: {
     rd: string;
     geres: string;
     municipalityCorrected: boolean;
     investment: string;
+    construction: string;
   };
 };
 
 export type DataQuality = {
   sourceFile: string;
   sourceSheet: string;
+  sourceSheets: string[];
   generatedAt: string;
   sourceRows: number;
+  constructionRows: number;
   publishedUnits: number;
   municipalities: number;
   sourceCoverage: Record<string, number>;
@@ -62,16 +73,24 @@ export type DashboardData = {
     sourceLabel: string;
     generatedAt: string;
     totalUnits: number;
+    activeUnits: number;
+    constructionUnits: number;
+    constructionMunicipalities: number;
     totalMunicipalities: number;
     totalBeds: number;
     unitsWithBeds: number;
+    plannedBeds: number;
+    constructionUnitsWithBeds: number;
     typeCounts: Record<string, number>;
+    typeCountsByStatus: Record<string, Record<string, number>>;
+    statusCounts: Record<string, number>;
   };
   filters: {
     municipalities: string[];
     rds: string[];
     geres: string[];
     types: string[];
+    statuses: HealthUnitStatus[];
   };
   units: HealthUnit[];
   map: {
@@ -90,4 +109,5 @@ export type Filters = {
   rd: string;
   geres: string;
   type: string;
+  status: string;
 };

@@ -6,9 +6,11 @@
   "scripts": {
     "build:data": "python scripts/build_data.py",
     "dev": "vite --host 0.0.0.0",
+    "prebuild": "npm run build:data",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "typecheck": "tsc -b --pretty false",
+    "pretest": "npm run build:data",
     "test": "vitest run"
   },
   "dependencies": {

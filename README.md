@@ -4,12 +4,12 @@ Primeira versão funcional de um portal para consulta das unidades de saúde pre
 
 ## O que está pronto
 
-- 65 unidades ativas da aba `Consolidado`.
+- 73 unidades publicadas: 65 em funcionamento e 8 em construção.
 - Busca textual por unidade, endereço, município, RD e GERES.
-- Filtros específicos de município, RD, GERES e tipo.
+- Filtros específicos de município, RD, GERES, tipo e status.
 - Tabela com os campos solicitados e exportação CSV.
-- Mapa offline de Pernambuco com símbolos por tipo, distribuição anticolisão e vínculo visual ao município.
-- Ficha técnica individual com impressão ou salvamento em PDF pelo navegador.
+- Mapa offline de Pernambuco com símbolos por tipo, agrupamento por município, tipo e status, distribuição anticolisão e vínculo visual ao município. Unidades em construção usam contorno tracejado.
+- Ficha técnica individual com status, leitos operacionais ou previstos e impressão ou salvamento em PDF pelo navegador.
 - Pipeline reproduzível da planilha para JSON, com relatório de qualidade e correções auditáveis.
 - Layout responsivo inspirado em `C:\workspace\ips`.
 
@@ -42,14 +42,15 @@ npm run build
 - Relatório auditável: `data/processed/data-quality.json`.
 - Transformação: `scripts/build_data.py`.
 
-O pipeline usa a aba `0_Template_Cod_Mun_RD` da própria planilha para preencher código IBGE e RD por município. GERES ausentes são completadas pelo valor consistente das outras unidades do mesmo município. Valores de investimento que não chegaram ao `Consolidado` são recuperados das abas de origem, sem modificar a planilha.
+O conjunto publicado combina as abas `Consolidado` e `UNIDADES EM CONSTRUÇÃO`. O pipeline usa a aba `0_Template_Cod_Mun_RD` da própria planilha para preencher código IBGE e RD por município, complementa GERES ausentes pelo valor consistente das outras unidades do mesmo município e recupera informações disponíveis nas abas de origem, sem modificar a planilha.
+
+O recorte atual contém 73 unidades em 25 municípios, sendo 8 obras em 6 municípios. Há 6.796 leitos operacionais em 50 unidades em funcionamento e 861 leitos previstos em 5 unidades em construção. Os tipos informados pela fonte totalizam 40 hospitais, 14 UPAs, 15 UPAEs e 4 UPAE-Rs.
 
 ## Limitações conhecidas da fonte
 
 - A planilha não contém latitude e longitude. O mapa organiza os símbolos em uma grade esquemática sem sobreposição e usa linhas-guia até o centro visual do município; a interface declara que isso não representa o endereço da unidade.
-- Oito unidades da aba `UNIDADES EM CONSTRUÇÃO` não integram o `Consolidado` e ficaram fora desta primeira versão.
-- Contrato de manutenção está preenchido em apenas 16 das 65 unidades.
-- Leitos são numéricos em 50 unidades; UPAEs usam `-` na fonte.
+- Contrato de manutenção está preenchido em apenas 16 das 65 unidades em funcionamento.
+- Leitos operacionais são numéricos em 50 unidades em funcionamento. Entre as obras, 5 possuem quantidade prevista informada; os demais valores ausentes continuam visíveis como `Não informado`.
 - O valor `Especializado` em `Tipo Gestão` para o Hemope foi preservado, mas requer validação semântica pela área responsável.
 
 As correções de município e GERES aplicadas por evidência do endereço ou fonte oficial estão listadas em `data/processed/data-quality.json`, com a linha original e o link de comprovação.

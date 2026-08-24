@@ -17,6 +17,10 @@ colors:
   upa-terracotta: "#cf5d32"
   upae-violet: "#7154a8"
   upae-r-teal: "#168772"
+  status-operating: "#176448"
+  status-operating-soft: "#e5f3ec"
+  status-construction: "#8a5200"
+  status-construction-soft: "#fff1d6"
   focus-blue: "#0284c7"
 typography:
   display:
@@ -128,6 +132,13 @@ components:
     rounded: "{rounded.pill}"
     padding: "0 9px"
     height: "26px"
+  chip-status:
+    backgroundColor: "{colors.status-operating-soft}"
+    textColor: "{colors.status-operating}"
+    typography: "{typography.label}"
+    rounded: "{rounded.pill}"
+    padding: "0 9px"
+    height: "26px"
   summary-metric:
     backgroundColor: "{colors.analytical-white}"
     textColor: "{colors.ink}"
@@ -161,7 +172,7 @@ The system is deliberately dense but never cramped: hierarchy comes from continu
 
 ## Colors
 
-The palette combines institutional navy and functional cyan with cool paper neutrals; four controlled hues encode facility type without becoming decoration.
+The palette combines institutional navy and functional cyan with cool paper neutrals; four controlled hues encode facility type, while a separate green-and-ochre pair communicates operational status without competing with classification.
 
 ### Primary
 
@@ -178,6 +189,11 @@ The palette combines institutional navy and functional cyan with cool paper neut
 - **UPAE Violet** (`upae-violet`): UPAE classification only.
 - **UPAE-R Teal** (`upae-r-teal`): UPAE-R classification only.
 
+### Status
+
+- **Operating Green** (`status-operating` / `status-operating-soft`): operating-facility text, borders and quiet badge surfaces.
+- **Construction Ochre** (`status-construction` / `status-construction-soft`): construction labels, contextual surfaces and the dashed map-marker contour.
+
 ### Neutral
 
 - **Analytical White** (`analytical-white`): cards, tables, controls, and printable records.
@@ -190,6 +206,8 @@ The palette combines institutional navy and functional cyan with cool paper neut
 **The Cyan Means Action Rule.** Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.
 
 **The Classification Is Semantic Rule.** Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.
+
+**The Status Is Orthogonal Rule.** Status never replaces facility classification. Green or ochre badges and the construction marker's dashed contour communicate lifecycle state while the marker fill continues to encode type.
 
 ## Typography
 
@@ -216,7 +234,7 @@ The palette combines institutional navy and functional cyan with cool paper neut
 
 The desktop shell is a two-column grid with a sticky 280px sidebar and a fluid main region. Main content is capped at 1620px, centered, and padded by 32px; 24px is the dominant space between major analytical regions. Summary information is presented as a continuous four-cell rail, while overview and map pages use asymmetric content/detail grids.
 
-The units table deliberately preserves data density with a 2240px minimum width, a sticky header, a sticky facility-name column, and a viewport-relative scroll area. At 1280px, filters and quality metadata reflow. At 1040px, the sidebar becomes a horizontal header and multi-column panels stack. At 760px, navigation becomes horizontally scrollable, summaries become single-column, the desktop table becomes mobile facility cards, and technical-sheet grids collapse. At 460px, filters and toolbar actions become one column.
+The units table deliberately preserves data density with a 2740px minimum width, a sticky header, a sticky facility-name column, and a viewport-relative scroll area. Its status, operational-bed, planned-bed, management-investment and construction-investment columns keep unlike measures separate. At 1280px, filters and quality metadata reflow. At 1040px, the sidebar becomes a horizontal header and multi-column panels stack. At 760px, navigation becomes horizontally scrollable, summaries become single-column, the desktop table becomes mobile facility cards, and technical-sheet grids collapse. At 460px, filters and toolbar actions become one column.
 
 Print is a first-class layout: the technical record targets A4 with 10mm page margins, removes application chrome, squares the document container, uses millimeter-based padding, and avoids breaks inside KPI and detail blocks.
 
@@ -237,7 +255,7 @@ The system is flat by default. Depth comes from cool tonal layering, 1px borders
 
 ## Shapes
 
-Geometry is softly precise. Controls use compact 6–7px corners, small metadata surfaces use 8–10px corners, and major panels use 12px corners. Pills are reserved for GERES and facility-type labels; true circles are reserved for markers and loading indicators. The print sheet removes outer rounding so it reads as a document rather than an app card.
+Geometry is softly precise. Controls use compact 6–7px corners, small metadata surfaces use 8–10px corners, and major panels use 12px corners. Pills are reserved for GERES, facility-type and status labels; true circles are reserved for markers and loading indicators. The print sheet removes outer rounding so it reads as a document rather than an app card.
 
 **The Soft Precision Rule.** Radius communicates scale: controls stay compact, panels soften slightly, and only semantic tags or circular controls become fully rounded.
 
@@ -267,19 +285,19 @@ Major panels use analytical white, a 1px divider border, 12px corners, and no re
 
 ### Chips
 
-GERES and facility type badges are compact, strongly weighted pills. Facility badges use pale tonal backgrounds paired with darker semantic type colors; the corresponding bars, legends, and map symbols use the saturated classification color.
+GERES, facility type and status badges are compact, strongly weighted pills. Facility badges use pale tonal backgrounds paired with darker semantic type colors; the corresponding bars, legends, and map symbols use the saturated classification color. Status badges use their own green or ochre palette so status stays visually independent from type.
 
 ### Data Tables
 
-The table is a dense comparison surface: 13px cells, uppercase 11px headers, horizontal dividers, a lightly tinted sticky header, a sticky facility-name column, and a subtle row-hover tint. Numeric and currency columns use tabular figures.
+The table is a dense comparison surface: 13px cells, uppercase 11px headers, horizontal dividers, a lightly tinted sticky header, a sticky facility-name column, and a subtle row-hover tint. Construction rows receive a restrained ochre tint. Numeric and currency columns use tabular figures, and operational values remain separate from planned construction values.
 
 ### Map Markers
 
-Markers use distinct geometry as well as color: Hospital is a rounded square, UPA a diamond, UPAE a circle, and UPAE-R a hexagon. Hover and active states add a translucent white target, compact lift, and 1.12 scale; arrival motion is suppressed for reduced-motion users.
+Markers use distinct geometry as well as color: Hospital is a rounded square, UPA a diamond, UPAE a circle, and UPAE-R a hexagon. Groups are keyed by municipality, type and status; construction groups add a dashed ochre contour without changing the type fill. Hover and active states add a translucent white target, compact lift, and 1.12 scale; arrival motion is suppressed for reduced-motion users.
 
 ### Technical Sheet
 
-The printable record combines a pale identity band, an institutional-navy document mark, a continuous KPI grid, and divider-separated detail blocks. On narrow screens the identity, KPIs, and details stack; in print, navigation and toolbars disappear and document geometry becomes square.
+The printable record combines a pale identity band, an institutional-navy document mark, a visible status badge, a continuous KPI grid, and divider-separated detail blocks. It labels beds and investment according to operational or construction status. On narrow screens the identity, KPIs, and details stack; in print, navigation and toolbars disappear and document geometry becomes square.
 
 **The One Record Everywhere Rule.** Table links, mobile cards, and municipal map results all resolve to the same document-like technical sheet.
 
@@ -290,6 +308,7 @@ The printable record combines a pale identity band, an institutional-navy docume
 - **Do** use borders and cool tonal shifts before adding shadow.
 - **Do** keep cyan scarce and functional: actions, active states, focus, and meaningful data emphasis.
 - **Do** preserve the facility-type color and geometry mapping across badges, charts, legends, and map markers.
+- **Do** keep status orthogonal to type and use the dashed contour consistently for construction markers.
 - **Do** use tabular numerals for counts, beds, currency, and aligned comparisons.
 - **Do** keep the technical sheet legible as a stacked mobile view and as an A4 print document.
 
@@ -297,6 +316,7 @@ The printable record combines a pale identity band, an institutional-navy docume
 
 - **Don't** turn the interface into a field of disconnected floating cards.
 - **Don't** use facility classification colors as general decoration or status colors.
+- **Don't** add operational beds to planned beds or management investment to construction investment.
 - **Don't** add ambient shadows to resting panels, tables, or filter groups.
 - **Don't** hide source gaps or imply exact map coordinates where only municipality-level placement exists.
 - **Don't** preserve the wide desktop table on mobile; use the implemented record-card transformation.

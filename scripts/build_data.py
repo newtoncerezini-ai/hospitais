@@ -18,6 +18,7 @@ DEFAULT_MAP_DATA = ROOT / "data" / "reference" / "pernambuco-map.json"
 DEFAULT_OUTPUT = ROOT / "public" / "data" / "health-units.json"
 DEFAULT_QUALITY_OUTPUT = ROOT / "data" / "processed" / "data-quality.json"
 SHEET_NAME = "Consolidado"
+CONSTRUCTION_SHEET_NAME = "UNIDADES EM CONSTRUÇÃO"
 
 
 def clean_text(value: Any) -> str | None:
@@ -43,6 +44,16 @@ def title_particles(value: str) -> str:
     for particle in (" Do ", " Da ", " Dos ", " Das ", " De "):
         result = result.replace(particle, particle.lower())
     return result
+
+
+def normalize_status(value: Any) -> str:
+    status = clean_text(value)
+    normalized_status = normalize(status)
+    if "construcao" in normalized_status:
+        return "Em construção"
+    if "funcionamento" in normalized_status:
+        return "Em funcionamento"
+    return status or "Não informado"
 
 
 def parse_integer(value: Any) -> int | None:
@@ -104,8 +115,89 @@ def read_rows(workbook_path: Path) -> tuple[list[str], list[dict[str, Any]]]:
         row = dict(zip(headers, values))
         if clean_text(row.get("UNIDADE DE SAÚDE")):
             row["__source_row"] = source_row
+            row["__source_sheet"] = SHEET_NAME
             rows.append(row)
     return headers, rows
+
+
+def infer_construction_municipality(unit_name: str, location: Any) -> str | None:
+    if normalize(unit_name).startswith("maternidadede"):
+        return clean_text(re.sub(r"^Maternidade\s+de\s+", "", unit_name, flags=re.IGNORECASE))
+    if normalize(unit_name).startswith("upaer"):
+        return clean_text(re.sub(r"^UPAE[-\s]*R\s+", "", unit_name, flags=re.IGNORECASE))
+    location_text = clean_text(location)
+    if location_text not in {None, "-", "—"}:
+        return location_text
+    return None
+
+
+def read_construction_rows(
+    workbook_path: Path,
+    municipality_reference: dict[str, dict[str, str]],
+) -> list[dict[str, Any]]:
+    workbook = load_workbook(workbook_path, read_only=True, data_only=True)
+    sheet = workbook[CONSTRUCTION_SHEET_NAME]
+    rows: list[dict[str, Any]] = []
+    for source_row, values in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+        unit_name = clean_text(values[1] if len(values) > 1 else None)
+        if not unit_name:
+            continue
+        municipality = infer_construction_municipality(
+            unit_name,
+            values[2] if len(values) > 2 else None,
+        ) or "Não informado"
+        municipality_ref = municipality_reference.get(normalize(municipality))
+        unit_type = "UPAE/R" if normalize(unit_name).startswith("upaer") else "Hospital"
+        rows.append(
+            {
+                "NOME MUNICIPIO": municipality,
+                "RD": municipality_ref["rd"] if municipality_ref else None,
+                "GERES": values[3] if len(values) > 3 else None,
+                "UNIDADE DE SAÚDE": unit_name,
+                "LOCALIZAÇÃO": None,
+                "STATUS": "Em construção",
+                "TIPO": unit_type,
+                "TIPO GESTÃO": None,
+                "GESTÃO": None,
+                "LEITOS": values[4] if len(values) > 4 else None,
+                "PERFIL": values[5] if len(values) > 5 else None,
+                "PROSSIONAIS": None,
+                "PROFISSIONAIS CONVOCADOS NA GESTÃO": None,
+                "CONTRATO DE MANUTENÇÃO PREDIAL": None,
+                "INVESTIMENTO NESTA GESTÃO": values[6] if len(values) > 6 else None,
+                "PRINCIPAIS AVANÇOS": None,
+                "__source_row": source_row,
+                "__source_sheet": CONSTRUCTION_SHEET_NAME,
+            }
+        )
+    return rows
+
+
+def merge_construction_rows(
+    consolidated_rows: list[dict[str, Any]],
+    construction_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    merged = list(consolidated_rows)
+    by_name = {
+        normalize(row.get("UNIDADE DE SAÚDE")): row
+        for row in merged
+        if clean_text(row.get("UNIDADE DE SAÚDE"))
+    }
+    for construction_row in construction_rows:
+        key = normalize(construction_row.get("UNIDADE DE SAÚDE"))
+        existing = by_name.get(key)
+        if not existing:
+            construction_row["__construction_source_row"] = construction_row["__source_row"]
+            merged.append(construction_row)
+            by_name[key] = construction_row
+            continue
+        if normalize_status(existing.get("STATUS")) == "Em funcionamento":
+            continue
+        existing["__construction_source_row"] = construction_row["__source_row"]
+        for field in ("STATUS", "LEITOS", "PERFIL", "INVESTIMENTO NESTA GESTÃO"):
+            if not clean_text(existing.get(field)) and clean_text(construction_row.get(field)):
+                existing[field] = construction_row[field]
+    return merged
 
 
 def read_municipality_reference(workbook_path: Path) -> dict[str, dict[str, str]]:
@@ -132,7 +224,7 @@ def read_municipality_reference(workbook_path: Path) -> dict[str, dict[str, str]
 def read_source_investments(workbook_path: Path) -> dict[str, Any]:
     workbook = load_workbook(workbook_path, read_only=True, data_only=True)
     values: dict[str, Any] = {}
-    ignored_sheets = {SHEET_NAME, "0_Template_Cod_Mun_RD", "UNIDADES EM CONSTRUÇÃO"}
+    ignored_sheets = {SHEET_NAME, "0_Template_Cod_Mun_RD", CONSTRUCTION_SHEET_NAME}
     for sheet in workbook.worksheets:
         if sheet.title in ignored_sheets:
             continue
@@ -151,12 +243,6 @@ def read_source_investments(workbook_path: Path) -> dict[str, Any]:
     return values
 
 
-def count_construction_units(workbook_path: Path) -> int:
-    workbook = load_workbook(workbook_path, read_only=True, data_only=True)
-    sheet = workbook["UNIDADES EM CONSTRUÇÃO"]
-    return sum(1 for row in sheet.iter_rows(min_row=2, values_only=True) if clean_text(row[1] if len(row) > 1 else None))
-
-
 def load_map(map_path: Path) -> dict[str, Any]:
     with map_path.open(encoding="utf-8") as stream:
         data = json.load(stream)
@@ -164,15 +250,30 @@ def load_map(map_path: Path) -> dict[str, Any]:
 
 
 def source_coverage(rows: list[dict[str, Any]], header: str) -> int:
-    return sum(1 for row in rows if clean_text(row.get(header)))
+    return sum(1 for row in rows if has_substantive_value(row.get(header)))
+
+
+def has_substantive_value(value: Any) -> bool:
+    text = clean_text(value)
+    return bool(text and text not in {"-", "—"} and normalize(text) not in {"aguardandoinformacao", "naoinformado"})
+
+
+def money_source_coverage(rows: list[dict[str, Any]], header: str) -> int:
+    covered = 0
+    for row in rows:
+        parsed = parse_money(row.get(header))
+        if parsed["amount"] is not None or has_substantive_value(parsed["label"]):
+            covered += 1
+    return covered
 
 
 def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
-    headers, raw_rows = read_rows(workbook_path)
+    headers, consolidated_rows = read_rows(workbook_path)
     municipality_reference = read_municipality_reference(workbook_path)
+    construction_rows = read_construction_rows(workbook_path, municipality_reference)
+    raw_rows = merge_construction_rows(consolidated_rows, construction_rows)
     source_investments = read_source_investments(workbook_path)
     map_data = load_map(map_path)
-    construction_units = count_construction_units(workbook_path)
 
     municipality_corrections = {
         "upaengenhovelho": {
@@ -229,7 +330,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     for row in raw_rows:
         unit_name = clean_text(row.get("UNIDADE DE SAÚDE")) or "Unidade sem nome"
         source_municipality = clean_text(row.get("NOME MUNICIPIO")) or "Não informado"
-        correction = municipality_corrections.get(normalize(unit_name))
+        proposed_correction = municipality_corrections.get(normalize(unit_name))
+        correction = proposed_correction if proposed_correction and normalize(source_municipality) != normalize(proposed_correction["municipality"]) else None
         municipality = correction["municipality"] if correction else source_municipality
         if correction:
             corrections.append(
@@ -266,6 +368,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
         if not source_geres and geres != "Não informado":
             geres_enriched += 1
 
+        status = normalize_status(row.get("STATUS"))
+        is_construction = status == "Em construção"
         investment_source = row.get("INVESTIMENTO NESTA GESTÃO")
         parsed_investment = parse_money(investment_source)
         if parsed_investment["amount"] is None and normalize(unit_name) in source_investments:
@@ -289,40 +393,63 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
                 "rd": rd,
                 "geres": geres,
                 "address": clean_text(row.get("LOCALIZAÇÃO")),
-                "status": clean_text(row.get("STATUS")),
+                "status": status,
                 "type": (clean_text(row.get("TIPO")) or "Não informado").replace("UPAE/R", "UPAE-R"),
                 "managementType": clean_text(row.get("TIPO GESTÃO")),
                 "management": clean_text(row.get("GESTÃO")),
-                "beds": parse_integer(row.get("LEITOS")),
+                "beds": None if is_construction else parse_integer(row.get("LEITOS")),
+                "plannedBeds": parse_integer(row.get("LEITOS")) if is_construction else None,
                 "profile": clean_text(row.get("PERFIL")),
                 "professionals": clean_text(row.get("PROSSIONAIS")),
                 "calledProfessionals": parse_integer(row.get("PROFISSIONAIS CONVOCADOS NA GESTÃO")),
                 "maintenanceContract": parse_money(row.get("CONTRATO DE MANUTENÇÃO PREDIAL")),
-                "managementInvestment": parsed_investment,
+                "managementInvestment": {"amount": None, "label": None} if is_construction else parsed_investment,
+                "constructionInvestment": parsed_investment if is_construction else {"amount": None, "label": None},
                 "mainAdvances": clean_text(row.get("PRINCIPAIS AVANÇOS")),
                 "latitude": None,
                 "longitude": None,
-                "source": {"sheet": SHEET_NAME, "row": row["__source_row"]},
+                "source": {
+                    "sheet": row.get("__source_sheet", SHEET_NAME),
+                    "row": row["__source_row"],
+                    "supplemental": {
+                        "sheet": CONSTRUCTION_SHEET_NAME,
+                        "row": row["__construction_source_row"],
+                    } if row.get("__construction_source_row") else None,
+                },
                 "enrichment": {
                     "rd": "workbook-municipality-template" if municipality_ref else "workbook-row",
                     "geres": "municipality-mode" if not source_geres and geres != "Não informado" else "workbook",
                     "municipalityCorrected": bool(correction),
-                    "investment": "source-sheet" if parsed_investment != parse_money(investment_source) else "consolidated",
+                    "investment": "construction-sheet" if is_construction and row.get("__construction_source_row") else "source-sheet" if parsed_investment != parse_money(investment_source) else "consolidated",
+                    "construction": "construction-sheet" if row.get("__construction_source_row") else "source-row",
                 },
             }
         )
 
     type_counts = Counter(unit["type"] for unit in units)
+    status_counts = Counter(unit["status"] for unit in units)
     municipalities = sorted({unit["municipality"] for unit in units}, key=normalize)
     rds = sorted({unit["rd"] for unit in units}, key=normalize)
     geres_values = sorted({unit["geres"] for unit in units}, key=normalize)
-    numeric_beds = [unit["beds"] for unit in units if unit["beds"] is not None]
+    active_units = [unit for unit in units if unit["status"] == "Em funcionamento"]
+    construction_units = [unit for unit in units if unit["status"] == "Em construção"]
+    type_counts_by_status = {
+        status: dict(sorted(Counter(unit["type"] for unit in units if unit["status"] == status).items()))
+        for status in status_counts
+    }
+    construction_municipalities = {unit["municipality"] for unit in construction_units}
+    operational_beds = [unit["beds"] for unit in active_units if unit["beds"] is not None]
+    planned_beds = [unit["plannedBeds"] for unit in construction_units if unit["plannedBeds"] is not None]
+    active_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em funcionamento"]
+    construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em construção"]
 
     quality = {
         "sourceFile": workbook_path.name,
         "sourceSheet": SHEET_NAME,
+        "sourceSheets": [SHEET_NAME, CONSTRUCTION_SHEET_NAME],
         "generatedAt": date.today().isoformat(),
         "sourceRows": len(raw_rows),
+        "constructionRows": len(construction_rows),
         "publishedUnits": len(units),
         "municipalities": len(municipalities),
         "sourceCoverage": {
@@ -330,10 +457,13 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "rd": source_coverage(raw_rows, "RD"),
             "geres": source_coverage(raw_rows, "GERES"),
             "address": source_coverage(raw_rows, "LOCALIZAÇÃO"),
-            "beds": source_coverage(raw_rows, "LEITOS"),
-            "profile": source_coverage(raw_rows, "PERFIL"),
-            "maintenanceContract": source_coverage(raw_rows, "CONTRATO DE MANUTENÇÃO PREDIAL"),
-            "managementInvestment": source_coverage(raw_rows, "INVESTIMENTO NESTA GESTÃO"),
+            "operationalBeds": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS")) is not None),
+            "plannedBeds": sum(1 for row in construction_source_rows if parse_integer(row.get("LEITOS")) is not None),
+            "operationalProfile": source_coverage(active_source_rows, "PERFIL"),
+            "plannedProfile": source_coverage(construction_source_rows, "PERFIL"),
+            "maintenanceContract": money_source_coverage(active_source_rows, "CONTRATO DE MANUTENÇÃO PREDIAL"),
+            "managementInvestment": money_source_coverage(active_source_rows, "INVESTIMENTO NESTA GESTÃO"),
+            "constructionInvestment": money_source_coverage(construction_source_rows, "INVESTIMENTO NESTA GESTÃO"),
             "mainAdvances": source_coverage(raw_rows, "PRINCIPAIS AVANÇOS"),
             "coordinates": 0,
         },
@@ -341,6 +471,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "rdFromWorkbookMunicipalityTemplate": rd_enriched,
             "geresFromMunicipalityMode": geres_enriched,
             "investmentFromSourceSheets": investments_enriched,
+            "constructionDetailsFromSheet": sum(1 for row in raw_rows if row.get("__construction_source_row")),
             "documentedCorrections": len(corrections),
         },
         "corrections": corrections,
@@ -348,7 +479,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
             "Valores ausentes permanecem nulos e são exibidos como Não informado.",
             "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
-            f"{construction_units} unidades da aba UNIDADES EM CONSTRUÇÃO não integram o Consolidado e não são publicadas nesta primeira versão.",
+            f"{len(construction_units)} unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
             "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
         ],
         "headers": headers,
@@ -360,16 +491,24 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "sourceLabel": "Planilha Saúde · 20 ago 2026",
             "generatedAt": quality["generatedAt"],
             "totalUnits": len(units),
+            "activeUnits": len(active_units),
+            "constructionUnits": len(construction_units),
+            "constructionMunicipalities": len(construction_municipalities),
             "totalMunicipalities": len(municipalities),
-            "totalBeds": sum(numeric_beds),
-            "unitsWithBeds": len(numeric_beds),
+            "totalBeds": sum(operational_beds),
+            "unitsWithBeds": len(operational_beds),
+            "plannedBeds": sum(planned_beds),
+            "constructionUnitsWithBeds": len(planned_beds),
             "typeCounts": dict(sorted(type_counts.items())),
+            "typeCountsByStatus": type_counts_by_status,
+            "statusCounts": dict(status_counts),
         },
         "filters": {
             "municipalities": municipalities,
             "rds": rds,
             "geres": geres_values,
             "types": sorted(type_counts, key=normalize),
+            "statuses": [status for status in ("Em funcionamento", "Em construção") if status in status_counts],
         },
         "units": units,
         "map": {
@@ -383,7 +522,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Gera o JSON do painel a partir da aba Consolidado.")
+    parser = argparse.ArgumentParser(description="Gera o JSON do painel a partir das abas Consolidado e UNIDADES EM CONSTRUÇÃO.")
     parser.add_argument("--workbook", type=Path, default=DEFAULT_WORKBOOK)
     parser.add_argument("--map-data", type=Path, default=DEFAULT_MAP_DATA)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
@@ -400,8 +539,11 @@ def main() -> None:
             {
                 "output": str(args.output),
                 "units": payload["meta"]["totalUnits"],
+                "activeUnits": payload["meta"]["activeUnits"],
+                "constructionUnits": payload["meta"]["constructionUnits"],
                 "municipalities": payload["meta"]["totalMunicipalities"],
-                "beds": payload["meta"]["totalBeds"],
+                "operationalBeds": payload["meta"]["totalBeds"],
+                "plannedBeds": payload["meta"]["plannedBeds"],
             },
             ensure_ascii=False,
         )

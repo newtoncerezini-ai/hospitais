@@ -20,19 +20,21 @@ Provide a clear, searchable view of Pernambuco health facilities and turn each s
 
 ## Positioning
 
-The product connects a consolidated operational list, an auditable view of missing/enriched fields, a municipal map classified by facility type and a printable technical sheet in one interface.
+The product connects an operational and construction-status facility list, an auditable view of missing/enriched fields, a municipal map classified by facility type and status, and a printable technical sheet in one interface.
 
 ## Operating Context
 
-The initial source is `Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde.xlsx`, especially the `Consolidado` sheet. The current workflow is a static portal generated from the workbook; future data ownership, update cadence and publishing target are undecided.
+The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` sheets from the supplied workbook. It contains 73 facilities: 65 operating and 8 under construction, across 25 municipalities, with construction present in 6 of them. The current workflow is a static portal generated from the workbook; future data ownership, update cadence and publishing target are undecided.
 
 ## Capabilities and Constraints
 
-- List facilities with municipality, address, beds, profile, type, management type, management body, RD, GERES, maintenance contract, management investment and main advances.
-- Search and filter by facility, municipality, RD and GERES.
+- List facilities with status, municipality, address, operational or planned beds, profile, type, management type, management body, RD, GERES, maintenance contract, applicable investment and main advances.
+- Search by facility, municipality, RD and GERES; filter by those territorial fields, type and status.
 - Generate a printable technical sheet per facility.
-- Show an offline Pernambuco map with markers classified by facility type.
+- Show an offline Pernambuco map with markers classified by facility type, grouped by municipality, type and status. A dashed outline identifies facilities under construction without changing the type color.
 - The source workbook has no latitude/longitude. The first map therefore positions facilities at municipality level and must say so explicitly.
+- Keep operational capacity separate from planned capacity: 6,796 operational beds in 50 operating facilities and 861 planned beds in 5 construction projects.
+- Preserve the source type distribution: Hospital 40, UPA 14, UPAE 15 and UPAE-R 4.
 - Source gaps remain visible as `Não informado`; original healthcare data must not be overwritten.
 - Enrichment and corrections must be documented in generated data-quality metadata.
 
@@ -42,7 +44,7 @@ Use the institutional layout language of `C:\workspace\ips`: deep-blue navigatio
 
 ## Evidence on Hand
 
-- Source workbook: `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde.xlsx`.
+- Source workbook preserved in the project: `data/raw/health-units.xlsx`, supplied as `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde (1).xlsx`.
 - Layout and interaction reference: `C:\workspace\ips`, with `src\main.tsx`, `src\styles.css` and `DESIGN.md` as current visual authority.
 - Local municipal code, Development Region and SVG geometry reference: `C:\workspace\ips\public\data\dashboard.json`.
 - No coordinates, confirmed official logo, testimonials or external performance claims are available and none should be fabricated.
@@ -50,6 +52,7 @@ Use the institutional layout language of `C:\workspace\ips`: deep-blue navigatio
 ## Product Principles
 
 - Make the facility and its operational facts easy to find in seconds.
+- Distinguish operating facilities from construction projects and operational beds from planned beds.
 - Distinguish source values, enriched values and missing values.
 - Keep dense administrative data readable and printable.
 - Use geography honestly: municipal context now, exact coordinates only when reliable data exists.

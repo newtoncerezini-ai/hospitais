@@ -19,6 +19,10 @@
   --upa: #cf5d32;
   --upae: #7154a8;
   --upaer: #168772;
+  --status-active: #176448;
+  --status-active-soft: #e5f3ec;
+  --status-construction: #8a5200;
+  --status-construction-soft: #fff1d6;
   --focus: #0284c7;
 }
 
@@ -492,6 +496,44 @@ b {
 .type-upae { background: var(--upae) !important; }
 .type-upae-r { background: var(--upaer) !important; }
 
+.construction-overview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  margin-top: 25px;
+  padding: 17px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--status-construction);
+}
+
+.construction-overview > svg {
+  color: var(--status-construction);
+}
+
+.construction-overview > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.construction-overview strong {
+  font-size: 14px;
+}
+
+.construction-overview small {
+  color: var(--status-construction);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.construction-overview > b {
+  color: var(--status-construction);
+  font-size: 13px;
+  text-align: right;
+}
+
 .map-callout {
   width: 100%;
   min-height: 78px;
@@ -625,7 +667,7 @@ b {
 
 .filter-panel {
   display: grid;
-  grid-template-columns: minmax(250px, 1.45fr) repeat(4, minmax(130px, 0.72fr)) minmax(88px, auto);
+  grid-template-columns: minmax(220px, 1.3fr) repeat(4, minmax(102px, 0.6fr)) minmax(155px, 0.75fr) minmax(88px, auto);
   align-items: end;
   gap: 12px;
   margin-bottom: 18px;
@@ -729,7 +771,7 @@ b {
 
 .table-scroll table {
   width: 100%;
-  min-width: 2240px;
+  min-width: 2740px;
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -759,21 +801,33 @@ b {
 }
 
 .table-scroll th:nth-child(1) { width: 240px; }
-.table-scroll th:nth-child(2) { width: 155px; }
-.table-scroll th:nth-child(3) { width: 230px; }
-.table-scroll th:nth-child(4) { width: 160px; }
-.table-scroll th:nth-child(5) { width: 88px; }
-.table-scroll th:nth-child(6) { width: 78px; }
-.table-scroll th:nth-child(7) { width: 260px; }
-.table-scroll th:nth-child(8) { width: 105px; }
-.table-scroll th:nth-child(9) { width: 140px; }
-.table-scroll th:nth-child(10) { width: 100px; }
+.table-scroll th:nth-child(2) { width: 145px; }
+.table-scroll th:nth-child(3) { width: 150px; }
+.table-scroll th:nth-child(4) { width: 230px; }
+.table-scroll th:nth-child(5) { width: 95px; }
+.table-scroll th:nth-child(6) { width: 80px; }
+.table-scroll th:nth-child(7),
+.table-scroll th:nth-child(8) { width: 125px; }
+.table-scroll th:nth-child(9) { width: 260px; }
+.table-scroll th:nth-child(10) { width: 105px; }
 .table-scroll th:nth-child(11),
-.table-scroll th:nth-child(12) { width: 170px; }
-.table-scroll th:nth-child(13) { width: 280px; }
+.table-scroll th:nth-child(12) { width: 150px; }
+.table-scroll th:nth-child(13),
+.table-scroll th:nth-child(14),
+.table-scroll th:nth-child(15) { width: 180px; }
+.table-scroll th:nth-child(16) { width: 280px; }
+.table-scroll th:nth-child(17) { width: 58px; }
 
 .table-scroll tbody tr:hover td {
   background: #f6fafc;
+}
+
+.table-scroll tbody tr.construction-row td {
+  background: color-mix(in srgb, var(--status-construction-soft) 55%, var(--surface));
+}
+
+.table-scroll tbody tr.construction-row:hover td {
+  background: color-mix(in srgb, var(--status-construction-soft) 85%, var(--surface));
 }
 
 .table-scroll .sticky-name {
@@ -815,7 +869,8 @@ b {
 }
 
 .geres-tag,
-.type-badge {
+.type-badge,
+.status-badge {
   width: max-content;
   display: inline-flex;
   align-items: center;
@@ -839,6 +894,26 @@ b {
   padding: 0 9px;
   background: #e2e8f0;
   color: #334155;
+}
+
+.status-badge {
+  min-height: 26px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  background: var(--surface-muted);
+  color: var(--muted);
+}
+
+.status-badge.status-em-funcionamento {
+  border-color: color-mix(in srgb, var(--status-active) 28%, var(--surface));
+  background: var(--status-active-soft);
+  color: var(--status-active);
+}
+
+.status-badge.status-em-construcao {
+  border-color: color-mix(in srgb, var(--status-construction) 45%, var(--surface));
+  background: var(--status-construction-soft);
+  color: var(--status-construction);
 }
 
 .type-badge.type-hospital { background: #d9edf6 !important; color: #00537a; }
@@ -907,6 +982,18 @@ b {
   width: 10px;
   height: 10px;
   border-radius: 3px;
+}
+
+.type-legend .construction-legend {
+  color: var(--status-construction);
+}
+
+.type-legend .construction-legend i {
+  width: 13px;
+  height: 13px;
+  border: 2px dashed currentColor;
+  border-radius: 50%;
+  background: transparent;
 }
 
 .map-frame {
@@ -1046,10 +1133,21 @@ b {
 }
 
 .map-marker > svg {
+  position: relative;
+  z-index: 1;
   width: 22px;
   height: 22px;
   overflow: visible;
   transition: filter 150ms ease, transform 150ms ease;
+}
+
+.map-marker.is-construction::before {
+  position: absolute;
+  inset: 5px;
+  border: 2px dashed var(--status-construction);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--status-construction-soft) 62%, transparent);
+  content: "";
 }
 
 .map-marker:hover,
@@ -1071,6 +1169,7 @@ b {
 
 .map-marker > span {
   position: absolute;
+  z-index: 2;
   top: 2px;
   right: 1px;
   min-width: 17px;
@@ -1127,6 +1226,12 @@ b {
   font-size: 13px;
 }
 
+.map-detail-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
 .map-unit-list {
   display: grid;
   padding: 10px;
@@ -1157,6 +1262,10 @@ b {
 .map-unit-list button > span {
   display: grid;
   gap: 7px;
+}
+
+.map-unit-list .status-badge {
+  width: max-content;
 }
 
 .map-unit-list strong {
@@ -1452,8 +1561,12 @@ b {
     grid-column: 1 / 2;
   }
 
+  .filter-panel .field:nth-of-type(6) {
+    grid-column: 2 / 3;
+  }
+
   .filter-result {
-    grid-column: 2 / -1;
+    grid-column: 3 / -1;
     justify-content: flex-start;
   }
 
@@ -1620,6 +1733,15 @@ b {
     gap: 8px;
   }
 
+  .construction-overview {
+    grid-template-columns: auto 1fr;
+  }
+
+  .construction-overview > b {
+    grid-column: 2;
+    text-align: left;
+  }
+
   .quality-strip {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -1653,6 +1775,10 @@ b {
     grid-column: auto;
   }
 
+  .filter-panel .field:nth-of-type(6) {
+    grid-column: auto;
+  }
+
   .filter-result {
     justify-content: flex-start;
   }
@@ -1678,10 +1804,17 @@ b {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 10px;
     color: #5b6974;
     font-size: 11px;
     font-weight: 800;
+  }
+
+  .unit-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .mobile-unit-card h3 {

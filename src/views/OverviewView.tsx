@@ -1,5 +1,5 @@
-import { ArrowRight, Database, MapPinned, ShieldCheck } from "lucide-react";
-import { formatMoney, formatNumber, typeClass } from "../lib/format";
+import { ArrowRight, Database, HardHat, MapPinned, ShieldCheck } from "lucide-react";
+import { formatNumber, typeClass } from "../lib/format";
 import type { DashboardData, View } from "../types";
 
 type Props = {
@@ -8,9 +8,11 @@ type Props = {
 };
 
 export function OverviewView({ data, onNavigate }: Props) {
-  const totalInvestment = data.units.reduce((sum, unit) => sum + (unit.managementInvestment.amount ?? 0), 0);
+  const activeUnits = data.units.filter((unit) => unit.status === "Em funcionamento");
+  const activeTypeCounts = data.meta.typeCountsByStatus["Em funcionamento"] ?? {};
+  const constructionTypeCounts = data.meta.typeCountsByStatus["Em construção"] ?? {};
   const geresCounts = Object.entries(
-    data.units.reduce<Record<string, number>>((acc, unit) => {
+    activeUnits.reduce<Record<string, number>>((acc, unit) => {
       acc[unit.geres] = (acc[unit.geres] ?? 0) + 1;
       return acc;
     }, {}),
@@ -20,27 +22,35 @@ export function OverviewView({ data, onNavigate }: Props) {
   return (
     <div className="overview-page">
       <section className="summary-rail" aria-label="Resumo da rede">
-        <article><span>Unidades ativas</span><strong>{formatNumber(data.meta.totalUnits)}</strong><small>na base consolidada</small></article>
-        <article><span>Municípios</span><strong>{formatNumber(data.meta.totalMunicipalities)}</strong><small>com presença da rede</small></article>
-        <article><span>Leitos informados</span><strong>{formatNumber(data.meta.totalBeds)}</strong><small>em {data.meta.unitsWithBeds} unidades</small></article>
-        <article><span>Investimento identificado</span><strong>{formatMoney({ amount: totalInvestment, label: null }, true)}</strong><small>43 unidades com valor</small></article>
+        <article><span>Unidades cadastradas</span><strong>{formatNumber(data.meta.totalUnits)}</strong><small>{data.meta.activeUnits} em funcionamento · {data.meta.constructionUnits} em construção</small></article>
+        <article><span>Municípios</span><strong>{formatNumber(data.meta.totalMunicipalities)}</strong><small>{data.meta.constructionMunicipalities} com unidades em construção</small></article>
+        <article><span>Leitos em funcionamento</span><strong>{formatNumber(data.meta.totalBeds)}</strong><small>em {data.meta.unitsWithBeds} unidades</small></article>
+        <article><span>Leitos previstos</span><strong>{formatNumber(data.meta.plannedBeds)}</strong><small>em {data.meta.constructionUnitsWithBeds} unidades em construção</small></article>
       </section>
 
       <div className="overview-grid">
         <section className="panel network-composition">
           <div className="panel-heading">
-            <div><h2>Composição da rede</h2><p>As 65 unidades ativas distribuídas por tipo assistencial.</p></div>
+            <div><h2>Rede em funcionamento</h2><p>As {data.meta.activeUnits} unidades operacionais distribuídas por tipo assistencial.</p></div>
             <button type="button" className="link-action" onClick={() => onNavigate("units")}>Abrir lista <ArrowRight size={17} /></button>
           </div>
           <div className="type-distribution">
-            {Object.entries(data.meta.typeCounts).map(([type, count]) => (
+            {Object.entries(activeTypeCounts).map(([type, count]) => (
               <div className="type-row" key={type}>
                 <span className={`type-symbol ${typeClass(type)}`} aria-hidden="true" />
                 <strong>{type}</strong>
-                <div className="bar-track" aria-hidden="true"><span className={typeClass(type)} style={{ width: `${(count / data.meta.totalUnits) * 100}%` }} /></div>
+                <div className="bar-track" aria-hidden="true"><span className={typeClass(type)} style={{ width: `${(count / data.meta.activeUnits) * 100}%` }} /></div>
                 <b>{count}</b>
               </div>
             ))}
+          </div>
+          <div className="construction-overview">
+            <HardHat size={23} aria-hidden="true" />
+            <span>
+              <strong>{data.meta.constructionUnits} unidades em construção</strong>
+              <small>{Object.entries(constructionTypeCounts).map(([type, count]) => `${count} do tipo ${type}`).join(" · ")} · {data.meta.constructionMunicipalities} municípios</small>
+            </span>
+            <b>{formatNumber(data.meta.plannedBeds)} leitos previstos</b>
           </div>
           <button type="button" className="map-callout" onClick={() => onNavigate("map") }>
             <MapPinned size={24} aria-hidden="true" />
@@ -50,7 +60,7 @@ export function OverviewView({ data, onNavigate }: Props) {
         </section>
 
         <section className="panel geres-panel">
-          <div className="panel-heading"><div><h2>Unidades por GERES</h2><p>Distribuição das unidades em funcionamento.</p></div></div>
+          <div className="panel-heading"><div><h2>Unidades por GERES</h2><p>Distribuição das {data.meta.activeUnits} unidades em funcionamento.</p></div></div>
           <div className="geres-bars">
             {geresCounts.map(([geres, count]) => (
               <div key={geres}>

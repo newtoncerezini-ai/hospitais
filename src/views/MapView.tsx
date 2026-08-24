@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Info, MapPin, X } from "lucide-react";
 import { FilterBar } from "../components/FilterBar";
-import { ALL, typeClass } from "../lib/format";
+import { ALL, displayValue, isConstructionStatus, statusClass, typeClass } from "../lib/format";
 import { layoutMapMarkers, minimumMapWidth } from "../lib/mapLayout";
 import type { DashboardData, Filters, HealthUnit } from "../types";
 
@@ -13,7 +13,7 @@ type Props = {
   onOpenUnit: (unit: HealthUnit) => void;
 };
 
-type MarkerGroup = { key: string; code: string; type: string; units: HealthUnit[] };
+type MarkerGroup = { key: string; code: string; type: string; status: HealthUnit["status"]; units: HealthUnit[] };
 type Point = { x: number; y: number };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -53,8 +53,8 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
     const grouped = new Map<string, MarkerGroup>();
     units.forEach((unit) => {
       if (!unit.ibgeCode) return;
-      const key = `${unit.ibgeCode}:${unit.type}`;
-      const current = grouped.get(key) ?? { key, code: unit.ibgeCode, type: unit.type, units: [] };
+      const key = `${unit.ibgeCode}:${unit.type}:${unit.status}`;
+      const current = grouped.get(key) ?? { key, code: unit.ibgeCode, type: unit.type, status: unit.status, units: [] };
       current.units.push(unit);
       grouped.set(key, current);
     });
@@ -62,9 +62,10 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
     return [...grouped.values()].sort(
       (a, b) => a.units[0].municipality.localeCompare(b.units[0].municipality, "pt-BR")
         || (typeOrder.get(a.type) ?? 99) - (typeOrder.get(b.type) ?? 99)
+        || data.filters.statuses.indexOf(a.status) - data.filters.statuses.indexOf(b.status)
         || a.key.localeCompare(b.key),
     );
-  }, [data.filters.types, units]);
+  }, [data.filters.statuses, data.filters.types, units]);
 
   const [activeKey, setActiveKey] = useState<string | null>(groups[0]?.key ?? null);
   const [viewMinX, viewMinY, viewWidth, viewHeight] = useMemo(
@@ -119,6 +120,7 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
   const codesWithUnits = useMemo(() => new Set(groups.map((group) => group.code)), [groups]);
   const markerPlacements = useMemo(() => {
     const typeOrder = new Map(data.filters.types.map((type, index) => [type, index]));
+    const statusOrder = new Map(data.filters.statuses.map((status, index) => [status, index]));
     const anchors = groups.flatMap((group) => {
       const center = centers[group.code];
       if (!center || stageSize.width <= 0 || stageSize.height <= 0) return [];
@@ -127,7 +129,7 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
         municipalityCode: group.code,
         anchorX: ((center.x - viewMinX) / viewWidth) * stageSize.width,
         anchorY: ((center.y - viewMinY) / viewHeight) * stageSize.height,
-        order: typeOrder.get(group.type) ?? 99,
+        order: (typeOrder.get(group.type) ?? 99) * data.filters.statuses.length + (statusOrder.get(group.status) ?? 0),
       }];
     });
     return layoutMapMarkers(anchors, {
@@ -136,7 +138,7 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
       markerSize: MARKER_SIZE,
       gap: MARKER_GAP,
     });
-  }, [centers, data.filters.types, groups, stageSize, viewHeight, viewMinX, viewMinY, viewWidth]);
+  }, [centers, data.filters.statuses, data.filters.types, groups, stageSize, viewHeight, viewMinX, viewMinY, viewWidth]);
   const placementByKey = useMemo(
     () => new Map(markerPlacements.map((placement) => [placement.key, placement])),
     [markerPlacements],
@@ -182,6 +184,7 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
     rd: ALL,
     geres: ALL,
     type: ALL,
+    status: ALL,
   });
 
   return (
@@ -189,9 +192,10 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
       <FilterBar filters={filters} options={data.filters} onChange={onFiltersChange} resultCount={units.length} />
       <section className="map-layout">
         <div className="panel map-canvas-panel">
-          <div className="panel-heading"><div><h2>Pernambuco · distribuição municipal</h2><p>Selecione um símbolo para ver as unidades daquele tipo no município.</p></div></div>
-          <div className="type-legend" aria-label="Legenda de tipos">
+          <div className="panel-heading"><div><h2>Pernambuco · distribuição municipal</h2><p>Selecione um símbolo para ver as unidades daquele tipo e status no município.</p></div></div>
+          <div className="type-legend" aria-label="Legenda de tipos e status">
             {data.filters.types.map((type) => <span key={type}><i className={typeClass(type)} />{type}</span>)}
+            <span className="construction-legend"><i />Contorno tracejado: em construção</span>
           </div>
           <div
             ref={frameRef}
@@ -249,9 +253,9 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
                     <button
                       key={group.key}
                       type="button"
-                      className={`map-marker ${activeKey === group.key ? "active" : ""}`}
+                      className={`map-marker ${isConstructionStatus(group.status) ? "is-construction" : ""} ${activeKey === group.key ? "active" : ""}`}
                       style={{ left: `${placement.x}px`, top: `${placement.y}px`, animationDelay: `${Math.min(index, 20) * 18}ms` }}
-                      aria-label={`${group.units[0].municipality}: ${unitCount} do tipo ${group.type}`}
+                      aria-label={`${group.units[0].municipality}: ${unitCount} do tipo ${group.type}, ${group.status.toLocaleLowerCase("pt-BR")}`}
                       aria-pressed={activeKey === group.key}
                       aria-controls="map-detail-panel"
                       onClick={() => setActiveKey(group.key)}
@@ -285,11 +289,11 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
             </div>
           ) : active ? (
             <>
-              <header><span className={`type-badge ${typeClass(active.type)}`}>{active.type}</span><h2>{active.units[0].municipality}</h2><p>{active.units[0].rd} · {active.units[0].geres} GERES</p></header>
+              <header><div className="map-detail-badges"><span className={`type-badge ${typeClass(active.type)}`}>{active.type}</span><span className={`status-badge ${statusClass(active.status)}`}>{active.status}</span></div><h2>{active.units[0].municipality}</h2><p>{active.units[0].rd} · {active.units[0].geres} GERES</p></header>
               <div className="map-unit-list">
                 {active.units.map((unit) => (
                   <button key={unit.id} type="button" onClick={() => onOpenUnit(unit)}>
-                    <span><strong>{unit.name}</strong><small><MapPin size={14} /> {unit.address}</small></span>
+                    <span><strong>{unit.name}</strong><span className={`status-badge ${statusClass(unit.status)}`}>{unit.status}</span><small><MapPin size={14} /> {displayValue(unit.address)}</small></span>
                     <ArrowRight size={18} aria-hidden="true" />
                   </button>
                 ))}

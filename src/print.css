@@ -49,6 +49,17 @@
     print-color-adjust: exact;
   }
 
+  .status-badge {
+    border-color: var(--muted) !important;
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    print-color-adjust: exact;
+  }
+
+  .status-badge.status-em-construcao {
+    border-style: dashed;
+  }
+
   .sheet-kpis > div {
     min-height: 28mm;
     padding: 5mm;

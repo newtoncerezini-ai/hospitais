@@ -8,7 +8,7 @@ import { OverviewView } from "./views/OverviewView";
 import { TechnicalSheetView } from "./views/TechnicalSheetView";
 import { UnitsView } from "./views/UnitsView";
 
-const INITIAL_FILTERS: Filters = { query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL };
+const INITIAL_FILTERS: Filters = { query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL, status: ALL };
 
 export default function App() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -63,7 +63,13 @@ export default function App() {
   }
 
   return (
-    <AppShell view={view} onViewChange={setView} sourceLabel={data.meta.sourceLabel}>
+    <AppShell
+      view={view}
+      onViewChange={setView}
+      sourceLabel={data.meta.sourceLabel}
+      activeUnits={data.meta.activeUnits}
+      constructionUnits={data.meta.constructionUnits}
+    >
       {view === "overview" && <OverviewView data={data} onNavigate={setView} />}
       {view === "units" && <UnitsView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}
       {view === "map" && <MapView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}

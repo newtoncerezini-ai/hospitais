@@ -38,7 +38,7 @@ function SelectField({
 export function FilterBar({ filters, options, onChange, resultCount }: Props) {
   const hasFilters = Object.values(filters).some((value) => value && value !== ALL);
   const set = (key: keyof Filters, value: string) => onChange({ ...filters, [key]: value });
-  const reset = () => onChange({ query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL });
+  const reset = () => onChange({ query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL, status: ALL });
 
   return (
     <section className="filter-panel" aria-label="Filtros das unidades">
@@ -59,6 +59,7 @@ export function FilterBar({ filters, options, onChange, resultCount }: Props) {
       <SelectField id="rd" label="RD" value={filters.rd} options={options.rds} onChange={(value) => set("rd", value)} />
       <SelectField id="geres" label="GERES" value={filters.geres} options={options.geres} onChange={(value) => set("geres", value)} />
       <SelectField id="unit-type" label="Tipo" value={filters.type} options={options.types} onChange={(value) => set("type", value)} />
+      <SelectField id="unit-status" label="Status" value={filters.status} options={options.statuses} onChange={(value) => set("status", value)} />
       <div className="filter-result" aria-live="polite">
         <strong>{resultCount}</strong>
         <span>{resultCount === 1 ? "unidade" : "unidades"}</span>

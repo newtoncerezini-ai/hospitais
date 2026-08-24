@@ -1,37 +1,38 @@
 {
   "sourceFile": "health-units.xlsx",
   "sourceSheet": "Consolidado",
+  "sourceSheets": [
+    "Consolidado",
+    "UNIDADES EM CONSTRUÇÃO"
+  ],
   "generatedAt": "2026-08-24",
-  "sourceRows": 65,
-  "publishedUnits": 65,
+  "sourceRows": 73,
+  "constructionRows": 8,
+  "publishedUnits": 73,
   "municipalities": 25,
   "sourceCoverage": {
-    "municipality": 64,
-    "rd": 6,
-    "geres": 59,
+    "municipality": 73,
+    "rd": 73,
+    "geres": 67,
     "address": 65,
-    "beds": 65,
-    "profile": 65,
+    "operationalBeds": 50,
+    "plannedBeds": 5,
+    "operationalProfile": 65,
+    "plannedProfile": 3,
     "maintenanceContract": 16,
-    "managementInvestment": 28,
-    "mainAdvances": 65,
+    "managementInvestment": 25,
+    "constructionInvestment": 0,
+    "mainAdvances": 64,
     "coordinates": 0
   },
   "enrichment": {
-    "rdFromWorkbookMunicipalityTemplate": 59,
+    "rdFromWorkbookMunicipalityTemplate": 0,
     "geresFromMunicipalityMode": 6,
     "investmentFromSourceSheets": 18,
-    "documentedCorrections": 5
+    "constructionDetailsFromSheet": 8,
+    "documentedCorrections": 3
   },
   "corrections": [
-    {
-      "sourceRow": 18,
-      "field": "municipality",
-      "sourceValue": "Não informado",
-      "normalizedValue": "Paulista",
-      "reason": "A planilha omite o município; a página oficial informa Paulista no endereço da unidade.",
-      "evidenceUrl": "https://portal.saude.pe.gov.br/hospitais-oss/hospital-metropolitano-norte-miguel-arraes-de-alencar/"
-    },
     {
       "sourceRow": 30,
       "field": "geres",
@@ -49,14 +50,6 @@
       "evidenceUrl": "https://portal.saude.pe.gov.br/upase-oss/upae-grande-recife-abreu-e-lima/"
     },
     {
-      "sourceRow": 54,
-      "field": "municipality",
-      "sourceValue": "Engenho Velho",
-      "normalizedValue": "Jaboatão dos Guararapes",
-      "reason": "O endereço da linha e a página oficial identificam Jaboatão dos Guararapes; Engenho Velho é o bairro/unidade.",
-      "evidenceUrl": "https://portal.saude.pe.gov.br/upas-oss/upa-engenho-velho/"
-    },
-    {
       "sourceRow": 62,
       "field": "municipality",
       "sourceValue": "Recife",
@@ -69,11 +62,10 @@
     "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
     "Valores ausentes permanecem nulos e são exibidos como Não informado.",
     "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
-    "8 unidades da aba UNIDADES EM CONSTRUÇÃO não integram o Consolidado e não são publicadas nesta primeira versão.",
+    "8 unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
     "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável."
   ],
   "headers": [
-    "CÓDIGO DO IBGE",
     "NOME MUNICIPIO",
     "RD",
     "GERES",

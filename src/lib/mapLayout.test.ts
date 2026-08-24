@@ -9,8 +9,8 @@ import {
 const MARKER_SIZE = 46;
 const GAP = 6;
 
-function denseAnchors(): MapMarkerAnchor[] {
-  return Array.from({ length: 43 }, (_, index) => ({
+function denseAnchors(count = 50): MapMarkerAnchor[] {
+  return Array.from({ length: count }, (_, index) => ({
     key: `marker-${String(index).padStart(2, "0")}`,
     municipalityCode: `26${String(Math.floor(index / 2)).padStart(5, "0")}`,
     anchorX: 680 + (index % 5) * 3,
@@ -20,8 +20,8 @@ function denseAnchors(): MapMarkerAnchor[] {
 }
 
 describe("minimumMapWidth", () => {
-  it("reserva uma largura útil para os 43 grupos atuais sem miniaturizar os alvos", () => {
-    const width = minimumMapWidth(43, 1000 / 337.35, MARKER_SIZE, GAP);
+  it("reserva uma largura útil para os 50 grupos atuais sem miniaturizar os alvos", () => {
+    const width = minimumMapWidth(50, 1000 / 337.35, MARKER_SIZE, GAP);
     expect(width).toBeGreaterThanOrEqual(760);
   });
 });
@@ -38,7 +38,7 @@ describe("layoutMapMarkers", () => {
         gap: GAP,
       });
 
-      expect(placements).toHaveLength(43);
+      expect(placements).toHaveLength(50);
       placements.forEach((placement) => {
         expect(placement.x).toBeGreaterThanOrEqual(MARKER_SIZE / 2);
         expect(placement.x).toBeLessThanOrEqual(width - MARKER_SIZE / 2);

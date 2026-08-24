@@ -1,5 +1,5 @@
 import { Building2, FileDown, MapPin, Printer, UsersRound } from "lucide-react";
-import { displayValue, formatMoney, formatNumber, typeClass } from "../lib/format";
+import { displayValue, formatMoney, formatNumber, isConstructionStatus, statusClass, typeClass } from "../lib/format";
 import type { HealthUnit } from "../types";
 
 type Props = {
@@ -13,13 +13,16 @@ function DetailBlock({ title, children }: { title: string; children: React.React
 }
 
 export function TechnicalSheetView({ units, selected, onSelect }: Props) {
+  const isConstruction = isConstructionStatus(selected.status);
+  const displayedBeds = isConstruction ? selected.plannedBeds : selected.beds;
+  const displayedInvestment = isConstruction ? selected.constructionInvestment : selected.managementInvestment;
   return (
     <div className="technical-page">
       <div className="sheet-toolbar">
         <label className="field sheet-selector" htmlFor="sheet-unit">
           <span>Selecionar unidade</span>
           <select id="sheet-unit" value={selected.id} onChange={(event) => onSelect(event.target.value)}>
-            {units.map((unit) => <option key={unit.id} value={unit.id}>{unit.name} · {unit.municipality}</option>)}
+            {units.map((unit) => <option key={unit.id} value={unit.id}>{unit.name} · {unit.municipality} · {unit.status}</option>)}
           </select>
         </label>
         <button type="button" className="button primary" onClick={() => window.print()}><Printer size={18} /> Imprimir / salvar PDF</button>
@@ -28,7 +31,7 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
       <article className="technical-sheet">
         <header className="sheet-identity">
           <div className="sheet-title">
-            <div className="sheet-marks"><span className={`type-badge ${typeClass(selected.type)}`}>{selected.type}</span><span>{displayValue(selected.status)}</span></div>
+            <div className="sheet-marks"><span className={`type-badge ${typeClass(selected.type)}`}>{selected.type}</span><span className={`status-badge ${statusClass(selected.status)}`}>{selected.status}</span></div>
             <h2>{selected.name}</h2>
             <p><MapPin size={17} /> {selected.municipality} · {selected.rd} · {selected.geres} GERES</p>
             <address>{displayValue(selected.address)}</address>
@@ -37,14 +40,14 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
         </header>
 
         <section className="sheet-kpis">
-          <div><Building2 size={22} /><span>Leitos</span><strong>{selected.beds === null ? "Não informado" : formatNumber(selected.beds)}</strong></div>
+          <div><Building2 size={22} /><span>{isConstruction ? "Leitos previstos" : "Leitos em funcionamento"}</span><strong>{displayedBeds === null ? "Não informado" : formatNumber(displayedBeds)}</strong></div>
           <div><UsersRound size={22} /><span>Tipo de gestão</span><strong>{displayValue(selected.managementType)}</strong></div>
           <div><span>Gestão</span><strong>{displayValue(selected.management)}</strong><small>{selected.type}</small></div>
-          <div><span>Investimento na gestão</span><strong>{formatMoney(selected.managementInvestment, true)}</strong><small>valor disponível na base</small></div>
+          <div><span>{isConstruction ? "Investimento para obra e equipagem" : "Investimento na gestão"}</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>{isConstruction ? (displayedInvestment.amount === null ? "situação registrada na base da obra" : "valor informado para a obra") : "valor disponível na base"}</small></div>
         </section>
 
         <div className="sheet-content-grid">
-          <DetailBlock title="Perfil assistencial"><p className="long-copy">{displayValue(selected.profile)}</p></DetailBlock>
+          <DetailBlock title={isConstruction ? "Perfil assistencial previsto" : "Perfil assistencial"}><p className="long-copy">{displayValue(selected.profile)}</p></DetailBlock>
           <DetailBlock title="Território e gestão">
             <dl className="detail-list">
               <div><dt>Município</dt><dd>{selected.municipality}</dd></div>
@@ -55,10 +58,10 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
               <div><dt>Gestão</dt><dd>{displayValue(selected.management)}</dd></div>
             </dl>
           </DetailBlock>
-          <DetailBlock title="Recursos e manutenção">
+          <DetailBlock title={isConstruction ? "Obra e recursos previstos" : "Recursos e manutenção"}>
             <dl className="detail-list">
               <div><dt>Contrato de manutenção predial</dt><dd>{formatMoney(selected.maintenanceContract)}</dd></div>
-              <div><dt>Investimento nesta gestão</dt><dd>{formatMoney(selected.managementInvestment)}</dd></div>
+              <div><dt>{isConstruction ? "Investimento para obra e equipagem" : "Investimento nesta gestão"}</dt><dd>{formatMoney(displayedInvestment)}</dd></div>
               <div><dt>Profissionais</dt><dd>{displayValue(selected.professionals)}</dd></div>
               <div><dt>Profissionais convocados</dt><dd>{displayValue(selected.calledProfessionals)}</dd></div>
             </dl>
@@ -68,6 +71,7 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
 
         <footer className="sheet-footer">
           <span>Fonte: {selected.source.sheet} · linha {selected.source.row}</span>
+          {selected.source.supplemental && <span>Complemento: {selected.source.supplemental.sheet} · linha {selected.source.supplemental.row}</span>}
           <span>Posição no mapa em nível municipal</span>
           {selected.enrichment.municipalityCorrected && <span>Município normalizado e documentado</span>}
         </footer>
