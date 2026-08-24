@@ -8,7 +8,7 @@ Primeira versão funcional de um portal para consulta das unidades de saúde pre
 - Busca textual por unidade, endereço, município, RD e GERES.
 - Filtros específicos de município, RD, GERES e tipo.
 - Tabela com os campos solicitados e exportação CSV.
-- Mapa offline de Pernambuco com símbolos e cores por tipo de unidade.
+- Mapa offline de Pernambuco com símbolos por tipo, distribuição anticolisão e vínculo visual ao município.
 - Ficha técnica individual com impressão ou salvamento em PDF pelo navegador.
 - Pipeline reproduzível da planilha para JSON, com relatório de qualidade e correções auditáveis.
 - Layout responsivo inspirado em `C:\workspace\ips`.
@@ -46,7 +46,7 @@ O pipeline usa a aba `0_Template_Cod_Mun_RD` da própria planilha para preencher
 
 ## Limitações conhecidas da fonte
 
-- A planilha não contém latitude e longitude. O mapa posiciona os símbolos no centro visual do município e declara essa limitação na interface.
+- A planilha não contém latitude e longitude. O mapa organiza os símbolos em uma grade esquemática sem sobreposição e usa linhas-guia até o centro visual do município; a interface declara que isso não representa o endereço da unidade.
 - Oito unidades da aba `UNIDADES EM CONSTRUÇÃO` não integram o `Consolidado` e ficaram fora desta primeira versão.
 - Contrato de manutenção está preenchido em apenas 16 das 65 unidades.
 - Leitos são numéricos em 50 unidades; UPAEs usam `-` na fonte.

@@ -911,11 +911,17 @@ b {
 
 .map-frame {
   min-height: 470px;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   margin-top: 18px;
   padding: 20px 10px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-color: #8299a8 transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
   border: 1px solid #d4dee6;
   border-radius: 10px;
   background: #eef3f6;
@@ -924,11 +930,14 @@ b {
 .map-stage {
   position: relative;
   width: 100%;
+  flex: 1 0 100%;
+  isolation: isolate;
 }
 
 .pe-network-map {
   position: absolute;
   inset: 0;
+  z-index: 0;
   width: 100%;
   height: 100%;
   overflow: visible;
@@ -953,6 +962,15 @@ b {
   font-weight: 800;
 }
 
+.map-inset.is-active rect {
+  stroke: #006591;
+  stroke-width: 1.5;
+}
+
+.map-inset.is-active path {
+  fill: #86bdd2;
+}
+
 .municipality-layer path {
   fill: #dfe6eb;
   stroke: #f8fafc;
@@ -964,9 +982,52 @@ b {
   fill: #c5dce8;
 }
 
+.municipality-layer path.is-active {
+  fill: #86bdd2;
+  stroke: #006591;
+  stroke-width: 1.5;
+}
+
+.map-leader-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.map-leader-layer line {
+  stroke: #647d8d;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.68;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-leader-layer circle {
+  fill: #fff;
+  stroke: #647d8d;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-leader-layer .is-active line {
+  stroke: #006591;
+  stroke-width: 1.5;
+  opacity: 1;
+}
+
+.map-leader-layer .is-active circle {
+  fill: #006591;
+  stroke: #fff;
+}
+
 .map-marker-overlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -993,7 +1054,13 @@ b {
 
 .map-marker:hover,
 .map-marker.active {
+  z-index: 2;
   background: rgba(255, 255, 255, 0.82);
+}
+
+.map-marker:focus-visible {
+  z-index: 3;
+  background: #fff;
 }
 
 .map-marker:hover > svg,
@@ -1363,6 +1430,16 @@ b {
 @media (prefers-reduced-motion: no-preference) {
   .map-marker {
     animation: marker-arrive 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@media (max-width: 1600px) {
+  .map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .map-detail {
+    position: static;
   }
 }
 

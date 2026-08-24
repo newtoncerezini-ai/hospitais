@@ -19,11 +19,11 @@ The workbook is the factual source. The first release publishes 65 active record
 
 ## Constraints
 
-Inherit the institutional shell and visual language of `C:\workspace\ips`. No coordinates exist, so map markers are municipal-level. Never imply exact address positioning. Preserve print legibility, keyboard operation and mobile access.
+Inherit the institutional shell and visual language of `C:\workspace\ips`. No coordinates exist, so map markers are municipal-level. Never imply exact address positioning. Markers are grouped by municipality and type, packed on a deterministic 52 px grid and connected to a municipal anchor; narrow screens use a horizontally scrollable cartographic stage instead of shrinking the 46 px targets. Preserve print legibility, keyboard operation and mobile access.
 
 ## Direction and memorable moment
 
-An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dense but controlled list, a symbol-coded Pernambuco map and a document-like technical sheet. The memorable interaction is moving from a municipal type marker or table row directly into the same printable facility record.
+An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dense but controlled list, a symbol-coded Pernambuco map and a document-like technical sheet. The map reads as a municipal constellation: compact symbol bouquets remain legible while fine leader lines make their territorial anchors explicit. The memorable interaction is moving from a municipal type marker or table row directly into the same printable facility record.
 
 ## Unresolved decisions
 
