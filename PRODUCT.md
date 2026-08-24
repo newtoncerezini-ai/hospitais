@@ -31,7 +31,7 @@ The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` 
 - List facilities with status, municipality, address, operational or planned beds, profile, type, management type, management body, RD, GERES, maintenance contract, applicable investment and main advances.
 - Search by facility, municipality, RD and GERES; filter by those territorial fields, type and status.
 - Generate a printable technical sheet per facility.
-- Show an offline Pernambuco map with markers classified by facility type, grouped by municipality, type and status. A dashed outline identifies facilities under construction without changing the type color.
+- Show an offline Pernambuco map with one marker anchored inside each municipality. Ring segments summarize the local facility-type mix, the center shows the facility count, and a dashed outline indicates that the municipality has a construction project.
 - The source workbook has no latitude/longitude. The first map therefore positions facilities at municipality level and must say so explicitly.
 - Keep operational capacity separate from planned capacity: 6,796 operational beds in 50 operating facilities and 861 planned beds in 5 construction projects.
 - Preserve the source type distribution: Hospital 40, UPA 14, UPAE 15 and UPAE-R 4.

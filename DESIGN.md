@@ -207,7 +207,7 @@ The palette combines institutional navy and functional cyan with cool paper neut
 
 **The Classification Is Semantic Rule.** Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.
 
-**The Status Is Orthogonal Rule.** Status never replaces facility classification. Green or ochre badges and the construction marker's dashed contour communicate lifecycle state while the marker fill continues to encode type.
+**The Status Is Orthogonal Rule.** Status never replaces facility classification. Green or ochre badges and the municipal marker's dashed contour communicate lifecycle state while its ring continues to encode the local type mix.
 
 ## Typography
 
@@ -293,7 +293,7 @@ The table is a dense comparison surface: 13px cells, uppercase 11px headers, hor
 
 ### Map Markers
 
-Markers use distinct geometry as well as color: Hospital is a rounded square, UPA a diamond, UPAE a circle, and UPAE-R a hexagon. Groups are keyed by municipality, type and status; construction groups add a dashed ochre contour without changing the type fill. Hover and active states add a translucent white target, compact lift, and 1.12 scale; arrival motion is suppressed for reduced-motion users.
+Each municipality uses one circular marker anchored at a verified interior point. Colored ring segments summarize the local mix of Hospital, UPA, UPAE and UPAE-R; the center shows the total number of units. A dashed ochre outer contour indicates that at least one local unit is under construction. The visible glyph adapts to the polygon's internal clearance while retaining a 44px interaction target. The corresponding municipality polygon is also interactive and receives the same selected state; arrival motion is suppressed for reduced-motion users.
 
 ### Technical Sheet
 
@@ -307,8 +307,8 @@ The printable record combines a pale identity band, an institutional-navy docume
 
 - **Do** use borders and cool tonal shifts before adding shadow.
 - **Do** keep cyan scarce and functional: actions, active states, focus, and meaningful data emphasis.
-- **Do** preserve the facility-type color and geometry mapping across badges, charts, legends, and map markers.
-- **Do** keep status orthogonal to type and use the dashed contour consistently for construction markers.
+- **Do** preserve the facility-type color mapping across badges, charts, legends, and map-marker segments.
+- **Do** keep status orthogonal to type and use the dashed contour consistently when a municipality has construction.
 - **Do** use tabular numerals for counts, beds, currency, and aligned comparisons.
 - **Do** keep the technical sheet legible as a stacked mobile view and as an A4 print document.
 

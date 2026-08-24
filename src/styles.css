@@ -1058,10 +1058,16 @@ b {
   fill: #86bdd2;
 }
 
+.map-inset.is-interactive,
+.municipality-layer path.is-interactive {
+  cursor: pointer;
+}
+
 .municipality-layer path {
   fill: #dfe6eb;
   stroke: #f8fafc;
   stroke-width: 0.75;
+  transition: fill 140ms ease, stroke 140ms ease;
   vector-effect: non-scaling-stroke;
 }
 
@@ -1075,42 +1081,6 @@ b {
   stroke-width: 1.5;
 }
 
-.map-leader-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-}
-
-.map-leader-layer line {
-  stroke: #647d8d;
-  stroke-width: 1;
-  stroke-dasharray: 3 3;
-  opacity: 0.68;
-  vector-effect: non-scaling-stroke;
-}
-
-.map-leader-layer circle {
-  fill: #fff;
-  stroke: #647d8d;
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.map-leader-layer .is-active line {
-  stroke: #006591;
-  stroke-width: 1.5;
-  opacity: 1;
-}
-
-.map-leader-layer .is-active circle {
-  fill: #006591;
-  stroke: #fff;
-}
-
 .map-marker-overlay {
   position: absolute;
   inset: 0;
@@ -1118,10 +1088,10 @@ b {
   pointer-events: none;
 }
 
-.map-marker {
+.municipality-marker {
   position: absolute;
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   display: grid;
   place-items: center;
   padding: 0;
@@ -1132,57 +1102,64 @@ b {
   pointer-events: auto;
 }
 
-.map-marker > svg {
-  position: relative;
-  z-index: 1;
-  width: 22px;
-  height: 22px;
+.municipality-marker-glyph {
+  width: var(--marker-visual-size, 32px);
+  height: var(--marker-visual-size, 32px);
   overflow: visible;
-  transition: filter 150ms ease, transform 150ms ease;
+  transition: filter 150ms ease;
 }
 
-.map-marker.is-construction::before {
-  position: absolute;
-  inset: 5px;
-  border: 2px dashed var(--status-construction);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--status-construction-soft) 62%, transparent);
-  content: "";
+.municipality-marker-track,
+.municipality-marker-segment,
+.municipality-marker-construction {
+  fill: none;
 }
 
-.map-marker:hover,
-.map-marker.active {
+.municipality-marker-track {
+  stroke: #d4dee6;
+  stroke-width: 5;
+}
+
+.municipality-marker-segment {
+  stroke-width: 5;
+}
+
+.municipality-marker-construction {
+  stroke: var(--status-construction);
+  stroke-width: 1.8;
+  stroke-dasharray: 3 2.2;
+}
+
+.municipality-marker-core {
+  fill: #10243a;
+  stroke: #fff;
+  stroke-width: 1;
+}
+
+.municipality-marker-count {
+  fill: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.municipality-marker:hover,
+.municipality-marker.active {
   z-index: 2;
-  background: rgba(255, 255, 255, 0.82);
 }
 
-.map-marker:focus-visible {
+.municipality-marker:focus-visible {
   z-index: 3;
   background: #fff;
 }
 
-.map-marker:hover > svg,
-.map-marker.active > svg {
+.municipality-marker:hover .municipality-marker-glyph,
+.municipality-marker.active .municipality-marker-glyph {
   filter: drop-shadow(0 4px 5px rgba(15, 35, 54, 0.3));
-  transform: scale(1.12);
 }
 
-.map-marker > span {
-  position: absolute;
-  z-index: 2;
-  top: 2px;
-  right: 1px;
-  min-width: 17px;
-  height: 17px;
-  display: grid;
-  place-items: center;
-  padding-inline: 4px;
-  border: 1px solid #fff;
-  border-radius: 99px;
-  background: #10243a;
-  color: #fff;
-  font-size: 9px;
-  font-weight: 900;
+.municipality-marker.is-compact .municipality-marker-count {
+  display: none;
 }
 
 .map-disclaimer {
@@ -1264,7 +1241,14 @@ b {
   gap: 7px;
 }
 
-.map-unit-list .status-badge {
+.map-unit-badges {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 6px !important;
+}
+
+.map-unit-list .status-badge,
+.map-unit-list .type-badge {
   width: max-content;
 }
 
@@ -1537,7 +1521,7 @@ b {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .map-marker {
+  .municipality-marker {
     animation: marker-arrive 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
@@ -1963,11 +1947,11 @@ b {
   }
 
   .loading-mark,
-  .map-marker {
+  .municipality-marker {
     animation: none;
   }
 
-  .map-marker > svg,
+  .municipality-marker-glyph,
   .nav-list button {
     transition: none;
   }

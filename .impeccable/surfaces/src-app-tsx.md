@@ -19,11 +19,11 @@ The workbook is the factual source. The published dataset combines `Consolidado`
 
 ## Constraints
 
-Inherit the institutional shell and visual language of `C:\workspace\ips`. No coordinates exist, so map markers are municipal-level. Never imply exact address positioning. Markers are grouped by municipality, type and status, packed on a deterministic 52 px grid and connected to a municipal anchor; construction markers use a dashed outline while retaining their source type color. Narrow screens use a horizontally scrollable cartographic stage instead of shrinking the 46 px targets. Preserve print legibility, keyboard operation and mobile access.
+Inherit the institutional shell and visual language of `C:\workspace\ips`. No coordinates exist, so map markers are municipal-level. Never imply exact address positioning. Use one marker per municipality, placed at a verified interior point and visually sized to the space available without reducing its 44 px interaction target. Ring segments summarize the local type mix, the center shows the unit count, and a dashed outline indicates the presence of construction. The municipality polygon and marker must resolve to the same municipal detail. Preserve print legibility, keyboard operation and mobile access.
 
 ## Direction and memorable moment
 
-An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dense but controlled status-aware list, a symbol-coded Pernambuco map and a document-like technical sheet. The map reads as a municipal constellation: compact symbol bouquets remain legible while fine leader lines make their territorial anchors explicit, and dashed contours distinguish works in progress. The memorable interaction is moving from a municipal type-and-status marker or table row directly into the same printable facility record.
+An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dense but controlled status-aware list, a symbol-coded Pernambuco map and a document-like technical sheet. The map reads as a municipal constellation: each attended territory owns a single compact marker whose ring shows its type mix, while a dashed contour flags municipalities with works in progress. The memorable interaction is moving from a municipal marker, territory or table row directly into the same printable facility record.
 
 ## Unresolved decisions
 

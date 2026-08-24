@@ -137,7 +137,7 @@
     "rules": [
       { "name": "The Cyan Means Action Rule", "body": "Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.", "section": "colors" },
       { "name": "The Classification Is Semantic Rule", "body": "Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.", "section": "colors" },
-      { "name": "The Status Is Orthogonal Rule", "body": "Status never replaces facility classification. Green or ochre badges and the construction marker's dashed contour communicate lifecycle state while the marker fill continues to encode type.", "section": "colors" },
+      { "name": "The Status Is Orthogonal Rule", "body": "Status never replaces facility classification. Green or ochre badges and the municipal marker's dashed contour communicate lifecycle state while its ring continues to encode the local type mix.", "section": "colors" },
       { "name": "The Administrative Scan Rule", "body": "Labels are small, uppercase, tracked, and heavy; values remain mixed case and larger so a user can separate category from fact at a glance.", "section": "typography" },
       { "name": "The Numbers Align Rule", "body": "Counts, currency, beds, and other comparable quantities use tabular numerals.", "section": "typography" },
       { "name": "The Executive Shell Rule", "body": "Preserve the 280px institutional navigation anchor on wide screens and the continuous summary rail before introducing page-specific composition.", "section": "layout" },
@@ -148,8 +148,8 @@
     "dos": [
       "Do use borders and cool tonal shifts before adding shadow.",
       "Do keep cyan scarce and functional: actions, active states, focus, and meaningful data emphasis.",
-      "Do preserve the facility-type color and geometry mapping across badges, charts, legends, and map markers.",
-      "Do keep status orthogonal to type and use the dashed contour consistently for construction markers.",
+      "Do preserve the facility-type color mapping across badges, charts, legends, and map-marker segments.",
+      "Do keep status orthogonal to type and use the dashed contour consistently when a municipality has construction.",
       "Do use tabular numerals for counts, beds, currency, and aligned comparisons.",
       "Do keep the technical sheet legible as a stacked mobile view and as an A4 print document."
     ],

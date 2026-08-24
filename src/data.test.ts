@@ -62,9 +62,9 @@ describe("base publicada", () => {
     expect(constructionUnits.every((unit) => unit.source.supplemental?.sheet === "UNIDADES EM CONSTRUÇÃO")).toBe(true);
     expect(constructionUnits.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0)).toBe(861);
 
-    const allMapGroups = new Set(data.units.map((unit) => `${unit.ibgeCode}:${unit.type}:${unit.status}`));
-    const constructionMapGroups = new Set(constructionUnits.map((unit) => `${unit.ibgeCode}:${unit.type}:${unit.status}`));
-    expect(allMapGroups.size).toBe(50);
-    expect(constructionMapGroups.size).toBe(7);
+    const allMapMunicipalities = new Set(data.units.map((unit) => unit.ibgeCode));
+    const constructionMapMunicipalities = new Set(constructionUnits.map((unit) => unit.ibgeCode));
+    expect(allMapMunicipalities.size).toBe(25);
+    expect(constructionMapMunicipalities.size).toBe(6);
   });
 });

@@ -9,8 +9,8 @@ import {
 import type { View } from "../types";
 
 const navItems: Array<{ view: View; label: string; icon: typeof LayoutDashboard }> = [
-  { view: "overview", label: "Visão geral", icon: LayoutDashboard },
   { view: "units", label: "Unidades de saúde", icon: Building2 },
+  { view: "overview", label: "Visão geral", icon: LayoutDashboard },
   { view: "map", label: "Mapa da rede", icon: MapPinned },
   { view: "technical", label: "Ficha técnica", icon: ClipboardList },
 ];

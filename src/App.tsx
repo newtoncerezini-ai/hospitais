@@ -14,7 +14,7 @@ export default function App() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [view, setView] = useState<View>("overview");
+  const [view, setView] = useState<View>("units");
   const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
