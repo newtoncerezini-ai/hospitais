@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-24T19:09:19.8573837Z",
+  "title": "Design System: Institutional Clarity",
+  "extensions": {
+    "colorMeta": {
+      "institutional-navy": { "role": "primary", "displayName": "Institutional Navy", "canonical": "#0b1c30", "tonalRamp": ["oklch(15% 0.045 253.8)", "oklch(25% 0.045 253.8)", "oklch(35% 0.045 253.8)", "oklch(45% 0.045 253.8)", "oklch(55% 0.045 253.8)", "oklch(65% 0.045 253.8)", "oklch(80% 0.045 253.8)", "oklch(95% 0.045 253.8)"] },
+      "institutional-navy-soft": { "role": "primary", "displayName": "Soft Institutional Navy", "canonical": "#122a46", "tonalRamp": ["oklch(15% 0.060 253.7)", "oklch(25% 0.060 253.7)", "oklch(35% 0.060 253.7)", "oklch(45% 0.060 253.7)", "oklch(55% 0.060 253.7)", "oklch(65% 0.060 253.7)", "oklch(80% 0.060 253.7)", "oklch(95% 0.060 253.7)"] },
+      "functional-cyan": { "role": "primary", "displayName": "Functional Cyan", "canonical": "#0ea5e9", "tonalRamp": ["oklch(15% 0.148 237.3)", "oklch(25% 0.148 237.3)", "oklch(35% 0.148 237.3)", "oklch(45% 0.148 237.3)", "oklch(55% 0.148 237.3)", "oklch(65% 0.148 237.3)", "oklch(80% 0.148 237.3)", "oklch(95% 0.148 237.3)"] },
+      "action-blue": { "role": "primary", "displayName": "Action Blue", "canonical": "#006591", "tonalRamp": ["oklch(15% 0.105 237.1)", "oklch(25% 0.105 237.1)", "oklch(35% 0.105 237.1)", "oklch(45% 0.105 237.1)", "oklch(55% 0.105 237.1)", "oklch(65% 0.105 237.1)", "oklch(80% 0.105 237.1)", "oklch(95% 0.105 237.1)"] },
+      "analytical-white": { "role": "neutral", "displayName": "Analytical White", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0.000 89.9)", "oklch(25% 0.000 89.9)", "oklch(35% 0.000 89.9)", "oklch(45% 0.000 89.9)", "oklch(55% 0.000 89.9)", "oklch(65% 0.000 89.9)", "oklch(80% 0.000 89.9)", "oklch(95% 0.000 89.9)"] },
+      "canvas-mist": { "role": "neutral", "displayName": "Canvas Mist", "canonical": "#f5f7f9", "tonalRamp": ["oklch(15% 0.003 247.9)", "oklch(25% 0.003 247.9)", "oklch(35% 0.003 247.9)", "oklch(45% 0.003 247.9)", "oklch(55% 0.003 247.9)", "oklch(65% 0.003 247.9)", "oklch(80% 0.003 247.9)", "oklch(95% 0.003 247.9)"] },
+      "muted-surface": { "role": "neutral", "displayName": "Muted Surface", "canonical": "#edf1f4", "tonalRamp": ["oklch(15% 0.006 239.8)", "oklch(25% 0.006 239.8)", "oklch(35% 0.006 239.8)", "oklch(45% 0.006 239.8)", "oklch(55% 0.006 239.8)", "oklch(65% 0.006 239.8)", "oklch(80% 0.006 239.8)", "oklch(95% 0.006 239.8)"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#191c1e", "tonalRamp": ["oklch(15% 0.006 236.8)", "oklch(25% 0.006 236.8)", "oklch(35% 0.006 236.8)", "oklch(45% 0.006 236.8)", "oklch(55% 0.006 236.8)", "oklch(65% 0.006 236.8)", "oklch(80% 0.006 236.8)", "oklch(95% 0.006 236.8)"] },
+      "secondary-text": { "role": "neutral", "displayName": "Secondary Text", "canonical": "#5b6572", "tonalRamp": ["oklch(15% 0.024 255.0)", "oklch(25% 0.024 255.0)", "oklch(35% 0.024 255.0)", "oklch(45% 0.024 255.0)", "oklch(55% 0.024 255.0)", "oklch(65% 0.024 255.0)", "oklch(80% 0.024 255.0)", "oklch(95% 0.024 255.0)"] },
+      "divider": { "role": "neutral", "displayName": "Divider", "canonical": "#d8e0e7", "tonalRamp": ["oklch(15% 0.013 244.3)", "oklch(25% 0.013 244.3)", "oklch(35% 0.013 244.3)", "oklch(45% 0.013 244.3)", "oklch(55% 0.013 244.3)", "oklch(65% 0.013 244.3)", "oklch(80% 0.013 244.3)", "oklch(95% 0.013 244.3)"] },
+      "divider-soft": { "role": "neutral", "displayName": "Soft Divider", "canonical": "#e9eef2", "tonalRamp": ["oklch(15% 0.008 241.7)", "oklch(25% 0.008 241.7)", "oklch(35% 0.008 241.7)", "oklch(45% 0.008 241.7)", "oklch(55% 0.008 241.7)", "oklch(65% 0.008 241.7)", "oklch(80% 0.008 241.7)", "oklch(95% 0.008 241.7)"] },
+      "hospital-blue": { "role": "secondary", "displayName": "Hospital Blue", "canonical": "#006591", "tonalRamp": ["oklch(15% 0.105 237.1)", "oklch(25% 0.105 237.1)", "oklch(35% 0.105 237.1)", "oklch(45% 0.105 237.1)", "oklch(55% 0.105 237.1)", "oklch(65% 0.105 237.1)", "oklch(80% 0.105 237.1)", "oklch(95% 0.105 237.1)"] },
+      "upa-terracotta": { "role": "secondary", "displayName": "UPA Terracotta", "canonical": "#cf5d32", "tonalRamp": ["oklch(15% 0.156 40.2)", "oklch(25% 0.156 40.2)", "oklch(35% 0.156 40.2)", "oklch(45% 0.156 40.2)", "oklch(55% 0.156 40.2)", "oklch(65% 0.156 40.2)", "oklch(80% 0.156 40.2)", "oklch(95% 0.156 40.2)"] },
+      "upae-violet": { "role": "secondary", "displayName": "UPAE Violet", "canonical": "#7154a8", "tonalRamp": ["oklch(15% 0.131 297.6)", "oklch(25% 0.131 297.6)", "oklch(35% 0.131 297.6)", "oklch(45% 0.131 297.6)", "oklch(55% 0.131 297.6)", "oklch(65% 0.131 297.6)", "oklch(80% 0.131 297.6)", "oklch(95% 0.131 297.6)"] },
+      "upae-r-teal": { "role": "secondary", "displayName": "UPAE-R Teal", "canonical": "#168772", "tonalRamp": ["oklch(15% 0.100 176.0)", "oklch(25% 0.100 176.0)", "oklch(35% 0.100 176.0)", "oklch(45% 0.100 176.0)", "oklch(55% 0.100 176.0)", "oklch(65% 0.100 176.0)", "oklch(80% 0.100 176.0)", "oklch(95% 0.100 176.0)"] },
+      "focus-blue": { "role": "primary", "displayName": "Focus Blue", "canonical": "#0284c7", "tonalRamp": ["oklch(15% 0.139 242.0)", "oklch(25% 0.139 242.0)", "oklch(35% 0.139 242.0)", "oklch(45% 0.139 242.0)", "oklch(55% 0.139 242.0)", "oklch(65% 0.139 242.0)", "oklch(80% 0.139 242.0)", "oklch(95% 0.139 242.0)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Metric", "purpose": "Summary-rail counts and major technical-sheet values." },
+      "headline": { "displayName": "Page Headline", "purpose": "Primary view titles." },
+      "title": { "displayName": "Panel Title", "purpose": "Analytical panel and section headings." },
+      "body": { "displayName": "Compact Body", "purpose": "Administrative prose, field values, and table content." },
+      "action": { "displayName": "Action", "purpose": "Buttons, links, and desktop navigation." },
+      "label": { "displayName": "Administrative Label", "purpose": "Uppercase field names, metadata, table headers, and KPI captions." }
+    },
+    "shadows": [
+      { "name": "field-focus-halo", "value": "0 0 0 2px color-mix(in srgb, var(--focus) 22%, transparent)", "purpose": "Focus feedback around the composite search field." },
+      { "name": "sticky-divider", "value": "1px 0 0 var(--line)", "purpose": "Separates the sticky facility-name column while the table scrolls." },
+      { "name": "marker-lift", "value": "drop-shadow(0 4px 5px rgba(15, 35, 54, 0.3))", "purpose": "Direct-manipulation feedback for hovered and selected map markers." }
+    ],
+    "motion": [
+      { "name": "state-fast", "value": "150ms ease", "purpose": "Navigation color changes and map-marker transform/filter feedback." },
+      { "name": "marker-arrival", "value": "360ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "One-time opacity and blur settling for municipal markers when reduced motion is not requested." },
+      { "name": "loading-spin", "value": "800ms linear infinite", "purpose": "Loading indicator rotation; disabled under reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "filter-reflow", "value": "1280px" },
+      { "name": "shell-collapse", "value": "1040px" },
+      { "name": "mobile-records", "value": "760px" },
+      { "name": "single-column-controls", "value": "460px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The 44px action-blue control used for primary record and print actions.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z\"/></svg>Imprimir / salvar PDF</button>",
+      "css": ".ds-btn-primary { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 16px; border: 0; border-radius: 6px; background: var(--accent-strong); color: #fff; font: 800 14px Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-primary svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-primary:hover { background: #004f73; } .ds-btn-primary:active { background: #003f5c; } .ds-btn-primary:focus-visible { outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A restrained outlined action for exports and secondary operations.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Exportar CSV</button>",
+      "css": ".ds-btn-secondary { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 16px; border: 1px solid #b9c8d3; border-radius: 6px; background: #fff; color: #16324a; font: 800 14px Inter, ui-sans-serif, system-ui, sans-serif; cursor: pointer; } .ds-btn-secondary:hover { background: #f0f6f9; } .ds-btn-secondary:active { background: #e5eff4; } .ds-btn-secondary:focus-visible { outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "button-icon",
+      "description": "The compact square affordance used to open a facility record from the table.",
+      "html": "<button class=\"ds-btn-icon\" type=\"button\" aria-label=\"Abrir ficha\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></button>",
+      "css": ".ds-btn-icon { width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 6px; background: #e5f2f8; color: var(--accent-strong); cursor: pointer; } .ds-btn-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-btn-icon:hover { background: #cfe7f3; } .ds-btn-icon:active { background: #bddce9; } .ds-btn-icon:focus-visible { outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "A compact pale search field with icon, explicit label, and focus halo.",
+      "html": "<label class=\"ds-search\"><span>Unidade de saúde</span><span class=\"ds-search-control\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.35-4.35\"/></svg><input type=\"search\" placeholder=\"Nome, endereço, município, RD ou GERES\"></span></label>",
+      "css": ".ds-search { width: min(420px, 100%); display: grid; gap: 7px; color: #43515d; font: 850 11px Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: .045em; text-transform: uppercase; } .ds-search-control { min-height: 44px; display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 1px solid #bfcbd5; border-radius: 6px; background: #f8fafb; color: #577084; } .ds-search-control:hover { border-color: #9fb1be; } .ds-search-control:focus-within { border-color: var(--focus); box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 22%, transparent); } .ds-search-control svg { width: 18px; height: 18px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; } .ds-search-control input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #172a3c; font: 400 14px Inter, ui-sans-serif, system-ui, sans-serif; text-transform: none; letter-spacing: normal; } .ds-search-control input::placeholder { color: #667887; }"
+    },
+    {
+      "name": "Institutional Navigation",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Deep-navy navigation with ghost, hover, and luminous active states.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Navegação principal\"><button class=\"ds-nav-item ds-active\" type=\"button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\"/></svg><span>Visão geral</span></button><button class=\"ds-nav-item\" type=\"button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6\"/></svg><span>Unidades de saúde</span></button></nav>",
+      "css": ".ds-nav { width: 240px; display: grid; gap: 5px; padding: 10px; background: var(--navy); } .ds-nav-item { min-height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 13px; border: 0; border-radius: 7px; background: transparent; color: #b9cbd9; font: 700 14px Inter, ui-sans-serif, system-ui, sans-serif; text-align: left; cursor: pointer; transition: background-color 150ms ease, color 150ms ease; } .ds-nav-item svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-nav-item:hover { background: #102944; color: #fff; } .ds-nav-item.ds-active { background: #16415f; color: #8bddff; } .ds-nav-item:active { background: #1a4b6e; } .ds-nav-item:focus-visible { outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Analytical Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "A flat white data container defined by a cool divider and 12px corners.",
+      "html": "<section class=\"ds-panel\"><header><h2>Composição da rede</h2><p>As unidades ativas distribuídas por tipo assistencial.</p></header><div class=\"ds-panel-row\"><span>Hospital</span><strong>32</strong></div></section>",
+      "css": ".ds-panel { width: min(460px, 100%); padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-panel h2 { margin: 0 0 5px; color: #10243a; font-size: 21px; line-height: 1.3; letter-spacing: -.015em; } .ds-panel p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; } .ds-panel-row { display: flex; justify-content: space-between; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--line-soft); color: #3e4f5c; font-size: 14px; } .ds-panel:hover { border-color: #c6d4de; } .ds-panel:focus-within { outline: 3px solid color-mix(in srgb, var(--focus) 40%, transparent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Facility Type Badges",
+      "kind": "chip",
+      "refersTo": "chip-type",
+      "description": "Pale semantic pills that preserve one color mapping for each facility type.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-hospital\">Hospital</span><span class=\"ds-badge ds-upa\">UPA</span><span class=\"ds-badge ds-upae\">UPAE</span><span class=\"ds-badge ds-upaer\">UPAE-R</span></div>",
+      "css": ".ds-badges { display: flex; flex-wrap: wrap; gap: 8px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-badge { min-height: 26px; display: inline-flex; align-items: center; justify-content: center; padding: 0 9px; border-radius: 999px; font-size: 11px; font-weight: 850; white-space: nowrap; } .ds-hospital { background: #d9edf6; color: #00537a; } .ds-upa { background: #fae4dc; color: #93401f; } .ds-upae { background: #ebe5f7; color: #593b91; } .ds-upaer { background: #d9f0ea; color: #0c6958; }"
+    },
+    {
+      "name": "Summary Metric Rail",
+      "kind": "custom",
+      "refersTo": "summary-metric",
+      "description": "Connected executive metrics separated by dividers rather than floating cards.",
+      "html": "<section class=\"ds-summary\"><article><span>Unidades ativas</span><strong>65</strong><small>na base consolidada</small></article><article><span>Municípios</span><strong>39</strong><small>com presença da rede</small></article></section>",
+      "css": ".ds-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: hidden; border: 1px solid #cfd9e2; border-radius: 12px; background: #fff; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-summary article { min-height: 150px; display: grid; align-content: center; gap: 7px; padding: 24px 26px; border-right: 1px solid var(--line-soft); } .ds-summary article:last-child { border-right: 0; } .ds-summary span { color: var(--muted); font-size: 12px; font-weight: 850; letter-spacing: .045em; text-transform: uppercase; } .ds-summary strong { overflow: hidden; color: #0b1725; font-size: clamp(30px, 3.4vw, 47px); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -.03em; text-overflow: ellipsis; } .ds-summary small { color: var(--muted); font-size: 13px; }"
+    },
+    {
+      "name": "Technical Sheet Document Mark",
+      "kind": "custom",
+      "refersTo": "technical-document-mark",
+      "description": "The deep-navy identity block that makes the facility detail read as a printable institutional document.",
+      "html": "<div class=\"ds-document-mark\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M12 18v-6M9 15l3 3 3-3\"/></svg><span>Ficha técnica</span><strong>PE · 2026</strong></div>",
+      "css": ".ds-document-mark { min-width: 158px; min-height: 150px; display: grid; align-content: center; justify-items: start; gap: 7px; padding: 20px; border-radius: 9px; background: var(--navy); color: #fff; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-document-mark svg { width: 23px; height: 23px; fill: none; stroke: #72d5ff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; } .ds-document-mark span { color: #c0d4e2; font-size: 12px; font-weight: 800; text-transform: uppercase; } .ds-document-mark strong { font-size: 18px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Institutional Clarity",
+    "overview": "Institutional Clarity turns a large administrative health dataset into a calm, authoritative instrument for territorial consultation. A deep-blue shell establishes public-sector confidence, while white analytical surfaces, fine dividers, compact Inter typography, and controlled cyan affordances keep attention on facts rather than decoration.\n\nThe system is deliberately dense but never cramped: hierarchy comes from continuous rails, aligned grids, restrained tonal layers, and strongly differentiated labels, metrics, and prose. Its character is precise, transparent, and operational; the same facility identity travels consistently from filters and tables to the municipal map and printable technical sheet.",
+    "keyCharacteristics": [
+      "Deep-navy institutional chrome around white analytical work surfaces.",
+      "Functional cyan reserved for actions, focus, active states, and quantitative emphasis.",
+      "Compact Inter hierarchy with tracked uppercase labels and tabular numerals.",
+      "Divider-led depth, softly precise corners, and almost no ambient shadow.",
+      "Dense desktop grids that become stacked, touch-ready records on small screens."
+    ],
+    "rules": [
+      { "name": "The Cyan Means Action Rule", "body": "Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.", "section": "colors" },
+      { "name": "The Classification Is Semantic Rule", "body": "Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.", "section": "colors" },
+      { "name": "The Administrative Scan Rule", "body": "Labels are small, uppercase, tracked, and heavy; values remain mixed case and larger so a user can separate category from fact at a glance.", "section": "typography" },
+      { "name": "The Numbers Align Rule", "body": "Counts, currency, beds, and other comparable quantities use tabular numerals.", "section": "typography" },
+      { "name": "The Executive Shell Rule", "body": "Preserve the 280px institutional navigation anchor on wide screens and the continuous summary rail before introducing page-specific composition.", "section": "layout" },
+      { "name": "The Flat by Default Rule", "body": "Resting analytical surfaces are separated by tone and border; shadow is reserved for focus, stickiness, or direct manipulation.", "section": "elevation" },
+      { "name": "The Soft Precision Rule", "body": "Radius communicates scale: controls stay compact, panels soften slightly, and only semantic tags or circular controls become fully rounded.", "section": "shapes" },
+      { "name": "The One Record Everywhere Rule", "body": "Table links, mobile cards, and municipal map results all resolve to the same document-like technical sheet.", "section": "components" }
+    ],
+    "dos": [
+      "Do use borders and cool tonal shifts before adding shadow.",
+      "Do keep cyan scarce and functional: actions, active states, focus, and meaningful data emphasis.",
+      "Do preserve the facility-type color and geometry mapping across badges, charts, legends, and map markers.",
+      "Do use tabular numerals for counts, beds, currency, and aligned comparisons.",
+      "Do keep the technical sheet legible as a stacked mobile view and as an A4 print document."
+    ],
+    "donts": [
+      "Don't turn the interface into a field of disconnected floating cards.",
+      "Don't use facility classification colors as general decoration or status colors.",
+      "Don't add ambient shadows to resting panels, tables, or filter groups.",
+      "Don't hide source gaps or imply exact map coordinates where only municipality-level placement exists.",
+      "Don't preserve the wide desktop table on mobile; use the implemented record-card transformation."
+    ]
+  }
+}

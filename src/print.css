@@ -1,0 +1,77 @@
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  :root,
+  body {
+    background: #fff;
+  }
+
+  .sidebar,
+  .topbar,
+  .sheet-toolbar {
+    display: none !important;
+  }
+
+  .app-shell,
+  .main,
+  .content-width,
+  .view-panel,
+  .technical-page {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .technical-sheet {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .sheet-identity {
+    padding: 12mm 10mm;
+    background: #e9ecef !important;
+    print-color-adjust: exact;
+  }
+
+  .sheet-title h2 {
+    font-size: 25pt;
+  }
+
+  .sheet-document-mark {
+    min-height: 32mm;
+    background: #0b1c30 !important;
+    print-color-adjust: exact;
+  }
+
+  .sheet-kpis > div {
+    min-height: 28mm;
+    padding: 5mm;
+    break-inside: avoid;
+  }
+
+  .sheet-kpis strong {
+    font-size: 15pt;
+  }
+
+  .sheet-detail-block {
+    min-height: 0;
+    padding: 7mm;
+    break-inside: avoid;
+  }
+
+  .long-copy,
+  .detail-list dd {
+    font-size: 9pt;
+    line-height: 1.45;
+  }
+
+  .sheet-footer {
+    padding: 4mm 7mm;
+  }
+}
