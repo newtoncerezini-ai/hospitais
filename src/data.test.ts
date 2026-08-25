@@ -82,6 +82,11 @@ describe("base publicada", () => {
     ))).toBe(true);
   });
 
+  it("publica a correção de investimento do Hospital da Restauração", () => {
+    const restauracao = data.units.find((unit) => unit.id === "hospital-da-restauracao-hr");
+    expect(restauracao?.managementInvestment).toEqual({ amount: 173_291_824.2, label: null });
+  });
+
   it("não mistura capacidade e investimento previstos com a rede em funcionamento", () => {
     const activeUnits = data.units.filter((unit) => unit.status === "Em funcionamento");
     const constructionUnits = data.units.filter((unit) => unit.status === "Em construção");
