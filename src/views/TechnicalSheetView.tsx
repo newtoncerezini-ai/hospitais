@@ -16,6 +16,11 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
   const isConstruction = isConstructionStatus(selected.status);
   const displayedBeds = isConstruction ? selected.plannedBeds : selected.beds;
   const displayedInvestment = isConstruction ? selected.constructionInvestment : selected.managementInvestment;
+  const hasBedExpansion = !isConstruction && (
+    selected.bedsOpenedInManagement !== null
+    || selected.openedBedTypes !== null
+    || selected.bedsToOpenAfterRenovation !== null
+  );
   return (
     <div className="technical-page">
       <div className="sheet-toolbar">
@@ -47,6 +52,17 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
         </section>
 
         <div className="sheet-content-grid">
+          {hasBedExpansion && (
+            <section className="sheet-detail-block bed-evolution-block">
+              <h2>Expansão de leitos nesta gestão</h2>
+              <dl className="detail-list">
+                <div><dt>Leitos abertos nesta gestão</dt><dd>{selected.bedsOpenedInManagement === null ? "Não informado" : formatNumber(selected.bedsOpenedInManagement)}</dd></div>
+                <div><dt>Tipos de leitos abertos</dt><dd>{displayValue(selected.openedBedTypes)}</dd></div>
+                <div><dt>Leitos a abrir com o fim das reformas</dt><dd>{selected.bedsToOpenAfterRenovation === null ? "Não informado" : formatNumber(selected.bedsToOpenAfterRenovation)}</dd></div>
+              </dl>
+              <p className="bed-evolution-note">Indicadores de expansão: não são somados automaticamente aos leitos atualmente em funcionamento.</p>
+            </section>
+          )}
           <DetailBlock title={isConstruction ? "Perfil assistencial previsto" : "Perfil assistencial"}><p className="long-copy">{displayValue(selected.profile)}</p></DetailBlock>
           <DetailBlock title="Território e gestão">
             <dl className="detail-list">

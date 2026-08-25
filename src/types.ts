@@ -22,6 +22,9 @@ export type HealthUnit = {
   management: string | null;
   beds: number | null;
   plannedBeds: number | null;
+  bedsOpenedInManagement: number | null;
+  openedBedTypes: string | null;
+  bedsToOpenAfterRenovation: number | null;
   profile: string | null;
   professionals: string | null;
   calledProfessionals: number | null;
@@ -81,6 +84,10 @@ export type DashboardData = {
     unitsWithBeds: number;
     plannedBeds: number;
     constructionUnitsWithBeds: number;
+    bedsOpenedInManagement: number;
+    unitsWithBedsOpenedInManagement: number;
+    bedsToOpenAfterRenovation: number;
+    unitsWithBedsToOpenAfterRenovation: number;
     typeCounts: Record<string, number>;
     typeCountsByStatus: Record<string, Record<string, number>>;
     statusCounts: Record<string, number>;

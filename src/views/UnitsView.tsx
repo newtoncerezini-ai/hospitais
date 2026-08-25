@@ -13,6 +13,17 @@ type Props = {
 
 const cellText = (value: string | null) => <span className="clamped-cell" title={value ?? "Não informado"}>{displayValue(value)}</span>;
 
+const bedExpansionCell = (unit: HealthUnit) => {
+  if (unit.bedsOpenedInManagement === null && unit.bedsToOpenAfterRenovation === null) return "Não informado";
+  return (
+    <div className="bed-expansion-cell">
+      {unit.bedsOpenedInManagement !== null && <span><b>{unit.bedsOpenedInManagement}</b> abertos na gestão</span>}
+      {unit.bedsToOpenAfterRenovation !== null && <span><b>{unit.bedsToOpenAfterRenovation}</b> após reformas</span>}
+      {unit.openedBedTypes && <small title={unit.openedBedTypes}>{unit.openedBedTypes}</small>}
+    </div>
+  );
+};
+
 export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }: Props) {
   return (
     <div className="units-page">
@@ -32,7 +43,7 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
               <table>
                 <thead>
                   <tr>
-                    <th>Unidade de saúde</th><th>Status</th><th>Município</th><th>Endereço</th><th>RD</th><th>GERES</th><th>Leitos em funcionamento</th><th>Leitos previstos</th><th>Perfil</th><th>Tipo</th><th>Tipo de gestão</th><th>Gestão</th><th>Contrato de manutenção</th><th>Investimento na gestão</th><th>Investimento da obra</th><th>Principais avanços</th><th><span className="sr-only">Ações</span></th>
+                    <th>Unidade de saúde</th><th>Status</th><th>Município</th><th>Endereço</th><th>RD</th><th>GERES</th><th>Leitos em funcionamento</th><th>Leitos previstos</th><th>Expansão de leitos</th><th>Perfil</th><th>Tipo</th><th>Tipo de gestão</th><th>Gestão</th><th>Contrato de manutenção</th><th>Investimento na gestão</th><th>Investimento da obra</th><th>Principais avanços</th><th><span className="sr-only">Ações</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -46,6 +57,7 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
                       <td><span className="geres-tag">{unit.geres}</span></td>
                       <td className="numeric-cell">{displayValue(unit.beds)}</td>
                       <td className="numeric-cell">{displayValue(unit.plannedBeds)}</td>
+                      <td>{bedExpansionCell(unit)}</td>
                       <td>{cellText(unit.profile)}</td>
                       <td><span className={`type-badge ${typeClass(unit.type)}`}>{unit.type}</span></td>
                       <td>{displayValue(unit.managementType)}</td>
@@ -79,6 +91,9 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
                     <dl>
                       <div><dt>Perfil</dt><dd>{displayValue(unit.profile)}</dd></div>
                       <div><dt>Tipo de gestão</dt><dd>{displayValue(unit.managementType)}</dd></div>
+                      <div><dt>Leitos abertos nesta gestão</dt><dd>{displayValue(unit.bedsOpenedInManagement)}</dd></div>
+                      <div><dt>Tipos de leitos abertos</dt><dd>{displayValue(unit.openedBedTypes)}</dd></div>
+                      <div><dt>Leitos a abrir após reformas</dt><dd>{displayValue(unit.bedsToOpenAfterRenovation)}</dd></div>
                       <div><dt>Contrato de manutenção</dt><dd>{formatMoney(unit.maintenanceContract)}</dd></div>
                       <div><dt>{isConstructionStatus(unit.status) ? "Investimento para obra e equipagem" : "Investimento na gestão"}</dt><dd>{formatMoney(isConstructionStatus(unit.status) ? unit.constructionInvestment : unit.managementInvestment)}</dd></div>
                       <div><dt>Principais avanços</dt><dd>{displayValue(unit.mainAdvances)}</dd></div>

@@ -234,7 +234,7 @@ The palette combines institutional navy and functional cyan with cool paper neut
 
 The desktop shell is a two-column grid with a sticky 280px sidebar and a fluid main region. Main content is capped at 1620px, centered, and padded by 32px; 24px is the dominant space between major analytical regions. Summary information is presented as a continuous four-cell rail, while overview and map pages use asymmetric content/detail grids.
 
-The units table deliberately preserves data density with a 2740px minimum width, a sticky header, a sticky facility-name column, and a viewport-relative scroll area. Its status, operational-bed, planned-bed, management-investment and construction-investment columns keep unlike measures separate. At 1280px, filters and quality metadata reflow. At 1040px, the sidebar becomes a horizontal header and multi-column panels stack. At 760px, navigation becomes horizontally scrollable, summaries become single-column, the desktop table becomes mobile facility cards, and technical-sheet grids collapse. At 460px, filters and toolbar actions become one column.
+The units table deliberately preserves data density with a 2940px minimum width, a sticky header, a sticky facility-name column, and a viewport-relative scroll area. Its status, operational-bed, planned-bed, compact bed-expansion, management-investment and construction-investment columns keep unlike measures separate. The three expansion fields remain separate in CSV and mobile detail. At 1280px, filters and quality metadata reflow. At 1040px, the sidebar becomes a horizontal header and multi-column panels stack. At 760px, navigation becomes horizontally scrollable, summaries become single-column, the desktop table becomes mobile facility cards, and technical-sheet grids collapse. At 460px, filters and toolbar actions become one column.
 
 Print is a first-class layout: the technical record targets A4 with 10mm page margins, removes application chrome, squares the document container, uses millimeter-based padding, and avoids breaks inside KPI and detail blocks.
 
@@ -289,7 +289,7 @@ GERES, facility type and status badges are compact, strongly weighted pills. Fac
 
 ### Data Tables
 
-The table is a dense comparison surface: 13px cells, uppercase 11px headers, horizontal dividers, a lightly tinted sticky header, a sticky facility-name column, and a subtle row-hover tint. Construction rows receive a restrained ochre tint. Numeric and currency columns use tabular figures, and operational values remain separate from planned construction values.
+The table is a dense comparison surface: 13px cells, uppercase 11px headers, horizontal dividers, a lightly tinted sticky header, a sticky facility-name column, and a subtle row-hover tint. Construction rows receive a restrained ochre tint. Numeric and currency columns use tabular figures. A compact expansion cell groups the two delivery counts for scanning while preserving the bed-type description; operational values remain separate from planned construction and renovation-expansion values.
 
 ### Map Markers
 
@@ -297,7 +297,7 @@ Each municipality uses one circular marker anchored at a verified interior point
 
 ### Technical Sheet
 
-The printable record combines a pale identity band, an institutional-navy document mark, a visible status badge, a continuous KPI grid, and divider-separated detail blocks. It labels beds and investment according to operational or construction status. On narrow screens the identity, KPIs, and details stack; in print, navigation and toolbars disappear and document geometry becomes square.
+The printable record combines a pale identity band, an institutional-navy document mark, a visible status badge, a continuous KPI grid, and divider-separated detail blocks. It labels beds and investment according to operational or construction status. When expansion data exists, a full-width pale analytical block separates beds opened in the administration, their types and beds expected after renovations, with an explicit non-additivity note. On narrow screens the identity, KPIs, and details stack; in print, navigation and toolbars disappear and document geometry becomes square.
 
 **The One Record Everywhere Rule.** Table links, mobile cards, and municipal map results all resolve to the same document-like technical sheet.
 
@@ -316,7 +316,7 @@ The printable record combines a pale identity band, an institutional-navy docume
 
 - **Don't** turn the interface into a field of disconnected floating cards.
 - **Don't** use facility classification colors as general decoration or status colors.
-- **Don't** add operational beds to planned beds or management investment to construction investment.
+- **Don't** add operational beds, construction beds, beds opened during the administration or beds expected after renovations to one another; do not add management investment to construction investment.
 - **Don't** add ambient shadows to resting panels, tables, or filter groups.
 - **Don't** hide source gaps or imply exact map coordinates where only municipality-level placement exists.
 - **Don't** preserve the wide desktop table on mobile; use the implemented record-card transformation.

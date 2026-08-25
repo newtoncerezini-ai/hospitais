@@ -56,6 +56,16 @@ def normalize_status(value: Any) -> str:
     return status or "Não informado"
 
 
+def normalize_unit_type(value: Any) -> str:
+    unit_type = clean_text(value) or "Não informado"
+    normalized_type = normalize(unit_type)
+    if normalized_type in {"upaer", "upaerregional"}:
+        return "UPAE-R"
+    if normalized_type in {"grandeemergencia", "grandesemergencias"}:
+        return "Hospital"
+    return unit_type
+
+
 def parse_integer(value: Any) -> int | None:
     if isinstance(value, bool):
         return None
@@ -394,11 +404,14 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
                 "geres": geres,
                 "address": clean_text(row.get("LOCALIZAÇÃO")),
                 "status": status,
-                "type": (clean_text(row.get("TIPO")) or "Não informado").replace("UPAE/R", "UPAE-R"),
+                "type": normalize_unit_type(row.get("TIPO")),
                 "managementType": clean_text(row.get("TIPO GESTÃO")),
                 "management": clean_text(row.get("GESTÃO")),
                 "beds": None if is_construction else parse_integer(row.get("LEITOS")),
                 "plannedBeds": parse_integer(row.get("LEITOS")) if is_construction else None,
+                "bedsOpenedInManagement": None if is_construction else parse_integer(row.get("LEITOS ABERTOS NESTA GESTÃO")),
+                "openedBedTypes": None if is_construction or not has_substantive_value(row.get("TIPOS DE LEITOS ABERTOS NESTA GESTÃO")) else clean_text(row.get("TIPOS DE LEITOS ABERTOS NESTA GESTÃO")),
+                "bedsToOpenAfterRenovation": None if is_construction else parse_integer(row.get("LEITOS A ABRIR COM O FIM DA REFORMA")),
                 "profile": clean_text(row.get("PERFIL")),
                 "professionals": clean_text(row.get("PROSSIONAIS")),
                 "calledProfessionals": parse_integer(row.get("PROFISSIONAIS CONVOCADOS NA GESTÃO")),
@@ -440,6 +453,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     construction_municipalities = {unit["municipality"] for unit in construction_units}
     operational_beds = [unit["beds"] for unit in active_units if unit["beds"] is not None]
     planned_beds = [unit["plannedBeds"] for unit in construction_units if unit["plannedBeds"] is not None]
+    opened_beds = [unit["bedsOpenedInManagement"] for unit in active_units if unit["bedsOpenedInManagement"] is not None]
+    renovation_beds = [unit["bedsToOpenAfterRenovation"] for unit in active_units if unit["bedsToOpenAfterRenovation"] is not None]
     active_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em funcionamento"]
     construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em construção"]
 
@@ -459,6 +474,9 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "address": source_coverage(raw_rows, "LOCALIZAÇÃO"),
             "operationalBeds": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS")) is not None),
             "plannedBeds": sum(1 for row in construction_source_rows if parse_integer(row.get("LEITOS")) is not None),
+            "bedsOpenedInManagement": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS ABERTOS NESTA GESTÃO")) is not None),
+            "openedBedTypes": source_coverage(active_source_rows, "TIPOS DE LEITOS ABERTOS NESTA GESTÃO"),
+            "bedsToOpenAfterRenovation": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS A ABRIR COM O FIM DA REFORMA")) is not None),
             "operationalProfile": source_coverage(active_source_rows, "PERFIL"),
             "plannedProfile": source_coverage(construction_source_rows, "PERFIL"),
             "maintenanceContract": money_source_coverage(active_source_rows, "CONTRATO DE MANUTENÇÃO PREDIAL"),
@@ -480,6 +498,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "Valores ausentes permanecem nulos e são exibidos como Não informado.",
             "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
             f"{len(construction_units)} unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
+            "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
+            "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
             "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
         ],
         "headers": headers,
@@ -499,6 +519,10 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "unitsWithBeds": len(operational_beds),
             "plannedBeds": sum(planned_beds),
             "constructionUnitsWithBeds": len(planned_beds),
+            "bedsOpenedInManagement": sum(opened_beds),
+            "unitsWithBedsOpenedInManagement": len(opened_beds),
+            "bedsToOpenAfterRenovation": sum(renovation_beds),
+            "unitsWithBedsToOpenAfterRenovation": len(renovation_beds),
             "typeCounts": dict(sorted(type_counts.items())),
             "typeCountsByStatus": type_counts_by_status,
             "statusCounts": dict(status_counts),
@@ -544,6 +568,8 @@ def main() -> None:
                 "municipalities": payload["meta"]["totalMunicipalities"],
                 "operationalBeds": payload["meta"]["totalBeds"],
                 "plannedBeds": payload["meta"]["plannedBeds"],
+                "bedsOpenedInManagement": payload["meta"]["bedsOpenedInManagement"],
+                "bedsToOpenAfterRenovation": payload["meta"]["bedsToOpenAfterRenovation"],
             },
             ensure_ascii=False,
         )

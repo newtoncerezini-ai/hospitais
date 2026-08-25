@@ -156,7 +156,7 @@
     "donts": [
       "Don't turn the interface into a field of disconnected floating cards.",
       "Don't use facility classification colors as general decoration or status colors.",
-      "Don't add operational beds to planned beds or management investment to construction investment.",
+      "Don't add operational beds, construction beds, beds opened during the administration or beds expected after renovations to one another; do not add management investment to construction investment.",
       "Don't add ambient shadows to resting panels, tables, or filter groups.",
       "Don't hide source gaps or imply exact map coordinates where only municipality-level placement exists.",
       "Don't preserve the wide desktop table on mobile; use the implemented record-card transformation."

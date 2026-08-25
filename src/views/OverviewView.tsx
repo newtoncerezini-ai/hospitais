@@ -1,5 +1,5 @@
-import { ArrowRight, Database, HardHat, MapPinned, ShieldCheck } from "lucide-react";
-import { formatNumber, typeClass } from "../lib/format";
+import { ArrowRight, BedDouble, Database, HardHat, MapPinned, ShieldCheck } from "lucide-react";
+import { displayValue, formatNumber, typeClass } from "../lib/format";
 import type { DashboardData, View } from "../types";
 
 type Props = {
@@ -11,6 +11,11 @@ export function OverviewView({ data, onNavigate }: Props) {
   const activeUnits = data.units.filter((unit) => unit.status === "Em funcionamento");
   const activeTypeCounts = data.meta.typeCountsByStatus["Em funcionamento"] ?? {};
   const constructionTypeCounts = data.meta.typeCountsByStatus["Em construção"] ?? {};
+  const expansionUnits = activeUnits.filter(
+    (unit) => unit.bedsOpenedInManagement !== null || unit.bedsToOpenAfterRenovation !== null,
+  ).sort(
+    (first, second) => (second.bedsToOpenAfterRenovation ?? 0) - (first.bedsToOpenAfterRenovation ?? 0),
+  );
   const geresCounts = Object.entries(
     activeUnits.reduce<Record<string, number>>((acc, unit) => {
       acc[unit.geres] = (acc[unit.geres] ?? 0) + 1;
@@ -72,6 +77,29 @@ export function OverviewView({ data, onNavigate }: Props) {
           </div>
         </section>
       </div>
+
+      <section className="panel bed-expansion-panel">
+        <div className="panel-heading">
+          <div><h2>Expansão de leitos</h2><p>Entregas desta gestão e capacidade prevista após reformas, separadas do estoque em funcionamento e das novas obras.</p></div>
+          <BedDouble size={26} aria-hidden="true" />
+        </div>
+        <dl className="bed-expansion-summary">
+          <div><dt>Leitos abertos nesta gestão</dt><dd><b>{formatNumber(data.meta.bedsOpenedInManagement)}</b><small>informados em {data.meta.unitsWithBedsOpenedInManagement} unidades</small></dd></div>
+          <div><dt>Leitos a abrir após reformas</dt><dd><b>{formatNumber(data.meta.bedsToOpenAfterRenovation)}</b><small>informados em {data.meta.unitsWithBedsToOpenAfterRenovation} unidades</small></dd></div>
+        </dl>
+        <div className="bed-expansion-list" role="list" aria-label="Expansão de leitos por unidade">
+          {expansionUnits.map((unit) => (
+            <div className="bed-expansion-row" role="listitem" key={unit.id}>
+              <span><strong>{unit.name}</strong><small>{unit.municipality}</small></span>
+              <dl>
+                <div><dt>Abertos</dt><dd>{displayValue(unit.bedsOpenedInManagement)}</dd></div>
+                <div><dt>Após reforma</dt><dd>{displayValue(unit.bedsToOpenAfterRenovation)}</dd></div>
+              </dl>
+              <small>{unit.openedBedTypes ? `Tipos abertos: ${unit.openedBedTypes}` : "Tipos de leito aberto não informados"}</small>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="quality-strip">
         <div className="quality-intro">

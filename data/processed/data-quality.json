@@ -5,7 +5,7 @@
     "Consolidado",
     "UNIDADES EM CONSTRUÇÃO"
   ],
-  "generatedAt": "2026-08-24",
+  "generatedAt": "2026-08-25",
   "sourceRows": 73,
   "constructionRows": 8,
   "publishedUnits": 73,
@@ -13,22 +13,25 @@
   "sourceCoverage": {
     "municipality": 73,
     "rd": 73,
-    "geres": 67,
+    "geres": 73,
     "address": 65,
     "operationalBeds": 50,
     "plannedBeds": 5,
+    "bedsOpenedInManagement": 2,
+    "openedBedTypes": 2,
+    "bedsToOpenAfterRenovation": 4,
     "operationalProfile": 65,
     "plannedProfile": 3,
     "maintenanceContract": 16,
-    "managementInvestment": 25,
+    "managementInvestment": 49,
     "constructionInvestment": 0,
     "mainAdvances": 64,
     "coordinates": 0
   },
   "enrichment": {
     "rdFromWorkbookMunicipalityTemplate": 0,
-    "geresFromMunicipalityMode": 6,
-    "investmentFromSourceSheets": 18,
+    "geresFromMunicipalityMode": 0,
+    "investmentFromSourceSheets": 0,
     "constructionDetailsFromSheet": 8,
     "documentedCorrections": 3
   },
@@ -63,6 +66,8 @@
     "Valores ausentes permanecem nulos e são exibidos como Não informado.",
     "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
     "8 unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
+    "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
+    "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
     "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável."
   ],
   "headers": [
@@ -76,6 +81,9 @@
     "TIPO GESTÃO",
     "GESTÃO",
     "LEITOS",
+    "LEITOS ABERTOS NESTA GESTÃO",
+    "TIPOS DE LEITOS ABERTOS NESTA GESTÃO",
+    "LEITOS A ABRIR COM O FIM DA REFORMA",
     "PERFIL",
     "PROSSIONAIS",
     "PROFISSIONAIS CONVOCADOS NA GESTÃO",

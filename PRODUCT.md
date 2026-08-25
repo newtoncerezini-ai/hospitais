@@ -28,12 +28,13 @@ The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` 
 
 ## Capabilities and Constraints
 
-- List facilities with status, municipality, address, operational or planned beds, profile, type, management type, management body, RD, GERES, maintenance contract, applicable investment and main advances.
+- List facilities with status, municipality, address, operational or planned beds, beds opened during the current administration, types of beds opened, beds to open after renovations, profile, type, management type, management body, RD, GERES, maintenance contract, applicable investment and main advances.
 - Search by facility, municipality, RD and GERES; filter by those territorial fields, type and status.
 - Generate a printable technical sheet per facility.
 - Show an offline Pernambuco map with one marker anchored inside each municipality. Ring segments summarize the local facility-type mix, the center shows the facility count, and a dashed outline indicates that the municipality has a construction project.
 - The source workbook has no latitude/longitude. The first map therefore positions facilities at municipality level and must say so explicitly.
 - Keep operational capacity separate from planned capacity: 6,796 operational beds in 50 operating facilities and 861 planned beds in 5 construction projects.
+- Keep expansion indicators separate from both capacity measures: 30 beds opened during the current administration in 2 facilities and 543 beds to open after renovations in 4 facilities.
 - Preserve the source type distribution: Hospital 40, UPA 14, UPAE 15 and UPAE-R 4.
 - Source gaps remain visible as `Não informado`; original healthcare data must not be overwritten.
 - Enrichment and corrections must be documented in generated data-quality metadata.
@@ -44,7 +45,7 @@ Use the institutional layout language of `C:\workspace\ips`: deep-blue navigatio
 
 ## Evidence on Hand
 
-- Source workbook preserved in the project: `data/raw/health-units.xlsx`, supplied as `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde (1).xlsx`.
+- Source workbook preserved in the project: `data/raw/health-units.xlsx`, supplied as `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde (3).xlsx`.
 - Layout and interaction reference: `C:\workspace\ips`, with `src\main.tsx`, `src\styles.css` and `DESIGN.md` as current visual authority.
 - Local municipal code, Development Region and SVG geometry reference: `C:\workspace\ips\public\data\dashboard.json`.
 - No coordinates, confirmed official logo, testimonials or external performance claims are available and none should be fabricated.
@@ -52,7 +53,7 @@ Use the institutional layout language of `C:\workspace\ips`: deep-blue navigatio
 ## Product Principles
 
 - Make the facility and its operational facts easy to find in seconds.
-- Distinguish operating facilities from construction projects and operational beds from planned beds.
+- Distinguish operating facilities from construction projects, operational beds from planned beds, and current-administration or renovation expansion from both totals.
 - Distinguish source values, enriched values and missing values.
 - Keep dense administrative data readable and printable.
 - Use geography honestly: municipal context now, exact coordinates only when reliable data exists.

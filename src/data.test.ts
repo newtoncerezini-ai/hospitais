@@ -33,6 +33,12 @@ describe("base publicada", () => {
     expect(data.meta.totalBeds).toBe(6796);
     expect(data.meta.plannedBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0));
     expect(data.meta.plannedBeds).toBe(861);
+    expect(data.meta.bedsOpenedInManagement).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsOpenedInManagement ?? 0), 0));
+    expect(data.meta.bedsOpenedInManagement).toBe(30);
+    expect(data.meta.unitsWithBedsOpenedInManagement).toBe(2);
+    expect(data.meta.bedsToOpenAfterRenovation).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsToOpenAfterRenovation ?? 0), 0));
+    expect(data.meta.bedsToOpenAfterRenovation).toBe(543);
+    expect(data.meta.unitsWithBedsToOpenAfterRenovation).toBe(4);
     expect(data.meta.constructionUnitsWithBeds).toBe(5);
     expect(data.meta.constructionMunicipalities).toBe(6);
     expect(data.meta.typeCounts).toEqual({ Hospital: 40, UPA: 14, UPAE: 15, "UPAE-R": 4 });
@@ -42,11 +48,38 @@ describe("base publicada", () => {
       plannedBeds: 5,
       operationalProfile: 65,
       plannedProfile: 3,
-      managementInvestment: 25,
+      bedsOpenedInManagement: 2,
+      openedBedTypes: 2,
+      bedsToOpenAfterRenovation: 4,
+      managementInvestment: 49,
       constructionInvestment: 0,
     });
-    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(43);
+    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(49);
     expect(data.dataQuality.corrections).toHaveLength(3);
+  });
+
+  it("mantém expansão, estoque operacional e novas obras como medidas distintas", () => {
+    const barao = data.units.find((unit) => unit.id === "hospital-barao-de-lucena-hbl");
+    const otavio = data.units.find((unit) => unit.id === "hospital-otavio-de-freitas-hof");
+    const agreste = data.units.find((unit) => unit.id === "hospital-regional-do-agreste-hra");
+
+    expect(barao).toMatchObject({
+      type: "Hospital",
+      beds: 311,
+      bedsOpenedInManagement: 10,
+      openedBedTypes: "UTI Pediátrica",
+      bedsToOpenAfterRenovation: 71,
+    });
+    expect(otavio).toMatchObject({
+      bedsOpenedInManagement: 20,
+      bedsToOpenAfterRenovation: 146,
+    });
+    expect(agreste).toMatchObject({ bedsOpenedInManagement: null, bedsToOpenAfterRenovation: 288 });
+    expect(data.units.filter((unit) => unit.status === "Em construção").every((unit) => (
+      unit.bedsOpenedInManagement === null
+      && unit.openedBedTypes === null
+      && unit.bedsToOpenAfterRenovation === null
+    ))).toBe(true);
   });
 
   it("não mistura capacidade e investimento previstos com a rede em funcionamento", () => {
