@@ -15,7 +15,7 @@ Public administrators, health-network managers, researchers and citizens need to
 
 ## Content and proof
 
-The workbook is the factual source. The published dataset combines `Consolidado` and `UNIDADES EM CONSTRUÇÃO`: 73 records, with 65 operating and 8 under construction, across 25 municipalities. Six municipalities have construction projects. The overview keeps 6,796 operational beds in 50 operating facilities separate from 861 planned beds in 5 projects, 30 beds opened in the current administration in 2 facilities, and 543 beds to open after renovations in 4 facilities. Source/enrichment metadata remains available and missing values remain explicit. Filters cover facility, municipality, RD, GERES, type and status.
+The workbook is the factual source. The published dataset combines `Consolidado` and `UNIDADES EM CONSTRUÇÃO`: 98 records across 31 municipalities, with 65 operating, 8 under construction and 25 credentialed-network records whose status is not supplied. Six municipalities have construction projects; the credentialed network appears in 15. The overview keeps 6,796 operational beds in 50 operating facilities separate from 861 planned beds in 5 projects, 726 beds opened in the current administration across 27 records (696 in the credentialed network and 30 in hospitals), and 543 beds to open after renovations in 4 facilities. Source/enrichment metadata and possible duplicates remain available, and missing values remain explicit. Filters cover facility, municipality, RD, GERES, type and status, including the unknown-status state.
 
 ## Constraints
 
@@ -23,7 +23,7 @@ Inherit the institutional shell and visual language of `C:\workspace\ips`. No co
 
 ## Direction and memorable moment
 
-An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dedicated bed-expansion analysis, a dense but controlled status-aware list, a symbol-coded Pernambuco map and a document-like technical sheet. Expansion reads as a separate evidence block, never as an addition to operational or construction totals. The map reads as a municipal constellation: each attended territory owns a single compact marker whose ring shows its type mix, while a dashed contour flags municipalities with works in progress. The memorable interaction is moving from a municipal marker, territory or table row directly into the same printable facility record.
+An executive health-network console: deep-blue navigation opens onto a continuous summary rail, a dedicated bed-expansion analysis, a dense but controlled status-aware list, a symbol-coded Pernambuco map and a document-like technical sheet. Expansion reads as a separate evidence block, never as an addition to operational or construction totals. A slate credentialed-network treatment keeps classification visible without implying operational status; missing status uses a neutral badge and explicit copy. The map reads as a municipal constellation: each attended territory owns a single compact marker whose ring shows its type mix, while a dashed contour flags municipalities with works in progress. The memorable interaction is moving from a municipal marker, territory or table row directly into the same printable facility record.
 
 ## Unresolved decisions
 

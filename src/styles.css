@@ -19,6 +19,8 @@
   --upa: #cf5d32;
   --upae: #7154a8;
   --upaer: #168772;
+  --credentialed: #526a7a;
+  --credentialed-soft: #e6edf1;
   --status-active: #176448;
   --status-active-soft: #e5f3ec;
   --status-construction: #8a5200;
@@ -499,11 +501,29 @@ b {
   line-height: 1.45;
 }
 
+.bed-expansion-list-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 18px;
+}
+
+.bed-expansion-list-heading strong {
+  color: #17334a;
+  font-size: 13px;
+}
+
+.bed-expansion-list-heading span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .bed-expansion-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 24px;
-  margin-top: 14px;
+  margin-top: 8px;
 }
 
 .bed-expansion-row {
@@ -601,6 +621,7 @@ b {
 .type-upa { background: var(--upa) !important; }
 .type-upae { background: var(--upae) !important; }
 .type-upae-r { background: var(--upaer) !important; }
+.type-rede-credenciada { background: var(--credentialed) !important; }
 
 .construction-overview {
   display: grid;
@@ -636,6 +657,37 @@ b {
 
 .construction-overview > b {
   color: var(--status-construction);
+  font-size: 13px;
+  text-align: right;
+}
+
+.credentialed-overview {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--credentialed);
+}
+
+.credentialed-overview > span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.credentialed-overview strong {
+  font-size: 14px;
+}
+
+.credentialed-overview small {
+  color: var(--credentialed);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.credentialed-overview > b {
   font-size: 13px;
   text-align: right;
 }
@@ -1048,10 +1100,17 @@ b {
   color: var(--status-construction);
 }
 
+.status-badge.status-nao-informado {
+  border-color: #c4d0d8;
+  background: var(--credentialed-soft);
+  color: #405866;
+}
+
 .type-badge.type-hospital { background: #d9edf6 !important; color: #00537a; }
 .type-badge.type-upa { background: #fae4dc !important; color: #93401f; }
 .type-badge.type-upae { background: #ebe5f7 !important; color: #593b91; }
 .type-badge.type-upae-r { background: #d9f0ea !important; color: #0c6958; }
+.type-badge.type-rede-credenciada { background: var(--credentialed-soft) !important; color: #405866; }
 
 .mobile-unit-list {
   display: none;
@@ -1772,6 +1831,10 @@ b {
     grid-template-columns: 1fr;
   }
 
+  .bed-expansion-list-heading {
+    display: grid;
+  }
+
   .map-detail {
     position: static;
   }
@@ -1894,11 +1957,13 @@ b {
     gap: 8px;
   }
 
-  .construction-overview {
+  .construction-overview,
+  .credentialed-overview {
     grid-template-columns: auto 1fr;
   }
 
-  .construction-overview > b {
+  .construction-overview > b,
+  .credentialed-overview > b {
     grid-column: 2;
     text-align: left;
   }

@@ -446,6 +446,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     geres_values = sorted({unit["geres"] for unit in units}, key=normalize)
     active_units = [unit for unit in units if unit["status"] == "Em funcionamento"]
     construction_units = [unit for unit in units if unit["status"] == "Em construção"]
+    units_without_status = [unit for unit in units if unit["status"] == "Não informado"]
     type_counts_by_status = {
         status: dict(sorted(Counter(unit["type"] for unit in units if unit["status"] == status).items()))
         for status in status_counts
@@ -453,10 +454,24 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     construction_municipalities = {unit["municipality"] for unit in construction_units}
     operational_beds = [unit["beds"] for unit in active_units if unit["beds"] is not None]
     planned_beds = [unit["plannedBeds"] for unit in construction_units if unit["plannedBeds"] is not None]
-    opened_beds = [unit["bedsOpenedInManagement"] for unit in active_units if unit["bedsOpenedInManagement"] is not None]
-    renovation_beds = [unit["bedsToOpenAfterRenovation"] for unit in active_units if unit["bedsToOpenAfterRenovation"] is not None]
+    non_construction_units = [unit for unit in units if unit["status"] != "Em construção"]
+    opened_beds = [unit["bedsOpenedInManagement"] for unit in non_construction_units if unit["bedsOpenedInManagement"] is not None]
+    renovation_beds = [unit["bedsToOpenAfterRenovation"] for unit in non_construction_units if unit["bedsToOpenAfterRenovation"] is not None]
     active_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em funcionamento"]
     construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em construção"]
+    non_construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) != "Em construção"]
+    identities: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    for unit in units:
+        identities[(normalize(unit["name"]), normalize(unit["municipality"]))].append(unit)
+    possible_duplicates = [
+        {
+            "unitName": matches[0]["name"],
+            "municipality": matches[0]["municipality"],
+            "sourceRows": [match["source"]["row"] for match in matches],
+        }
+        for matches in identities.values()
+        if len(matches) > 1
+    ]
 
     quality = {
         "sourceFile": workbook_path.name,
@@ -469,14 +484,15 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
         "municipalities": len(municipalities),
         "sourceCoverage": {
             "municipality": source_coverage(raw_rows, "NOME MUNICIPIO"),
+            "status": source_coverage(raw_rows, "STATUS"),
             "rd": source_coverage(raw_rows, "RD"),
             "geres": source_coverage(raw_rows, "GERES"),
             "address": source_coverage(raw_rows, "LOCALIZAÇÃO"),
             "operationalBeds": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS")) is not None),
             "plannedBeds": sum(1 for row in construction_source_rows if parse_integer(row.get("LEITOS")) is not None),
-            "bedsOpenedInManagement": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS ABERTOS NESTA GESTÃO")) is not None),
-            "openedBedTypes": source_coverage(active_source_rows, "TIPOS DE LEITOS ABERTOS NESTA GESTÃO"),
-            "bedsToOpenAfterRenovation": sum(1 for row in active_source_rows if parse_integer(row.get("LEITOS A ABRIR COM O FIM DA REFORMA")) is not None),
+            "bedsOpenedInManagement": sum(1 for row in non_construction_source_rows if parse_integer(row.get("LEITOS ABERTOS NESTA GESTÃO")) is not None),
+            "openedBedTypes": source_coverage(non_construction_source_rows, "TIPOS DE LEITOS ABERTOS NESTA GESTÃO"),
+            "bedsToOpenAfterRenovation": sum(1 for row in non_construction_source_rows if parse_integer(row.get("LEITOS A ABRIR COM O FIM DA REFORMA")) is not None),
             "operationalProfile": source_coverage(active_source_rows, "PERFIL"),
             "plannedProfile": source_coverage(construction_source_rows, "PERFIL"),
             "maintenanceContract": money_source_coverage(active_source_rows, "CONTRATO DE MANUTENÇÃO PREDIAL"),
@@ -493,6 +509,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "documentedCorrections": len(corrections),
         },
         "corrections": corrections,
+        "possibleDuplicates": possible_duplicates,
         "warnings": [
             "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
             "Valores ausentes permanecem nulos e são exibidos como Não informado.",
@@ -500,6 +517,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             f"{len(construction_units)} unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
             "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
             "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
+            f"{len(units_without_status)} unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
+            f"{len(possible_duplicates)} possível duplicidade por nome e município foi preservada e registrada para validação da área responsável.",
             "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
         ],
         "headers": headers,
@@ -513,6 +532,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "totalUnits": len(units),
             "activeUnits": len(active_units),
             "constructionUnits": len(construction_units),
+            "unitsWithoutStatus": len(units_without_status),
             "constructionMunicipalities": len(construction_municipalities),
             "totalMunicipalities": len(municipalities),
             "totalBeds": sum(operational_beds),
@@ -532,7 +552,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "rds": rds,
             "geres": geres_values,
             "types": sorted(type_counts, key=normalize),
-            "statuses": [status for status in ("Em funcionamento", "Em construção") if status in status_counts],
+            "statuses": [status for status in ("Em funcionamento", "Em construção", "Não informado") if status in status_counts],
         },
         "units": units,
         "map": {

@@ -172,7 +172,7 @@ The system is deliberately dense but never cramped: hierarchy comes from continu
 
 ## Colors
 
-The palette combines institutional navy and functional cyan with cool paper neutrals; four controlled hues encode facility type, while a separate green-and-ochre pair communicates operational status without competing with classification.
+The palette combines institutional navy and functional cyan with cool paper neutrals; five controlled hues encode facility type, while a separate green-and-ochre pair and a neutral unknown state communicate status without competing with classification.
 
 ### Primary
 
@@ -188,11 +188,13 @@ The palette combines institutional navy and functional cyan with cool paper neut
 - **UPA Terracotta** (`upa-terracotta`): UPA classification only.
 - **UPAE Violet** (`upae-violet`): UPAE classification only.
 - **UPAE-R Teal** (`upae-r-teal`): UPAE-R classification only.
+- **Credentialed Slate** (`credentialed-slate` / `credentialed-slate-soft`): Rede Credenciada classification in badges, summaries, legends and map segments.
 
 ### Status
 
 - **Operating Green** (`status-operating` / `status-operating-soft`): operating-facility text, borders and quiet badge surfaces.
 - **Construction Ochre** (`status-construction` / `status-construction-soft`): construction labels, contextual surfaces and the dashed map-marker contour.
+- **Unknown Neutral:** source records without status; never interpreted as operating or under construction.
 
 ### Neutral
 
@@ -205,7 +207,7 @@ The palette combines institutional navy and functional cyan with cool paper neut
 
 **The Cyan Means Action Rule.** Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.
 
-**The Classification Is Semantic Rule.** Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.
+**The Classification Is Semantic Rule.** Facility colors never change by page or chart: blue is Hospital, slate is Rede Credenciada, terracotta is UPA, violet is UPAE, and teal is UPAE-R.
 
 **The Status Is Orthogonal Rule.** Status never replaces facility classification. Green or ochre badges and the municipal marker's dashed contour communicate lifecycle state while its ring continues to encode the local type mix.
 
@@ -285,7 +287,7 @@ Major panels use analytical white, a 1px divider border, 12px corners, and no re
 
 ### Chips
 
-GERES, facility type and status badges are compact, strongly weighted pills. Facility badges use pale tonal backgrounds paired with darker semantic type colors; the corresponding bars, legends, and map symbols use the saturated classification color. Status badges use their own green or ochre palette so status stays visually independent from type.
+GERES, facility type and status badges are compact, strongly weighted pills. Facility badges use pale tonal backgrounds paired with darker semantic type colors; the corresponding bars, legends, and map symbols use the saturated classification color. Status badges use green, ochre or neutral gray so status stays visually independent from type and absent status is never mistaken for operation.
 
 ### Data Tables
 
@@ -293,7 +295,7 @@ The table is a dense comparison surface: 13px cells, uppercase 11px headers, hor
 
 ### Map Markers
 
-Each municipality uses one circular marker anchored at a verified interior point. Colored ring segments summarize the local mix of Hospital, UPA, UPAE and UPAE-R; the center shows the total number of units. A dashed ochre outer contour indicates that at least one local unit is under construction. The visible glyph adapts to the polygon's internal clearance while retaining a 44px interaction target. The corresponding municipality polygon is also interactive and receives the same selected state; arrival motion is suppressed for reduced-motion users.
+Each municipality uses one circular marker anchored at a verified interior point. Colored ring segments summarize the local mix of Hospital, Rede Credenciada, UPA, UPAE and UPAE-R; the center shows the total number of units. A dashed ochre outer contour indicates that at least one local unit is under construction. The visible glyph adapts to the polygon's internal clearance while retaining a 44px interaction target. The corresponding municipality polygon is also interactive and receives the same selected state; arrival motion is suppressed for reduced-motion users.
 
 ### Technical Sheet
 

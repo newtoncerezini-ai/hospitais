@@ -31,7 +31,7 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
 
       <section className="panel table-panel">
         <div className="panel-heading table-heading">
-          <div><h2>Lista da rede</h2><p>{data.meta.activeUnits} unidades em funcionamento e {data.meta.constructionUnits} em construção, com ausências identificadas como “Não informado”.</p></div>
+          <div><h2>Lista da rede</h2><p>{data.meta.activeUnits} unidades em funcionamento, {data.meta.constructionUnits} em construção e {data.meta.unitsWithoutStatus} sem status informado.</p></div>
           <button type="button" className="button secondary" onClick={() => downloadUnitsCsv(units)} disabled={!units.length}>
             <Download size={17} aria-hidden="true" /> Exportar CSV
           </button>

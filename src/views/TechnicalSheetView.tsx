@@ -14,6 +14,7 @@ function DetailBlock({ title, children }: { title: string; children: React.React
 
 export function TechnicalSheetView({ units, selected, onSelect }: Props) {
   const isConstruction = isConstructionStatus(selected.status);
+  const isOperational = selected.status === "Em funcionamento";
   const displayedBeds = isConstruction ? selected.plannedBeds : selected.beds;
   const displayedInvestment = isConstruction ? selected.constructionInvestment : selected.managementInvestment;
   const hasBedExpansion = !isConstruction && (
@@ -45,7 +46,7 @@ export function TechnicalSheetView({ units, selected, onSelect }: Props) {
         </header>
 
         <section className="sheet-kpis">
-          <div><Building2 size={22} /><span>{isConstruction ? "Leitos previstos" : "Leitos em funcionamento"}</span><strong>{displayedBeds === null ? "Não informado" : formatNumber(displayedBeds)}</strong></div>
+          <div><Building2 size={22} /><span>{isConstruction ? "Leitos previstos" : isOperational ? "Leitos em funcionamento" : "Leitos"}</span><strong>{displayedBeds === null ? "Não informado" : formatNumber(displayedBeds)}</strong></div>
           <div><UsersRound size={22} /><span>Tipo de gestão</span><strong>{displayValue(selected.managementType)}</strong></div>
           <div><span>Gestão</span><strong>{displayValue(selected.management)}</strong><small>{selected.type}</small></div>
           <div><span>{isConstruction ? "Investimento para obra e equipagem" : "Investimento na gestão"}</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>{isConstruction ? (displayedInvestment.amount === null ? "situação registrada na base da obra" : "valor informado para a obra") : "valor disponível na base"}</small></div>

@@ -26,12 +26,14 @@ type Props = {
   view: View;
   onViewChange: (view: View) => void;
   sourceLabel: string;
+  totalUnits: number;
   activeUnits: number;
   constructionUnits: number;
+  unitsWithoutStatus: number;
   children: ReactNode;
 };
 
-export function AppShell({ view, onViewChange, sourceLabel, activeUnits, constructionUnits, children }: Props) {
+export function AppShell({ view, onViewChange, sourceLabel, totalUnits, activeUnits, constructionUnits, unitsWithoutStatus, children }: Props) {
   const current = titles[view];
   return (
     <div className="app-shell">
@@ -65,7 +67,7 @@ export function AppShell({ view, onViewChange, sourceLabel, activeUnits, constru
         <div className="sidebar-source">
           <span>Base de referência</span>
           <strong>{sourceLabel}</strong>
-          <p>{activeUnits + constructionUnits} unidades: {activeUnits} em funcionamento e {constructionUnits} em construção.</p>
+          <p>{totalUnits} unidades: {activeUnits} em funcionamento, {constructionUnits} em construção e {unitsWithoutStatus} sem status informado.</p>
         </div>
       </aside>
 

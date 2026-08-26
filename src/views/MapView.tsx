@@ -31,6 +31,7 @@ const TYPE_COLORS: Record<string, string> = {
   UPA: "#cf5d32",
   UPAE: "#7154a8",
   "UPAE-R": "#168772",
+  "Rede Credenciada": "#526a7a",
 };
 
 const MAP_MIN_WIDTH = 760;

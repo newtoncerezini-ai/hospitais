@@ -67,8 +67,10 @@ export default function App() {
       view={view}
       onViewChange={setView}
       sourceLabel={data.meta.sourceLabel}
+      totalUnits={data.meta.totalUnits}
       activeUnits={data.meta.activeUnits}
       constructionUnits={data.meta.constructionUnits}
+      unitsWithoutStatus={data.meta.unitsWithoutStatus}
     >
       {view === "overview" && <OverviewView data={data} onNavigate={setView} />}
       {view === "units" && <UnitsView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}

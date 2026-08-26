@@ -24,7 +24,7 @@ The product connects an operational and construction-status facility list, an au
 
 ## Operating Context
 
-The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` sheets from the supplied workbook. It contains 73 facilities: 65 operating and 8 under construction, across 25 municipalities, with construction present in 6 of them. The current workflow is a static portal generated from the workbook; future data ownership, update cadence and publishing target are undecided.
+The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` sheets from the supplied workbook. It contains 98 records across 31 municipalities: 65 operating facilities, 8 under construction and 25 credentialed-network records whose status is absent from the source. Construction is present in 6 municipalities; the credentialed network appears in 15. The current workflow is a static portal generated from the workbook; future data ownership, update cadence and publishing target are undecided.
 
 ## Capabilities and Constraints
 
@@ -34,8 +34,10 @@ The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` 
 - Show an offline Pernambuco map with one marker anchored inside each municipality. Ring segments summarize the local facility-type mix, the center shows the facility count, and a dashed outline indicates that the municipality has a construction project.
 - The source workbook has no latitude/longitude. The first map therefore positions facilities at municipality level and must say so explicitly.
 - Keep operational capacity separate from planned capacity: 6,796 operational beds in 50 operating facilities and 861 planned beds in 5 construction projects.
-- Keep expansion indicators separate from both capacity measures: 30 beds opened during the current administration in 2 facilities and 543 beds to open after renovations in 4 facilities.
-- Preserve the source type distribution: Hospital 40, UPA 14, UPAE 15 and UPAE-R 4.
+- Keep expansion indicators separate from both capacity measures: 726 beds opened during the current administration in 27 records (696 in the credentialed network and 30 in hospitals) and 543 beds to open after renovations in 4 facilities.
+- Preserve the published type distribution: Hospital 40, Rede Credenciada 25, UPA 14, UPAE 15 and UPAE-R 4.
+- Do not infer operational status for the 25 credentialed-network records; expose the missing status in summaries, filters, badges and technical sheets.
+- Preserve and report source-level possible duplicates rather than silently deleting indistinguishable healthcare records.
 - Source gaps remain visible as `Não informado`; original healthcare data must not be overwritten.
 - Enrichment and corrections must be documented in generated data-quality metadata.
 
@@ -45,7 +47,7 @@ Use the institutional layout language of `C:\workspace\ips`: deep-blue navigatio
 
 ## Evidence on Hand
 
-- Source workbook preserved in the project: `data/raw/health-units.xlsx`, supplied as `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde (4).xlsx`.
+- Source workbook preserved in the project: `data/raw/health-units.xlsx`, supplied as `C:\Users\newton.cerezini\Downloads\Lista de Hospitais de Pernambuco_20260820_Planilha_Saúde (5).xlsx`.
 - Layout and interaction reference: `C:\workspace\ips`, with `src\main.tsx`, `src\styles.css` and `DESIGN.md` as current visual authority.
 - Local municipal code, Development Region and SVG geometry reference: `C:\workspace\ips\public\data\dashboard.json`.
 - No coordinates, confirmed official logo, testimonials or external performance claims are available and none should be fabricated.

@@ -67,6 +67,11 @@ export type DataQuality = {
     reason: string;
     evidenceUrl?: string;
   }>;
+  possibleDuplicates: Array<{
+    unitName: string;
+    municipality: string;
+    sourceRows: number[];
+  }>;
   warnings: string[];
 };
 
@@ -78,6 +83,7 @@ export type DashboardData = {
     totalUnits: number;
     activeUnits: number;
     constructionUnits: number;
+    unitsWithoutStatus: number;
     constructionMunicipalities: number;
     totalMunicipalities: number;
     totalBeds: number;

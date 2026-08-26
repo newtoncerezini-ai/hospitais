@@ -1,4 +1,4 @@
-import { ArrowRight, BedDouble, Database, HardHat, MapPinned, ShieldCheck } from "lucide-react";
+import { ArrowRight, BedDouble, Database, Handshake, HardHat, MapPinned, ShieldCheck } from "lucide-react";
 import { displayValue, formatNumber, typeClass } from "../lib/format";
 import type { DashboardData, View } from "../types";
 
@@ -11,11 +11,15 @@ export function OverviewView({ data, onNavigate }: Props) {
   const activeUnits = data.units.filter((unit) => unit.status === "Em funcionamento");
   const activeTypeCounts = data.meta.typeCountsByStatus["Em funcionamento"] ?? {};
   const constructionTypeCounts = data.meta.typeCountsByStatus["Em construção"] ?? {};
-  const expansionUnits = activeUnits.filter(
-    (unit) => unit.bedsOpenedInManagement !== null || unit.bedsToOpenAfterRenovation !== null,
-  ).sort(
-    (first, second) => (second.bedsToOpenAfterRenovation ?? 0) - (first.bedsToOpenAfterRenovation ?? 0),
-  );
+  const credentialedUnits = data.units.filter((unit) => unit.type === "Rede Credenciada");
+  const credentialedMunicipalities = new Set(credentialedUnits.map((unit) => unit.municipality)).size;
+  const expansionUnits = data.units.filter(
+    (unit) => unit.status !== "Em construção" && (unit.bedsOpenedInManagement !== null || unit.bedsToOpenAfterRenovation !== null),
+  ).sort((first, second) => (
+    (second.bedsOpenedInManagement ?? 0) + (second.bedsToOpenAfterRenovation ?? 0)
+    - (first.bedsOpenedInManagement ?? 0) - (first.bedsToOpenAfterRenovation ?? 0)
+  ));
+  const highlightedExpansionUnits = expansionUnits.slice(0, 8);
   const geresCounts = Object.entries(
     activeUnits.reduce<Record<string, number>>((acc, unit) => {
       acc[unit.geres] = (acc[unit.geres] ?? 0) + 1;
@@ -27,7 +31,7 @@ export function OverviewView({ data, onNavigate }: Props) {
   return (
     <div className="overview-page">
       <section className="summary-rail" aria-label="Resumo da rede">
-        <article><span>Unidades cadastradas</span><strong>{formatNumber(data.meta.totalUnits)}</strong><small>{data.meta.activeUnits} em funcionamento · {data.meta.constructionUnits} em construção</small></article>
+        <article><span>Unidades cadastradas</span><strong>{formatNumber(data.meta.totalUnits)}</strong><small>{data.meta.activeUnits} em funcionamento · {data.meta.constructionUnits} em construção · {data.meta.unitsWithoutStatus} sem status informado</small></article>
         <article><span>Municípios</span><strong>{formatNumber(data.meta.totalMunicipalities)}</strong><small>{data.meta.constructionMunicipalities} com unidades em construção</small></article>
         <article><span>Leitos em funcionamento</span><strong>{formatNumber(data.meta.totalBeds)}</strong><small>em {data.meta.unitsWithBeds} unidades</small></article>
         <article><span>Leitos previstos</span><strong>{formatNumber(data.meta.plannedBeds)}</strong><small>em {data.meta.constructionUnitsWithBeds} unidades em construção</small></article>
@@ -56,6 +60,11 @@ export function OverviewView({ data, onNavigate }: Props) {
               <small>{Object.entries(constructionTypeCounts).map(([type, count]) => `${count} do tipo ${type}`).join(" · ")} · {data.meta.constructionMunicipalities} municípios</small>
             </span>
             <b>{formatNumber(data.meta.plannedBeds)} leitos previstos</b>
+          </div>
+          <div className="credentialed-overview">
+            <Handshake size={23} aria-hidden="true" />
+            <span><strong>{credentialedUnits.length} unidades da Rede Credenciada</strong><small>Presentes em {credentialedMunicipalities} municípios; status e campos administrativos não foram informados.</small></span>
+            <b>Status não informado</b>
           </div>
           <button type="button" className="map-callout" onClick={() => onNavigate("map") }>
             <MapPinned size={24} aria-hidden="true" />
@@ -87,8 +96,9 @@ export function OverviewView({ data, onNavigate }: Props) {
           <div><dt>Leitos abertos nesta gestão</dt><dd><b>{formatNumber(data.meta.bedsOpenedInManagement)}</b><small>informados em {data.meta.unitsWithBedsOpenedInManagement} unidades</small></dd></div>
           <div><dt>Leitos a abrir após reformas</dt><dd><b>{formatNumber(data.meta.bedsToOpenAfterRenovation)}</b><small>informados em {data.meta.unitsWithBedsToOpenAfterRenovation} unidades</small></dd></div>
         </dl>
-        <div className="bed-expansion-list" role="list" aria-label="Expansão de leitos por unidade">
-          {expansionUnits.map((unit) => (
+        <div className="bed-expansion-list-heading"><strong>Maiores expansões informadas</strong><span>8 de {expansionUnits.length} registros · lista completa na página Unidades de saúde</span></div>
+        <div className="bed-expansion-list" role="list" aria-label="Maiores expansões de leitos por unidade">
+          {highlightedExpansionUnits.map((unit) => (
             <div className="bed-expansion-row" role="listitem" key={unit.id}>
               <span><strong>{unit.name}</strong><small>{unit.municipality}</small></span>
               <dl>

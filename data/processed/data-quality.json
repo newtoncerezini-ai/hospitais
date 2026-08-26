@@ -5,32 +5,33 @@
     "Consolidado",
     "UNIDADES EM CONSTRUÇÃO"
   ],
-  "generatedAt": "2026-08-25",
-  "sourceRows": 73,
+  "generatedAt": "2026-08-26",
+  "sourceRows": 98,
   "constructionRows": 8,
-  "publishedUnits": 73,
-  "municipalities": 25,
+  "publishedUnits": 98,
+  "municipalities": 31,
   "sourceCoverage": {
-    "municipality": 73,
+    "municipality": 98,
+    "status": 73,
     "rd": 73,
     "geres": 73,
     "address": 65,
     "operationalBeds": 50,
     "plannedBeds": 5,
-    "bedsOpenedInManagement": 2,
-    "openedBedTypes": 2,
+    "bedsOpenedInManagement": 27,
+    "openedBedTypes": 27,
     "bedsToOpenAfterRenovation": 4,
     "operationalProfile": 65,
     "plannedProfile": 3,
     "maintenanceContract": 16,
-    "managementInvestment": 49,
+    "managementInvestment": 64,
     "constructionInvestment": 0,
     "mainAdvances": 64,
     "coordinates": 0
   },
   "enrichment": {
-    "rdFromWorkbookMunicipalityTemplate": 0,
-    "geresFromMunicipalityMode": 0,
+    "rdFromWorkbookMunicipalityTemplate": 25,
+    "geresFromMunicipalityMode": 19,
     "investmentFromSourceSheets": 0,
     "constructionDetailsFromSheet": 8,
     "documentedCorrections": 3
@@ -61,6 +62,16 @@
       "evidenceUrl": "https://portal.saude.pe.gov.br/upas/upa-curado-medico-fernando-de-lacerda/"
     }
   ],
+  "possibleDuplicates": [
+    {
+      "unitName": "Hospital Memorial de Pernambuco",
+      "municipality": "Caruaru",
+      "sourceRows": [
+        91,
+        93
+      ]
+    }
+  ],
   "warnings": [
     "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
     "Valores ausentes permanecem nulos e são exibidos como Não informado.",
@@ -68,6 +79,8 @@
     "8 unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
     "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
     "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
+    "25 unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
+    "1 possível duplicidade por nome e município foi preservada e registrada para validação da área responsável.",
     "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável."
   ],
   "headers": [

@@ -7,12 +7,13 @@ const dataPath = path.resolve(process.cwd(), "public/data/health-units.json");
 const data = JSON.parse(fs.readFileSync(dataPath, "utf-8")) as DashboardData;
 
 describe("base publicada", () => {
-  it("publica as 73 unidades, incluindo 8 em construção, sem IDs duplicados", () => {
-    expect(data.units).toHaveLength(73);
-    expect(new Set(data.units.map((unit) => unit.id)).size).toBe(73);
+  it("publica os 98 registros, incluindo a Rede Credenciada, sem IDs duplicados", () => {
+    expect(data.units).toHaveLength(98);
+    expect(new Set(data.units.map((unit) => unit.id)).size).toBe(98);
     expect(data.meta.activeUnits).toBe(65);
     expect(data.meta.constructionUnits).toBe(8);
-    expect(data.meta.statusCounts).toEqual({ "Em construção": 8, "Em funcionamento": 65 });
+    expect(data.meta.unitsWithoutStatus).toBe(25);
+    expect(data.meta.statusCounts).toEqual({ "Em construção": 8, "Em funcionamento": 65, "Não informado": 25 });
   });
 
   it("mantém os campos territoriais necessários para busca e mapa", () => {
@@ -20,10 +21,12 @@ describe("base publicada", () => {
       expect(unit.name).toBeTruthy();
       expect(unit.municipality).not.toBe("Não informado");
       expect(unit.rd).not.toBe("Não informado");
-      expect(unit.geres).not.toBe("Não informado");
       expect(unit.ibgeCode).toMatch(/^26\d{5}$/);
       expect(Boolean(data.map.paths[unit.ibgeCode!] || data.map.fallbackCenters?.[unit.ibgeCode!])).toBe(true);
     }
+    const unitsWithoutGeres = data.units.filter((unit) => unit.geres === "Não informado");
+    expect(unitsWithoutGeres).toHaveLength(6);
+    expect(unitsWithoutGeres.every((unit) => unit.type === "Rede Credenciada" && unit.status === "Não informado")).toBe(true);
   });
 
   it("reconcilia os totais e a cobertura reportada", () => {
@@ -34,28 +37,35 @@ describe("base publicada", () => {
     expect(data.meta.plannedBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0));
     expect(data.meta.plannedBeds).toBe(861);
     expect(data.meta.bedsOpenedInManagement).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsOpenedInManagement ?? 0), 0));
-    expect(data.meta.bedsOpenedInManagement).toBe(30);
-    expect(data.meta.unitsWithBedsOpenedInManagement).toBe(2);
+    expect(data.meta.bedsOpenedInManagement).toBe(726);
+    expect(data.meta.unitsWithBedsOpenedInManagement).toBe(27);
     expect(data.meta.bedsToOpenAfterRenovation).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsToOpenAfterRenovation ?? 0), 0));
     expect(data.meta.bedsToOpenAfterRenovation).toBe(543);
     expect(data.meta.unitsWithBedsToOpenAfterRenovation).toBe(4);
     expect(data.meta.constructionUnitsWithBeds).toBe(5);
     expect(data.meta.constructionMunicipalities).toBe(6);
-    expect(data.meta.typeCounts).toEqual({ Hospital: 40, UPA: 14, UPAE: 15, "UPAE-R": 4 });
-    expect(data.filters.statuses).toEqual(["Em funcionamento", "Em construção"]);
+    expect(data.meta.totalMunicipalities).toBe(31);
+    expect(data.meta.typeCounts).toEqual({ Hospital: 40, "Rede Credenciada": 25, UPA: 14, UPAE: 15, "UPAE-R": 4 });
+    expect(data.filters.statuses).toEqual(["Em funcionamento", "Em construção", "Não informado"]);
     expect(data.dataQuality.sourceCoverage).toMatchObject({
       operationalBeds: 50,
       plannedBeds: 5,
+      status: 73,
       operationalProfile: 65,
       plannedProfile: 3,
-      bedsOpenedInManagement: 2,
-      openedBedTypes: 2,
+      bedsOpenedInManagement: 27,
+      openedBedTypes: 27,
       bedsToOpenAfterRenovation: 4,
-      managementInvestment: 49,
+      managementInvestment: 64,
       constructionInvestment: 0,
     });
-    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(49);
+    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(64);
     expect(data.dataQuality.corrections).toHaveLength(3);
+    expect(data.dataQuality.possibleDuplicates).toEqual([{
+      unitName: "Hospital Memorial de Pernambuco",
+      municipality: "Caruaru",
+      sourceRows: [91, 93],
+    }]);
   });
 
   it("mantém expansão, estoque operacional e novas obras como medidas distintas", () => {
@@ -84,7 +94,20 @@ describe("base publicada", () => {
 
   it("publica a correção de investimento do Hospital da Restauração", () => {
     const restauracao = data.units.find((unit) => unit.id === "hospital-da-restauracao-hr");
-    expect(restauracao?.managementInvestment).toEqual({ amount: 173_291_824.2, label: null });
+    expect(restauracao?.managementInvestment).toEqual({ amount: 176_573_825.34, label: null });
+  });
+
+  it("preserva as lacunas declaradas da Rede Credenciada sem inferir operação", () => {
+    const credentialedUnits = data.units.filter((unit) => unit.type === "Rede Credenciada");
+    expect(credentialedUnits).toHaveLength(25);
+    expect(new Set(credentialedUnits.map((unit) => unit.municipality)).size).toBe(15);
+    expect(credentialedUnits.every((unit) => (
+      unit.status === "Não informado"
+      && unit.beds === null
+      && unit.plannedBeds === null
+    ))).toBe(true);
+    expect(credentialedUnits.reduce((sum, unit) => sum + (unit.bedsOpenedInManagement ?? 0), 0)).toBe(696);
+    expect(credentialedUnits.every((unit) => unit.openedBedTypes !== null)).toBe(true);
   });
 
   it("não mistura capacidade e investimento previstos com a rede em funcionamento", () => {
@@ -102,7 +125,7 @@ describe("base publicada", () => {
 
     const allMapMunicipalities = new Set(data.units.map((unit) => unit.ibgeCode));
     const constructionMapMunicipalities = new Set(constructionUnits.map((unit) => unit.ibgeCode));
-    expect(allMapMunicipalities.size).toBe(25);
+    expect(allMapMunicipalities.size).toBe(31);
     expect(constructionMapMunicipalities.size).toBe(6);
   });
 });

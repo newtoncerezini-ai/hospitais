@@ -19,6 +19,7 @@
       "upa-terracotta": { "role": "secondary", "displayName": "UPA Terracotta", "canonical": "#cf5d32", "tonalRamp": ["oklch(15% 0.156 40.2)", "oklch(25% 0.156 40.2)", "oklch(35% 0.156 40.2)", "oklch(45% 0.156 40.2)", "oklch(55% 0.156 40.2)", "oklch(65% 0.156 40.2)", "oklch(80% 0.156 40.2)", "oklch(95% 0.156 40.2)"] },
       "upae-violet": { "role": "secondary", "displayName": "UPAE Violet", "canonical": "#7154a8", "tonalRamp": ["oklch(15% 0.131 297.6)", "oklch(25% 0.131 297.6)", "oklch(35% 0.131 297.6)", "oklch(45% 0.131 297.6)", "oklch(55% 0.131 297.6)", "oklch(65% 0.131 297.6)", "oklch(80% 0.131 297.6)", "oklch(95% 0.131 297.6)"] },
       "upae-r-teal": { "role": "secondary", "displayName": "UPAE-R Teal", "canonical": "#168772", "tonalRamp": ["oklch(15% 0.100 176.0)", "oklch(25% 0.100 176.0)", "oklch(35% 0.100 176.0)", "oklch(45% 0.100 176.0)", "oklch(55% 0.100 176.0)", "oklch(65% 0.100 176.0)", "oklch(80% 0.100 176.0)", "oklch(95% 0.100 176.0)"] },
+      "credentialed-slate": { "role": "secondary", "displayName": "Credentialed Slate", "canonical": "#526a7a", "tonalRamp": ["oklch(15% 0.035 235.0)", "oklch(25% 0.035 235.0)", "oklch(35% 0.035 235.0)", "oklch(45% 0.035 235.0)", "oklch(55% 0.035 235.0)", "oklch(65% 0.035 235.0)", "oklch(80% 0.035 235.0)", "oklch(95% 0.035 235.0)"] },
       "status-operating": { "role": "secondary", "displayName": "Operating Green", "canonical": "#176448", "tonalRamp": ["oklch(15% 0.085 161.0)", "oklch(25% 0.085 161.0)", "oklch(35% 0.085 161.0)", "oklch(45% 0.085 161.0)", "oklch(55% 0.085 161.0)", "oklch(65% 0.085 161.0)", "oklch(80% 0.085 161.0)", "oklch(95% 0.085 161.0)"] },
       "status-operating-soft": { "role": "secondary", "displayName": "Operating Green Soft", "canonical": "#e5f3ec", "tonalRamp": ["oklch(15% 0.023 157.0)", "oklch(25% 0.023 157.0)", "oklch(35% 0.023 157.0)", "oklch(45% 0.023 157.0)", "oklch(55% 0.023 157.0)", "oklch(65% 0.023 157.0)", "oklch(80% 0.023 157.0)", "oklch(95% 0.023 157.0)"] },
       "status-construction": { "role": "secondary", "displayName": "Construction Ochre", "canonical": "#8a5200", "tonalRamp": ["oklch(15% 0.105 74.0)", "oklch(25% 0.105 74.0)", "oklch(35% 0.105 74.0)", "oklch(45% 0.105 74.0)", "oklch(55% 0.105 74.0)", "oklch(65% 0.105 74.0)", "oklch(80% 0.105 74.0)", "oklch(95% 0.105 74.0)"] },
@@ -104,15 +105,15 @@
       "kind": "chip",
       "refersTo": "chip-type",
       "description": "Pale semantic pills that preserve one color mapping for each facility type.",
-      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-hospital\">Hospital</span><span class=\"ds-badge ds-upa\">UPA</span><span class=\"ds-badge ds-upae\">UPAE</span><span class=\"ds-badge ds-upaer\">UPAE-R</span></div>",
-      "css": ".ds-badges { display: flex; flex-wrap: wrap; gap: 8px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-badge { min-height: 26px; display: inline-flex; align-items: center; justify-content: center; padding: 0 9px; border-radius: 999px; font-size: 11px; font-weight: 850; white-space: nowrap; } .ds-hospital { background: #d9edf6; color: #00537a; } .ds-upa { background: #fae4dc; color: #93401f; } .ds-upae { background: #ebe5f7; color: #593b91; } .ds-upaer { background: #d9f0ea; color: #0c6958; }"
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-hospital\">Hospital</span><span class=\"ds-badge ds-credentialed\">Rede Credenciada</span><span class=\"ds-badge ds-upa\">UPA</span><span class=\"ds-badge ds-upae\">UPAE</span><span class=\"ds-badge ds-upaer\">UPAE-R</span></div>",
+      "css": ".ds-badges { display: flex; flex-wrap: wrap; gap: 8px; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-badge { min-height: 26px; display: inline-flex; align-items: center; justify-content: center; padding: 0 9px; border-radius: 999px; font-size: 11px; font-weight: 850; white-space: nowrap; } .ds-hospital { background: #d9edf6; color: #00537a; } .ds-credentialed { background: #e6edf1; color: #405866; } .ds-upa { background: #fae4dc; color: #93401f; } .ds-upae { background: #ebe5f7; color: #593b91; } .ds-upaer { background: #d9f0ea; color: #0c6958; }"
     },
     {
       "name": "Summary Metric Rail",
       "kind": "custom",
       "refersTo": "summary-metric",
       "description": "Connected executive metrics separated by dividers rather than floating cards.",
-      "html": "<section class=\"ds-summary\"><article><span>Unidades cadastradas</span><strong>73</strong><small>65 em funcionamento · 8 em construção</small></article><article><span>Municípios</span><strong>25</strong><small>6 com obras</small></article></section>",
+      "html": "<section class=\"ds-summary\"><article><span>Unidades cadastradas</span><strong>98</strong><small>65 em funcionamento · 8 em construção · 25 sem status</small></article><article><span>Municípios</span><strong>31</strong><small>6 com obras</small></article></section>",
       "css": ".ds-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: hidden; border: 1px solid #cfd9e2; border-radius: 12px; background: #fff; font-family: Inter, ui-sans-serif, system-ui, sans-serif; } .ds-summary article { min-height: 150px; display: grid; align-content: center; gap: 7px; padding: 24px 26px; border-right: 1px solid var(--line-soft); } .ds-summary article:last-child { border-right: 0; } .ds-summary span { color: var(--muted); font-size: 12px; font-weight: 850; letter-spacing: .045em; text-transform: uppercase; } .ds-summary strong { overflow: hidden; color: #0b1725; font-size: clamp(30px, 3.4vw, 47px); font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -.03em; text-overflow: ellipsis; } .ds-summary small { color: var(--muted); font-size: 13px; }"
     },
     {
@@ -136,7 +137,7 @@
     ],
     "rules": [
       { "name": "The Cyan Means Action Rule", "body": "Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.", "section": "colors" },
-      { "name": "The Classification Is Semantic Rule", "body": "Facility colors never change by page or chart: blue is Hospital, terracotta is UPA, violet is UPAE, and teal is UPAE-R.", "section": "colors" },
+      { "name": "The Classification Is Semantic Rule", "body": "Facility colors never change by page or chart: blue is Hospital, slate is Rede Credenciada, terracotta is UPA, violet is UPAE, and teal is UPAE-R.", "section": "colors" },
       { "name": "The Status Is Orthogonal Rule", "body": "Status never replaces facility classification. Green or ochre badges and the municipal marker's dashed contour communicate lifecycle state while its ring continues to encode the local type mix.", "section": "colors" },
       { "name": "The Administrative Scan Rule", "body": "Labels are small, uppercase, tracked, and heavy; values remain mixed case and larger so a user can separate category from fact at a glance.", "section": "typography" },
       { "name": "The Numbers Align Rule", "body": "Counts, currency, beds, and other comparable quantities use tabular numerals.", "section": "typography" },
