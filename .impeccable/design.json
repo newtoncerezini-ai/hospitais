@@ -41,7 +41,7 @@
     ],
     "motion": [
       { "name": "state-fast", "value": "150ms ease", "purpose": "Navigation color changes and map-marker transform/filter feedback." },
-      { "name": "marker-arrival", "value": "360ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "One-time opacity and blur settling for municipal markers when reduced motion is not requested." },
+      { "name": "marker-arrival", "value": "360ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "One-time opacity and blur settling for unit-level map symbols when reduced motion is not requested." },
       { "name": "loading-spin", "value": "800ms linear infinite", "purpose": "Loading indicator rotation; disabled under reduced motion." }
     ],
     "breakpoints": [
@@ -138,7 +138,7 @@
     "rules": [
       { "name": "The Cyan Means Action Rule", "body": "Functional cyan and action blue identify interaction, focus, active state, or meaningful quantitative emphasis; they are not broad decorative fills.", "section": "colors" },
       { "name": "The Classification Is Semantic Rule", "body": "Facility colors never change by page or chart: blue is Hospital, slate is Rede Credenciada, terracotta is UPA, violet is UPAE, and teal is UPAE-R.", "section": "colors" },
-      { "name": "The Status Is Orthogonal Rule", "body": "Status never replaces facility classification. Green or ochre badges and the municipal marker's dashed contour communicate lifecycle state while its ring continues to encode the local type mix.", "section": "colors" },
+      { "name": "The Status Is Orthogonal Rule", "body": "Status never replaces facility classification. Green or ochre badges communicate lifecycle state, while the unit-level map reserves a dashed ochre contour for construction without changing the hospital or general-unit symbol.", "section": "colors" },
       { "name": "The Administrative Scan Rule", "body": "Labels are small, uppercase, tracked, and heavy; values remain mixed case and larger so a user can separate category from fact at a glance.", "section": "typography" },
       { "name": "The Numbers Align Rule", "body": "Counts, currency, beds, and other comparable quantities use tabular numerals.", "section": "typography" },
       { "name": "The Executive Shell Rule", "body": "Preserve the 280px institutional navigation anchor on wide screens and the continuous summary rail before introducing page-specific composition.", "section": "layout" },
@@ -149,7 +149,7 @@
     "dos": [
       "Do use borders and cool tonal shifts before adding shadow.",
       "Do keep cyan scarce and functional: actions, active states, focus, and meaningful data emphasis.",
-      "Do preserve the facility-type color mapping across badges, charts, legends, and map-marker segments.",
+      "Do preserve the facility-type color mapping across badges, charts, and legends; use hospital blue for amplified hospital symbols and neutral points for the supporting network on the map.",
       "Do keep status orthogonal to type and use the dashed contour consistently when a municipality has construction.",
       "Do use tabular numerals for counts, beds, currency, and aligned comparisons.",
       "Do keep the technical sheet legible as a stacked mobile view and as an A4 print document."

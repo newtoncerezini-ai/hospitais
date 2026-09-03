@@ -8,7 +8,7 @@ Primeira versão funcional de um portal para consulta das unidades de saúde pre
 - Busca textual por unidade, endereço, município, RD e GERES.
 - Filtros específicos de município, RD, GERES, tipo e status.
 - Tabela com os campos solicitados, resumo de expansão de leitos e exportação CSV com os três novos campos separados.
-- Mapa offline de Pernambuco com um marcador dentro de cada município atendido. O anel resume a composição por tipo, o número central informa o total de unidades e o contorno tracejado indica a presença de obra em andamento.
+- Mapa offline de Pernambuco com uma marca por unidade distribuída dentro do respectivo município. Hospitais usam símbolo ampliado com cruz assistencial, as demais unidades usam pontos neutros e o contorno tracejado indica obra em andamento. Filtros combináveis controlam tipos, status, avanços, expansão de leitos e investimento.
 - Ficha técnica individual com status, leitos operacionais ou previstos, expansão de leitos na gestão e impressão ou salvamento em PDF pelo navegador.
 - Pipeline reproduzível da planilha para JSON, com relatório de qualidade e correções auditáveis.
 - Layout responsivo inspirado em `C:\workspace\ips`.
@@ -48,7 +48,7 @@ O recorte atual contém 98 registros em 31 municípios: 65 unidades em funcionam
 
 ## Limitações conhecidas da fonte
 
-- A planilha não contém latitude e longitude. O mapa representa a presença municipal, posicionando cada marcador em um ponto interno do polígono e ajustando seu tamanho ao espaço disponível; a interface declara que isso não representa o endereço da unidade.
+- A planilha não contém latitude e longitude. O mapa distribui os símbolos de forma ilustrativa dentro do polígono municipal para representar cada registro sem sugerir seu endereço exato; a interface declara essa limitação junto ao mapa.
 - Contrato de manutenção está preenchido em apenas 16 das 65 unidades em funcionamento.
 - Leitos operacionais são numéricos em 50 unidades em funcionamento. Entre as obras, 5 possuem quantidade prevista informada; os demais valores ausentes continuam visíveis como `Não informado`.
 - Leitos abertos nesta gestão e seus tipos estão preenchidos em 2 unidades; leitos a abrir após reformas estão preenchidos em 4 unidades. A cobertura limitada fica explícita no painel e no relatório de qualidade.

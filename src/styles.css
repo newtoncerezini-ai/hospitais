@@ -1142,15 +1142,265 @@ b {
 }
 
 .map-layout {
+  min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   align-items: start;
 }
 
 .map-canvas-panel {
-  min-height: 660px;
+  min-width: 0;
+  min-height: 760px;
   padding: 23px;
+}
+
+.map-filter-strip {
+  min-width: 0;
+  margin-top: 20px;
+  padding: 16px 18px 18px;
+  border: 1px solid #d7e2e8;
+  border-radius: 10px;
+  background: #f5f8fa;
+}
+
+.map-filter-strip > header {
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px 20px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #dce5ea;
+}
+
+.map-filter-strip > header > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #17364f;
+  font-size: 14px;
+}
+
+.map-filter-strip > header > span svg {
+  color: var(--accent-strong);
+}
+
+.map-filter-summary {
+  color: #60717d;
+  font-size: 12px;
+}
+
+.map-filter-summary b {
+  color: #17364f;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.map-filter-strip > header .text-button {
+  margin-left: auto;
+}
+
+.map-filter-groups {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1.2fr;
+  gap: 18px 24px;
+  padding-top: 15px;
+}
+
+.map-filter-groups fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.map-filter-groups legend {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: #5c6d79;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.map-filter-groups legend button {
+  padding: 3px 0;
+  border: 0;
+  background: transparent;
+  color: #166083;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.map-filter-groups legend button:hover {
+  color: #004f73;
+  text-decoration: underline;
+}
+
+.map-toggle-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.map-toggle {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #cbd8df;
+  border-radius: 999px;
+  background: #fff;
+  color: #5a6b77;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.map-toggle > i {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 3px;
+}
+
+.map-toggle > svg {
+  flex: 0 0 auto;
+  color: #006591;
+}
+
+.map-toggle > b {
+  min-width: 20px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: #edf2f5;
+  color: #536775;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.map-toggle.is-selected {
+  border-color: #71aec8;
+  background: #eaf5f9;
+  color: #17445c;
+}
+
+.map-toggle.is-selected > b {
+  background: #d3e9f2;
+  color: #0f506e;
+}
+
+.map-toggle.status-toggle.is-selected {
+  border-color: #9fb8aa;
+  background: #eef6f1;
+  color: #245f48;
+}
+
+.map-toggle.status-toggle.status-em-construcao.is-selected {
+  border-color: #d1a761;
+  background: #fff4df;
+  color: #7a4a00;
+}
+
+.map-toggle.status-toggle.status-nao-informado.is-selected {
+  border-color: #aebbc4;
+  background: #eef2f4;
+  color: #4a5b67;
+}
+
+.map-toggle.signal-toggle.is-selected {
+  border-color: #647e8d;
+  background: #17364f;
+  color: #fff;
+}
+
+.map-toggle.signal-toggle.is-selected > svg {
+  color: #8bddff;
+}
+
+.map-toggle.signal-toggle.is-selected > b {
+  background: #2a526c;
+  color: #dff6ff;
+}
+
+.map-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.unit-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-top: 18px;
+  color: #425866;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.unit-map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-hospital-symbol {
+  position: relative;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--hospital);
+  box-shadow: 0 0 0 1px var(--hospital);
+}
+
+.legend-hospital-symbol::before,
+.legend-hospital-symbol::after {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-radius: 2px;
+  background: #fff;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.legend-hospital-symbol::before {
+  width: 8px;
+  height: 3px;
+}
+
+.legend-hospital-symbol::after {
+  width: 3px;
+  height: 8px;
+}
+
+.legend-unit-dot {
+  width: 8px;
+  height: 8px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: #7d929f;
+  box-shadow: 0 0 0 1px #7d929f;
+}
+
+.unit-map-legend .construction-legend {
+  color: var(--status-construction);
+}
+
+.unit-map-legend .construction-legend i {
+  width: 18px;
+  height: 18px;
+  border: 2px dashed currentColor;
+  border-radius: 50%;
 }
 
 .type-legend {
@@ -1188,6 +1438,9 @@ b {
 }
 
 .map-frame {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 470px;
   display: flex;
   align-items: center;
@@ -1203,6 +1456,13 @@ b {
   border: 1px solid #d4dee6;
   border-radius: 10px;
   background: #eef3f6;
+}
+
+.unit-map-frame {
+  min-height: 520px;
+  margin-top: 14px;
+  padding: 22px 12px;
+  background: #f7fafb;
 }
 
 .map-stage {
@@ -1272,11 +1532,157 @@ b {
   stroke-width: 1.5;
 }
 
+.unit-map-municipalities {
+  filter: drop-shadow(0 1px 1px rgba(63, 88, 103, 0.72));
+}
+
+.unit-map-municipalities path,
+.unit-map-municipalities path.has-units {
+  fill: #dce6eb;
+  stroke: #fff;
+  stroke-width: 1.05;
+}
+
+.unit-map-municipalities path.is-active {
+  fill: #c5dce7;
+  stroke: #557b8f;
+  stroke-width: 1.5;
+}
+
 .map-marker-overlay {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
+}
+
+.health-unit-marker {
+  position: absolute;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+}
+
+.health-unit-symbol {
+  position: relative;
+  display: block;
+  border-radius: 50%;
+  transition: transform 150ms ease, filter 150ms ease, box-shadow 150ms ease;
+}
+
+.health-unit-marker.is-hospital .health-unit-symbol {
+  width: 19px;
+  height: 19px;
+  border: 2px solid #fff;
+  background: var(--hospital);
+  box-shadow: 0 0 0 1.5px var(--hospital), 0 2px 5px rgba(20, 57, 78, 0.24);
+}
+
+.health-unit-marker.is-hospital .health-unit-symbol::before,
+.health-unit-marker.is-hospital .health-unit-symbol::after {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  border-radius: 2px;
+  background: #fff;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.health-unit-marker.is-hospital .health-unit-symbol::before {
+  width: 9px;
+  height: 3px;
+}
+
+.health-unit-marker.is-hospital .health-unit-symbol::after {
+  width: 3px;
+  height: 9px;
+}
+
+.health-unit-marker.is-other-unit .health-unit-symbol {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #fff;
+  background: #7d929f;
+  box-shadow: 0 0 0 1px rgba(76, 98, 112, 0.24);
+}
+
+.health-unit-marker.is-construction::after {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+  border: 2px dashed var(--status-construction);
+  border-radius: 50%;
+  content: "";
+}
+
+.health-unit-marker.is-construction.is-other-unit::after {
+  width: 15px;
+  height: 15px;
+}
+
+.health-unit-marker:hover,
+.health-unit-marker:focus-visible,
+.health-unit-marker.active-municipality {
+  z-index: 5;
+}
+
+.health-unit-marker:hover .health-unit-symbol,
+.health-unit-marker:focus-visible .health-unit-symbol,
+.health-unit-marker.active-municipality .health-unit-symbol {
+  filter: drop-shadow(0 4px 5px rgba(15, 35, 54, 0.28));
+  transform: scale(1.28);
+}
+
+.health-unit-marker:focus-visible {
+  outline: 3px solid rgba(2, 132, 199, 0.4);
+  outline-offset: 1px;
+}
+
+.unit-marker-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 5px);
+  z-index: 6;
+  width: max-content;
+  max-width: 230px;
+  display: none;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: #102b42;
+  color: #fff;
+  box-shadow: 0 5px 12px rgba(11, 28, 48, 0.22);
+  text-align: left;
+  transform: translateX(-50%);
+}
+
+.unit-marker-tooltip strong,
+.unit-marker-tooltip small {
+  display: block;
+}
+
+.unit-marker-tooltip strong {
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.unit-marker-tooltip small {
+  margin-top: 2px;
+  color: #c9dce7;
+  font-size: 9px;
+}
+
+.health-unit-marker:hover .unit-marker-tooltip,
+.health-unit-marker:focus-visible .unit-marker-tooltip {
+  display: block;
 }
 
 .municipality-marker {
@@ -1369,9 +1775,8 @@ b {
 }
 
 .map-detail {
-  position: sticky;
-  top: 24px;
-  min-height: 460px;
+  position: static;
+  min-height: auto;
   overflow: hidden;
 }
 
@@ -1402,6 +1807,7 @@ b {
 
 .map-unit-list {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   padding: 10px;
 }
 
@@ -1746,6 +2152,14 @@ b {
 }
 
 @media (max-width: 1280px) {
+  .map-filter-groups {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .map-filter-groups fieldset:last-child {
+    grid-column: 1 / -1;
+  }
+
   .filter-panel {
     grid-template-columns: minmax(260px, 1.6fr) repeat(3, minmax(145px, 1fr));
   }
@@ -1923,6 +2337,38 @@ b {
   .map-canvas-panel {
     min-height: auto;
     padding: 19px;
+  }
+
+  .map-filter-strip {
+    padding: 14px;
+  }
+
+  .map-filter-strip > header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .map-filter-strip > header .text-button {
+    width: 100%;
+    min-height: 36px;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .map-filter-groups {
+    grid-template-columns: 1fr;
+  }
+
+  .map-filter-groups fieldset:last-child {
+    grid-column: auto;
+  }
+
+  .map-toggle {
+    min-height: 38px;
+  }
+
+  .unit-map-legend {
+    display: grid;
   }
 
   .bed-expansion-summary {
@@ -2129,6 +2575,14 @@ b {
   .map-frame {
     min-height: 300px;
     padding: 10px 3px;
+  }
+
+  .unit-marker-tooltip {
+    display: none !important;
+  }
+
+  .map-unit-list {
+    grid-template-columns: 1fr;
   }
 
   .sheet-identity {
