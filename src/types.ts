@@ -118,9 +118,9 @@ type Point = { x: number; y: number };
 
 export type Filters = {
   query: string;
-  municipality: string;
-  rd: string;
-  geres: string;
-  type: string;
-  status: string;
+  municipality: string[];
+  rd: string[];
+  geres: string[];
+  type: string[];
+  status: string[];
 };

@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { AppShell } from "./components/AppShell";
-import { ALL, filterUnits } from "./lib/format";
+import { filterUnits } from "./lib/format";
 import type { DashboardData, Filters, HealthUnit, View } from "./types";
 import { MapView } from "./views/MapView";
 import { OverviewView } from "./views/OverviewView";
 import { TechnicalSheetView } from "./views/TechnicalSheetView";
 import { UnitsView } from "./views/UnitsView";
 
-const INITIAL_FILTERS: Filters = { query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL, status: ALL };
+const INITIAL_FILTERS: Filters = { query: "", municipality: [], rd: [], geres: [], type: [], status: [] };
 
 export default function App() {
   const [data, setData] = useState<DashboardData | null>(null);

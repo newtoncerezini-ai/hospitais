@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { Filters, HealthUnit } from "../types";
-import { ALL, filterUnits, formatMoney, normalizeSearch } from "./format";
+import { filterUnits, formatMoney, normalizeSearch } from "./format";
 
 const makeUnit = (overrides: Partial<HealthUnit> = {}): HealthUnit => ({
   id: "hospital-agamenon-magalhaes",
@@ -43,11 +43,11 @@ const makeUnit = (overrides: Partial<HealthUnit> = {}): HealthUnit => ({
 
 const allFilters = (overrides: Partial<Filters> = {}): Filters => ({
   query: "",
-  municipality: ALL,
-  rd: ALL,
-  geres: ALL,
-  type: ALL,
-  status: ALL,
+  municipality: [],
+  rd: [],
+  geres: [],
+  type: [],
+  status: [],
   ...overrides,
 });
 
@@ -118,23 +118,31 @@ describe("filterUnits", () => {
     const result = filterUnits(
       units,
       allFilters({
-        municipality: "Recife",
-        rd: "Metropolitana",
-        geres: "I",
-        type: "Hospital",
+        municipality: ["Recife"],
+        rd: ["Metropolitana"],
+        geres: ["I"],
+        type: ["Hospital"],
       }),
     );
 
     expect(result.map((unit) => unit.id)).toEqual(["hospital-agamenon-magalhaes"]);
-    expect(filterUnits(units, allFilters({ municipality: "Recife", type: "UPA" }))).toEqual([]);
+    expect(filterUnits(units, allFilters({ municipality: ["Recife"], type: ["UPA"] }))).toEqual([]);
   });
 
   it("mantém todas as unidades quando a busca está vazia e os filtros estão em Todos", () => {
     expect(filterUnits(units, allFilters())).toEqual(units);
   });
 
+  it("combina múltiplos tipos dentro do mesmo filtro", () => {
+    expect(filterUnits(units, allFilters({ type: ["Hospital", "UPA"] })).map((unit) => unit.id)).toEqual([
+      "hospital-agamenon-magalhaes",
+      "upa-sao-lourenco",
+      "maternidade-de-garanhuns",
+    ]);
+  });
+
   it("filtra o status de construção independentemente do tipo", () => {
-    expect(filterUnits(units, allFilters({ status: "Em construção" })).map((unit) => unit.id)).toEqual([
+    expect(filterUnits(units, allFilters({ status: ["Em construção"] })).map((unit) => unit.id)).toEqual([
       "maternidade-de-garanhuns",
     ]);
   });

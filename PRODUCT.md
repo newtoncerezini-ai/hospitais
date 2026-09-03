@@ -29,9 +29,10 @@ The published dataset combines the `Consolidado` and `UNIDADES EM CONSTRUÇÃO` 
 ## Capabilities and Constraints
 
 - List facilities with status, municipality, address, operational or planned beds, beds opened during the current administration, types of beds opened, beds to open after renovations, profile, type, management type, management body, RD, GERES, maintenance contract, applicable investment and main advances.
-- Search by facility, municipality, RD and GERES; filter by those territorial fields, type and status.
+- Search by facility, municipality, RD and GERES; combine multiple selections within municipality, RD, GERES, type and status filters.
 - Generate a printable technical sheet per facility.
 - Show an offline Pernambuco map with one stable symbol per facility, distributed illustratively inside its municipality. Hospitals use an amplified blue healthcare cross, other facilities use neutral dots, and a dashed ochre contour identifies construction. Combinable map controls filter multiple types, statuses and intervention evidence while territorial search remains available.
+- Export the currently filtered map as a high-resolution JPG with title, counts, legend and the municipal-position disclaimer.
 - The source workbook has no latitude/longitude. The first map therefore positions facilities at municipality level and must say so explicitly.
 - Keep operational capacity separate from planned capacity: 6,796 operational beds in 50 operating facilities and 861 planned beds in 5 construction projects.
 - Keep expansion indicators separate from both capacity measures: 726 beds opened during the current administration in 27 records (696 in the credentialed network and 30 in hospitals) and 543 beds to open after renovations in 4 facilities.

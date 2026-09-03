@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowRight, Check, Info, MapPin, RotateCcw, SlidersHorizontal, X } from "lucide-react";
+import { ArrowRight, Check, Download, Info, MapPin, RotateCcw, SlidersHorizontal, X } from "lucide-react";
 import { FilterBar } from "../components/FilterBar";
-import { ALL, displayValue, statusClass, typeClass } from "../lib/format";
+import { displayValue, statusClass, typeClass } from "../lib/format";
 import { filterMapUnits, MAP_SIGNAL_LABELS, matchesMapSignal, type MapSignal } from "../lib/mapFilters";
 import type { DashboardData, Filters, HealthUnit } from "../types";
 
@@ -159,6 +159,8 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
   const [selectedTypes, setSelectedTypes] = useState<string[]>(data.filters.types);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>(data.filters.statuses);
   const [selectedSignals, setSelectedSignals] = useState<MapSignal[]>([]);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const mapUnits = useMemo(() => filterMapUnits(units, selectedTypes, selectedStatuses, selectedSignals), [selectedSignals, selectedStatuses, selectedTypes, units]);
   const groups = useMemo(() => buildGroups(mapUnits), [mapUnits]);
@@ -247,17 +249,178 @@ export function MapView({ data, units, filters, onFiltersChange, onOpenUnit }: P
     setSelectedSignals([]);
   };
   const resetFilters = () => {
-    onFiltersChange({ query: "", municipality: ALL, rd: ALL, geres: ALL, type: ALL, status: ALL });
+    onFiltersChange({ query: "", municipality: [], rd: [], geres: [], type: [], status: [] });
     resetMapSelections();
   };
   const hasMapSelections = selectedTypes.length !== data.filters.types.length || selectedStatuses.length !== data.filters.statuses.length || selectedSignals.length > 0;
+  const canExportMap = mapUnits.length > 0 && mapUnits.every((unit) => Boolean(unitAnchors[unit.id]));
+
+  const exportMapAsJpg = async () => {
+    const sourceSvg = stageRef.current?.querySelector("svg");
+    if (!sourceSvg || !canExportMap) {
+      setExportError(mapUnits.length === 0 ? "Não há unidades visíveis para exportar." : "O mapa ainda está sendo preparado. Tente novamente em instantes.");
+      return;
+    }
+
+    setIsExporting(true);
+    setExportError(null);
+    let svgUrl: string | null = null;
+    let jpgUrl: string | null = null;
+
+    try {
+      const namespace = "http://www.w3.org/2000/svg";
+      const clone = sourceSvg.cloneNode(true) as SVGSVGElement;
+      clone.setAttribute("xmlns", namespace);
+      clone.setAttribute("width", String(viewWidth));
+      clone.setAttribute("height", String(viewHeight));
+      clone.querySelectorAll(".is-active").forEach((element) => element.classList.remove("is-active"));
+
+      const style = document.createElementNS(namespace, "style");
+      style.textContent = `
+        .unit-map-municipalities { filter: drop-shadow(0 0 1.2px #557b8f); }
+        .unit-map-municipalities path { fill: #dce6eb; stroke: #ffffff; stroke-width: .75; }
+        .map-inset rect { fill: #f8fafb; stroke: #8ba1af; stroke-width: 1; }
+        .map-inset path { fill: #c5dce8; stroke: #ffffff; stroke-width: .8; }
+        .map-inset text { fill: #405564; font: 800 8px Inter, Arial, sans-serif; }
+      `;
+      clone.prepend(style);
+
+      const background = document.createElementNS(namespace, "rect");
+      background.setAttribute("x", String(viewMinX));
+      background.setAttribute("y", String(viewMinY));
+      background.setAttribute("width", String(viewWidth));
+      background.setAttribute("height", String(viewHeight));
+      background.setAttribute("fill", "#f7fafb");
+      clone.insertBefore(background, style.nextSibling);
+
+      const markerLayer = document.createElementNS(namespace, "g");
+      markerLayer.setAttribute("aria-label", "Unidades filtradas");
+      mapUnits.forEach((unit) => {
+        const anchor = unitAnchors[unit.id];
+        if (!anchor) return;
+        const isHospital = unit.type === "Hospital";
+        const isConstruction = unit.status === "Em construção";
+
+        if (isConstruction) {
+          const ring = document.createElementNS(namespace, "circle");
+          ring.setAttribute("cx", String(anchor.x));
+          ring.setAttribute("cy", String(anchor.y));
+          ring.setAttribute("r", isHospital ? "9" : "6");
+          ring.setAttribute("fill", "none");
+          ring.setAttribute("stroke", "#ad6500");
+          ring.setAttribute("stroke-width", "1.6");
+          ring.setAttribute("stroke-dasharray", "3 2");
+          markerLayer.appendChild(ring);
+        }
+
+        const symbol = document.createElementNS(namespace, "circle");
+        symbol.setAttribute("cx", String(anchor.x));
+        symbol.setAttribute("cy", String(anchor.y));
+        symbol.setAttribute("r", isHospital ? "6" : "2.7");
+        symbol.setAttribute("fill", isHospital ? "#006f99" : "#7f96a3");
+        symbol.setAttribute("stroke", "#ffffff");
+        symbol.setAttribute("stroke-width", isHospital ? "1.7" : "1");
+        markerLayer.appendChild(symbol);
+
+        if (isHospital) {
+          const horizontal = document.createElementNS(namespace, "path");
+          horizontal.setAttribute("d", `M ${anchor.x - 3} ${anchor.y} H ${anchor.x + 3}`);
+          horizontal.setAttribute("stroke", "#ffffff");
+          horizontal.setAttribute("stroke-width", "1.8");
+          horizontal.setAttribute("stroke-linecap", "round");
+          markerLayer.appendChild(horizontal);
+          const vertical = horizontal.cloneNode() as SVGPathElement;
+          vertical.setAttribute("d", `M ${anchor.x} ${anchor.y - 3} V ${anchor.y + 3}`);
+          markerLayer.appendChild(vertical);
+        }
+      });
+      clone.appendChild(markerLayer);
+
+      const svgBlob = new Blob([new XMLSerializer().serializeToString(clone)], { type: "image/svg+xml;charset=utf-8" });
+      svgUrl = URL.createObjectURL(svgBlob);
+      const image = new Image();
+      image.src = svgUrl;
+      await image.decode();
+
+      const canvas = document.createElement("canvas");
+      const outputWidth = 2000;
+      const mapX = 40;
+      const mapY = 160;
+      const mapWidth = outputWidth - mapX * 2;
+      const mapHeight = mapWidth * (viewHeight / viewWidth);
+      canvas.width = outputWidth;
+      canvas.height = Math.ceil(mapY + mapHeight + 70);
+      const context = canvas.getContext("2d");
+      if (!context) throw new Error("Canvas indisponível");
+
+      context.fillStyle = "#ffffff";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = "#10243a";
+      context.font = "700 42px Inter, Arial, sans-serif";
+      context.fillText("Pernambuco · unidades em evidência", 54, 58);
+      context.fillStyle = "#536675";
+      context.font = "24px Inter, Arial, sans-serif";
+      context.fillText(`${mapUnits.length} unidades · ${groups.length} municípios · recorte atual dos filtros`, 54, 98);
+
+      const legendY = 130;
+      context.fillStyle = "#006f99";
+      context.beginPath();
+      context.arc(64, legendY, 10, 0, Math.PI * 2);
+      context.fill();
+      context.strokeStyle = "#ffffff";
+      context.lineWidth = 3;
+      context.beginPath();
+      context.moveTo(58, legendY);
+      context.lineTo(70, legendY);
+      context.moveTo(64, legendY - 6);
+      context.lineTo(64, legendY + 6);
+      context.stroke();
+      context.fillStyle = "#30485a";
+      context.font = "700 20px Inter, Arial, sans-serif";
+      context.fillText("Hospital", 83, legendY + 7);
+      context.fillStyle = "#7f96a3";
+      context.beginPath();
+      context.arc(226, legendY, 6, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = "#30485a";
+      context.fillText("Demais unidades", 242, legendY + 7);
+      context.strokeStyle = "#ad6500";
+      context.lineWidth = 3;
+      context.setLineDash([7, 5]);
+      context.beginPath();
+      context.arc(453, legendY, 10, 0, Math.PI * 2);
+      context.stroke();
+      context.setLineDash([]);
+      context.fillStyle = "#704300";
+      context.fillText("Unidade em construção", 473, legendY + 7);
+
+      context.drawImage(image, mapX, mapY, mapWidth, mapHeight);
+      context.fillStyle = "#647580";
+      context.font = "18px Inter, Arial, sans-serif";
+      context.fillText("Posições ilustrativas dentro dos municípios; não representam endereços exatos.", 54, canvas.height - 25);
+
+      const jpgBlob = await new Promise<Blob>((resolve, reject) => canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Falha ao gerar JPG")), "image/jpeg", 0.94));
+      jpgUrl = URL.createObjectURL(jpgBlob);
+      const link = document.createElement("a");
+      link.href = jpgUrl;
+      link.download = `mapa-rede-saude-pernambuco-${new Date().toISOString().slice(0, 10)}.jpg`;
+      link.click();
+    } catch {
+      setExportError("Não foi possível gerar o JPG. Tente novamente.");
+    } finally {
+      if (svgUrl) URL.revokeObjectURL(svgUrl);
+      if (jpgUrl) URL.revokeObjectURL(jpgUrl);
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="map-page">
       <FilterBar filters={filters} options={data.filters} onChange={onFiltersChange} resultCount={units.length} />
       <section className="map-layout">
         <div className="panel map-canvas-panel">
-          <div className="panel-heading"><div><h2>Pernambuco · unidades em evidência</h2><p>Cada símbolo representa uma unidade; hospitais recebem maior escala para conduzir a leitura.</p></div></div>
+          <div className="panel-heading"><div><h2>Pernambuco · unidades em evidência</h2><p>Cada símbolo representa uma unidade; hospitais recebem maior escala para conduzir a leitura.</p></div><button type="button" className="button secondary map-export-action" onClick={exportMapAsJpg} disabled={isExporting || !canExportMap}><Download size={17} aria-hidden="true" />{isExporting ? "Gerando JPG…" : "Exportar mapa em JPG"}</button></div>
+          {exportError && <p className="map-export-error" role="alert">{exportError}</p>}
           <section className="map-filter-strip" aria-label="Filtros dinâmicos do mapa">
             <header><span><SlidersHorizontal size={18} aria-hidden="true" /><strong>Filtros do mapa</strong></span><div className="map-filter-summary" aria-live="polite"><b>{mapUnits.length}</b> {mapUnits.length === 1 ? "unidade" : "unidades"} · {groups.length} {groups.length === 1 ? "município" : "municípios"}</div>{hasMapSelections && <button type="button" className="text-button" onClick={resetMapSelections}><RotateCcw size={14} aria-hidden="true" /> Restaurar mapa</button>}</header>
             <div className="map-filter-groups">

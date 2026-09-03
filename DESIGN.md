@@ -276,6 +276,7 @@ Geometry is softly precise. Controls use compact 6–7px corners, small metadata
 - **Style:** 44px-tall pale controls with a 1px gray-blue stroke, 6px corners, and 12px horizontal padding.
 - **Labels:** compact uppercase metadata placed seven pixels above the control.
 - **Focus:** border shifts to focus blue and the search wrapper receives the field focus halo.
+- **Multi-selection:** municipality, RD, GERES, type and status open checkbox lists that remain available while several values are selected; on narrow mobile screens the list expands in flow instead of relying on the operating system's single-choice picker.
 
 ### Navigation
 

@@ -1,7 +1,5 @@
 import type { Filters, HealthUnit, MoneyValue } from "../types";
 
-export const ALL = "Todos";
-
 export function normalizeSearch(value: string | null | undefined): string {
   return (value ?? "")
     .normalize("NFD")
@@ -19,11 +17,11 @@ export function filterUnits(units: HealthUnit[], filters: Filters): HealthUnit[]
     );
     return (
       (!query || haystack.includes(query)) &&
-      (filters.municipality === ALL || unit.municipality === filters.municipality) &&
-      (filters.rd === ALL || unit.rd === filters.rd) &&
-      (filters.geres === ALL || unit.geres === filters.geres) &&
-      (filters.type === ALL || unit.type === filters.type) &&
-      (filters.status === ALL || unit.status === filters.status)
+      (filters.municipality.length === 0 || filters.municipality.includes(unit.municipality)) &&
+      (filters.rd.length === 0 || filters.rd.includes(unit.rd)) &&
+      (filters.geres.length === 0 || filters.geres.includes(unit.geres)) &&
+      (filters.type.length === 0 || filters.type.includes(unit.type)) &&
+      (filters.status.length === 0 || filters.status.includes(unit.status))
     );
   });
 }

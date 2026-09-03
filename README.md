@@ -6,9 +6,10 @@ Primeira versão funcional de um portal para consulta das unidades de saúde pre
 
 - 98 registros publicados: 65 unidades em funcionamento, 8 em construção e 25 da Rede Credenciada com status não informado na fonte.
 - Busca textual por unidade, endereço, município, RD e GERES.
-- Filtros específicos de município, RD, GERES, tipo e status.
+- Filtros com seleção múltipla por município, RD, GERES, tipo e status.
 - Tabela com os campos solicitados, resumo de expansão de leitos e exportação CSV com os três novos campos separados.
 - Mapa offline de Pernambuco com uma marca por unidade distribuída dentro do respectivo município. Hospitais usam símbolo ampliado com cruz assistencial, as demais unidades usam pontos neutros e o contorno tracejado indica obra em andamento. Filtros combináveis controlam tipos, status, avanços, expansão de leitos e investimento.
+- Exportação do recorte atual do mapa em JPG de alta resolução, incluindo legenda e quantitativos filtrados.
 - Ficha técnica individual com status, leitos operacionais ou previstos, expansão de leitos na gestão e impressão ou salvamento em PDF pelo navegador.
 - Pipeline reproduzível da planilha para JSON, com relatório de qualidade e correções auditáveis.
 - Layout responsivo inspirado em `C:\workspace\ips`.
