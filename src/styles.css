@@ -1680,6 +1680,13 @@ b {
   font-size: 9px;
 }
 
+.health-unit-marker.is-island .unit-marker-tooltip {
+  right: calc(100% + 5px);
+  bottom: 50%;
+  left: auto;
+  transform: translateY(50%);
+}
+
 .health-unit-marker:hover .unit-marker-tooltip,
 .health-unit-marker:focus-visible .unit-marker-tooltip {
   display: block;
