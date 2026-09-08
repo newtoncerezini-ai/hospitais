@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "sync:data": "python scripts/sync_google_sheet.py",
     "build:data": "python scripts/build_data.py",
     "dev": "vite --host 0.0.0.0",
     "prebuild": "npm run build:data",

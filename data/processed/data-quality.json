@@ -1,65 +1,129 @@
 {
   "sourceFile": "health-units.xlsx",
-  "sourceSheet": "Consolidado",
+  "sourceSheet": "NÃO MEXER Consolidado",
   "sourceSheets": [
-    "Consolidado",
+    "NÃO MEXER Consolidado",
+    "Hospitais Regionais e OSS",
+    "Os Seis Grandes",
+    "UPA e UPA-E",
+    "Rede Credenciada",
     "UNIDADES EM CONSTRUÇÃO"
   ],
-  "generatedAt": "2026-08-26",
+  "generatedAt": "2026-09-08",
+  "sourceSha256": "3b716f8a8515bc99b754c3909a753e35cda4b8eb9747aea6d2645d0b1aa9132e",
   "sourceRows": 98,
-  "constructionRows": 8,
+  "constructionRows": 0,
   "publishedUnits": 98,
-  "municipalities": 31,
+  "municipalities": 30,
   "sourceCoverage": {
     "municipality": 98,
     "status": 73,
-    "rd": 73,
-    "geres": 73,
-    "address": 65,
+    "rd": 98,
+    "geres": 86,
+    "address": 66,
     "operationalBeds": 50,
     "plannedBeds": 5,
-    "bedsOpenedInManagement": 27,
-    "openedBedTypes": 27,
-    "bedsToOpenAfterRenovation": 4,
+    "bedsOpenedInManagement": 38,
+    "openedBedTypes": 38,
+    "bedsToOpenAfterRenovation": 5,
     "operationalProfile": 65,
     "plannedProfile": 3,
     "maintenanceContract": 16,
     "managementInvestment": 64,
     "constructionInvestment": 0,
     "mainAdvances": 64,
+    "cofinancing2022": 16,
+    "cofinancing2025": 16,
+    "cofinancingIncreasePercent": 16,
+    "osTransfer2025": 16,
+    "worksAndEquipmentInvestment": 0,
+    "professionalBreakdown": 39,
     "coordinates": 0
   },
   "enrichment": {
-    "rdFromWorkbookMunicipalityTemplate": 25,
-    "geresFromMunicipalityMode": 19,
+    "rdFromWorkbookMunicipalityTemplate": 0,
+    "geresFromMunicipalityMode": 6,
     "investmentFromSourceSheets": 0,
-    "constructionDetailsFromSheet": 8,
-    "documentedCorrections": 3
+    "constructionDetailsFromSheet": 0,
+    "documentedCorrections": 1,
+    "fieldsInheritedFromPreviousSnapshot": 131
   },
+  "formulaErrors": [
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "I25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "J25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "K25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "L25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "M25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "N25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "O25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "P25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "Q25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "R25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    },
+    {
+      "sheet": "NÃO MEXER Consolidado",
+      "cell": "T25",
+      "unitName": "Hospital Prof. Agamenon Magalhães",
+      "error": "#N/A"
+    }
+  ],
   "corrections": [
     {
-      "sourceRow": 30,
+      "sourceRow": 25,
       "field": "geres",
       "sourceValue": "I",
       "normalizedValue": "XI",
       "reason": "A unidade está em Serra Talhada, município da XI GERES; a célula I diverge das demais referências territoriais.",
       "evidenceUrl": "https://cartadeservicos.saude.pe.gov.br/endereco-geres/"
-    },
-    {
-      "sourceRow": 37,
-      "field": "municipality",
-      "sourceValue": "Recife",
-      "normalizedValue": "Abreu e Lima",
-      "reason": "O endereço da linha e a página oficial situam a unidade no bairro Desterro, em Abreu e Lima.",
-      "evidenceUrl": "https://portal.saude.pe.gov.br/upase-oss/upae-grande-recife-abreu-e-lima/"
-    },
-    {
-      "sourceRow": 62,
-      "field": "municipality",
-      "sourceValue": "Recife",
-      "normalizedValue": "Jaboatão dos Guararapes",
-      "reason": "O endereço da linha e a página oficial situam a unidade no Curado II, em Jaboatão dos Guararapes.",
-      "evidenceUrl": "https://portal.saude.pe.gov.br/upas/upa-curado-medico-fernando-de-lacerda/"
     }
   ],
   "possibleDuplicates": [
@@ -67,8 +131,8 @@
       "unitName": "Hospital Memorial de Pernambuco",
       "municipality": "Caruaru",
       "sourceRows": [
-        91,
-        93
+        19,
+        21
       ]
     }
   ],
@@ -81,27 +145,31 @@
     "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
     "25 unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
     "1 possível duplicidade por nome e município foi preservada e registrada para validação da área responsável.",
-    "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável."
+    "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
+    "11 erro(s) de fórmula foram encontrados no consolidado do Drive; campos equivalentes foram recuperados das abas de origem quando disponíveis.",
+    "Campos ausentes no consolidado são complementados pelas abas de origem e, apenas quando necessário, pelo último JSON válido; a procedência fica registrada por unidade."
   ],
   "headers": [
-    "NOME MUNICIPIO",
+    "CÓDIGO DO IBGE",
+    "MUNICIPIO",
     "RD",
+    "Tipo",
+    "Unidade",
+    "Texto",
+    "Tipo de Gestão",
     "GERES",
-    "UNIDADE DE SAÚDE",
-    "LOCALIZAÇÃO",
-    "STATUS",
-    "TIPO",
-    "TIPO GESTÃO",
-    "GESTÃO",
-    "LEITOS",
-    "LEITOS ABERTOS NESTA GESTÃO",
-    "TIPOS DE LEITOS ABERTOS NESTA GESTÃO",
-    "LEITOS A ABRIR COM O FIM DA REFORMA",
-    "PERFIL",
-    "PROSSIONAIS",
-    "PROFISSIONAIS CONVOCADOS NA GESTÃO",
-    "CONTRATO DE MANUTENÇÃO PREDIAL",
-    "INVESTIMENTO NESTA GESTÃO",
-    "PRINCIPAIS AVANÇOS"
+    "Nº de Leitos",
+    "Perfil",
+    "Nº Profissionais Total",
+    "Nº Profissionais convocados nesta gestão",
+    "Valor do contrato de manutenção predial (Anual)",
+    "Investimento nesta gestão",
+    "Cofinanciamento 2022 (Apenas Gestão Própria)",
+    "Cofinanciamento 2025 (Apenas Gestão Própria)",
+    "Aumento Cofinanciamento (2022 a 2025) % (Apenas Gestão Própria)",
+    "Repasse (OS) em 2025",
+    "Investimento para obra e equipagem",
+    "Principais avanços nessa gestão",
+    ""
   ]
 }
