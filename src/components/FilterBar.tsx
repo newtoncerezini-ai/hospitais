@@ -8,7 +8,7 @@ type Props = {
   resultCount: number;
 };
 
-function MultiSelectField({
+export function MultiSelectField({
   id,
   label,
   values,

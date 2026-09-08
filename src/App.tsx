@@ -78,7 +78,7 @@ export default function App() {
       {view === "units" && <UnitsView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}
       {view === "new-units" && <NewUnitsView data={data} onOpenUnit={openUnit} />}
       {view === "map" && <MapView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}
-      {view === "technical" && <TechnicalSheetView units={data.units} selected={selected} onSelect={setSelectedId} />}
+      {view === "technical" && <TechnicalSheetView units={data.units} selected={selected} filterOptions={data.filters} onSelect={setSelectedId} />}
     </AppShell>
   );
 }

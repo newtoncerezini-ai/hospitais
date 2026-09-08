@@ -1,7 +1,7 @@
 @media print {
   @page {
     size: A4;
-    margin: 10mm;
+    margin: 8mm;
   }
 
   :root,
@@ -106,11 +106,11 @@
   }
 
   .bulk-report-entry {
-    break-after: page;
+    break-before: page;
   }
 
-  .bulk-report-entry:last-child {
-    break-after: auto;
+  .bulk-report-entry:first-of-type {
+    break-before: auto;
   }
 
   .sheet-identity {
@@ -153,6 +153,16 @@
   .sheet-detail-block {
     min-height: 0;
     padding: 7mm;
+    break-inside: auto;
+  }
+
+  .sheet-detail-block h2,
+  .sheet-section-heading {
+    break-after: avoid;
+  }
+
+  .detail-list > div,
+  .bed-evolution-block {
     break-inside: avoid;
   }
 
@@ -162,7 +172,57 @@
     line-height: 1.45;
   }
 
-  .sheet-footer {
-    padding: 4mm 7mm;
+  .long-copy {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .bulk-report-entry .sheet-identity {
+    padding: 6mm 7mm;
+    break-inside: avoid;
+  }
+
+  .bulk-report-entry .sheet-title h2 {
+    margin-top: 4mm;
+    font-size: 19pt;
+  }
+
+  .bulk-report-entry .sheet-document-mark {
+    min-width: 36mm;
+    min-height: 23mm;
+    padding: 4mm;
+  }
+
+  .bulk-report-entry .sheet-kpis {
+    grid-template-columns: repeat(auto-fit, minmax(34mm, 1fr));
+    break-inside: avoid;
+  }
+
+  .bulk-report-entry .sheet-kpis > div {
+    min-height: 19mm;
+    padding: 3.5mm;
+  }
+
+  .bulk-report-entry .sheet-kpis strong {
+    font-size: 12pt;
+  }
+
+  .bulk-report-entry .sheet-detail-block {
+    padding: 4.5mm 6mm;
+  }
+
+  .bulk-report-entry .sheet-detail-block h2 {
+    margin-bottom: 3mm;
+    font-size: 13pt;
+  }
+
+  .bulk-report-entry .detail-list {
+    gap: 3mm 5mm;
+  }
+
+  .bulk-report-entry .long-copy,
+  .bulk-report-entry .detail-list dd {
+    font-size: 8.4pt;
+    line-height: 1.38;
   }
 }
