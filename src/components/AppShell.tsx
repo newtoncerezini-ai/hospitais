@@ -3,6 +3,7 @@ import {
   Building2,
   ClipboardList,
   HeartPulse,
+  Hospital,
   LayoutDashboard,
   MapPinned,
 } from "lucide-react";
@@ -10,22 +11,25 @@ import type { View } from "../types";
 
 const navItems: Array<{ view: View; label: string; icon: typeof LayoutDashboard }> = [
   { view: "units", label: "Unidades de saúde", icon: Building2 },
+  { view: "new-units", label: "Novas unidades", icon: Hospital },
   { view: "overview", label: "Visão geral", icon: LayoutDashboard },
   { view: "map", label: "Mapa da rede", icon: MapPinned },
-  { view: "technical", label: "Ficha técnica", icon: ClipboardList },
+  { view: "technical", label: "Relatórios", icon: ClipboardList },
 ];
 
 const titles: Record<View, { title: string; subtitle: string }> = {
   overview: { title: "Rede estadual em uma leitura", subtitle: "Cobertura, tipologia e qualidade da base consolidada." },
   units: { title: "Unidades de saúde", subtitle: "Consulte, compare e abra a ficha técnica de cada unidade." },
+  "new-units": { title: "Novas unidades de saúde", subtitle: "Projetos em construção, capacidade prevista e cobertura territorial." },
   map: { title: "Mapa da rede", subtitle: "Distribuição municipal das unidades, classificada por tipo e status." },
-  technical: { title: "Ficha técnica", subtitle: "Informações assistenciais, territoriais e de gestão para impressão." },
+  technical: { title: "Relatórios", subtitle: "Gere uma ficha individual ou o caderno completo de todas as unidades." },
 };
 
 type Props = {
   view: View;
   onViewChange: (view: View) => void;
   sourceLabel: string;
+  generatedAt: string;
   totalUnits: number;
   activeUnits: number;
   constructionUnits: number;
@@ -33,8 +37,12 @@ type Props = {
   children: ReactNode;
 };
 
-export function AppShell({ view, onViewChange, sourceLabel, totalUnits, activeUnits, constructionUnits, unitsWithoutStatus, children }: Props) {
+export function AppShell({ view, onViewChange, sourceLabel, generatedAt, totalUnits, activeUnits, constructionUnits, unitsWithoutStatus, children }: Props) {
   const current = titles[view];
+  const formattedDate = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" })
+    .format(new Date(`${generatedAt}T00:00:00Z`))
+    .replace(" de ", " ")
+    .replace(" de ", " ");
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -81,7 +89,7 @@ export function AppShell({ view, onViewChange, sourceLabel, totalUnits, activeUn
             </div>
             <div className="source-stamp">
               <span>Atualização da base</span>
-              <strong>20 ago 2026</strong>
+              <strong>{formattedDate}</strong>
             </div>
           </header>
           <div className="view-panel">{children}</div>

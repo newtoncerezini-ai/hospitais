@@ -1,4 +1,4 @@
-export type View = "overview" | "units" | "map" | "technical";
+export type View = "overview" | "units" | "new-units" | "map" | "technical";
 
 export type MoneyValue = {
   amount: number | null;

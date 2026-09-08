@@ -4,6 +4,7 @@ import { AppShell } from "./components/AppShell";
 import { filterUnits } from "./lib/format";
 import type { DashboardData, Filters, HealthUnit, View } from "./types";
 import { MapView } from "./views/MapView";
+import { NewUnitsView } from "./views/NewUnitsView";
 import { OverviewView } from "./views/OverviewView";
 import { TechnicalSheetView } from "./views/TechnicalSheetView";
 import { UnitsView } from "./views/UnitsView";
@@ -67,6 +68,7 @@ export default function App() {
       view={view}
       onViewChange={setView}
       sourceLabel={data.meta.sourceLabel}
+      generatedAt={data.meta.generatedAt}
       totalUnits={data.meta.totalUnits}
       activeUnits={data.meta.activeUnits}
       constructionUnits={data.meta.constructionUnits}
@@ -74,6 +76,7 @@ export default function App() {
     >
       {view === "overview" && <OverviewView data={data} onNavigate={setView} />}
       {view === "units" && <UnitsView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}
+      {view === "new-units" && <NewUnitsView data={data} onOpenUnit={openUnit} />}
       {view === "map" && <MapView data={data} units={filteredUnits} filters={filters} onFiltersChange={setFilters} onOpenUnit={openUnit} />}
       {view === "technical" && <TechnicalSheetView units={data.units} selected={selected} onSelect={setSelectedId} />}
     </AppShell>

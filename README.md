@@ -9,6 +9,8 @@ Portal para consulta das unidades de saúde de Pernambuco, com lista completa, f
 - Filtros com seleção múltipla por município, RD, GERES, tipo e status.
 - Mapa offline com os marcadores contidos no município e exportação JPG de alta resolução.
 - Ficha técnica individual com impressão ou salvamento em PDF pelo navegador.
+- Relatório completo com capa e uma ficha técnica por unidade para impressão ou PDF.
+- Tela exclusiva das novas unidades em construção, com capacidade prevista, território e perfil assistencial.
 - Pipeline somente leitura do Google Drive, com reconciliação das abas de origem, validação e última versão válida.
 
 ## Executar
