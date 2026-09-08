@@ -2465,6 +2465,18 @@ b {
   background: #f7f9fb;
 }
 
+.sheet-kpis > .os-transfer-highlight {
+  background: #eef7f5;
+}
+
+.sheet-kpis > .os-transfer-highlight strong {
+  color: #126b62;
+}
+
+.sheet-kpis > .os-transfer-highlight svg {
+  color: #168377;
+}
+
 .sheet-kpis > .cofinancing-highlight strong {
   color: var(--accent-strong);
 }

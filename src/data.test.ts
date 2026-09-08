@@ -101,6 +101,14 @@ describe("base publicada", () => {
     expect(restauracao?.managementInvestment).toEqual({ amount: 176_573_825.3, label: null });
   });
 
+  it("preserva os repasses de 2025 exclusivamente para hospitais geridos por OSS", () => {
+    const unitsWithOsTransfer = data.units.filter((unit) => unit.osTransfer2025.amount !== null || unit.osTransfer2025.label !== null);
+    expect(unitsWithOsTransfer).toHaveLength(16);
+    expect(unitsWithOsTransfer.every((unit) => unit.type === "Hospital" && unit.managementType === "OSS")).toBe(true);
+    expect(data.units.find((unit) => unit.id === "hospital-dom-malan")?.osTransfer2025.amount).toBe(100_419_517.1);
+    expect(data.units.find((unit) => unit.id === "hospital-da-mulher-do-agreste")?.osTransfer2025.amount).toBe(44_712_253.07);
+  });
+
   it("preserva as lacunas declaradas da Rede Credenciada sem inferir operação", () => {
     const credentialedUnits = data.units.filter((unit) => unit.type === "Rede Credenciada");
     expect(credentialedUnits).toHaveLength(25);

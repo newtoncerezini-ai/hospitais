@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, BedDouble, Building2, FileDown, Files, MapPin, Printer, Settings2, UsersRound, Wrench } from "lucide-react";
+import { ArrowLeft, BedDouble, Building2, FileDown, Files, HandCoins, MapPin, Printer, Settings2, UsersRound, Wrench } from "lucide-react";
 import { FilterBar, MultiSelectField } from "../components/FilterBar";
 import { filterUnits, formatMoney, formatNumber, isConstructionStatus, normalizeSearch, statusClass, typeClass } from "../lib/format";
 import type { DashboardData, Filters, HealthUnit, MoneyValue } from "../types";
@@ -72,6 +72,7 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
         {hasMoney(unit.maintenanceContract) && <div className="maintenance-highlight"><Wrench size={22} /><span>Contrato de manutenção predial</span><strong>{formatMoney(unit.maintenanceContract, true)}</strong><small>valor anual informado</small></div>}
         {hasValue(unit.managementType) && <div><UsersRound size={22} /><span>Tipo de gestão</span><strong>{unit.managementType}</strong></div>}
         {hasManagementName && <div><span>{isOss ? "Organização social responsável" : "Gestão"}</span><strong>{unit.management}</strong><small>{unit.type}</small></div>}
+        {isOss && hasMoney(unit.osTransfer2025) && <div className="os-transfer-highlight"><HandCoins size={22} /><span>Repasse (OS) em 2025</span><strong>{formatMoney(unit.osTransfer2025)}</strong><small>valor informado na base</small></div>}
         {hasMoney(displayedInvestment) && <div><span>{isConstruction ? "Investimento para obra e equipagem" : "Investimento na gestão"}</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>valor disponível na base</small></div>}
         {hasMoney(unit.cofinancing2022) && <div className="cofinancing-highlight"><span>Cofinanciamento 2022</span><strong>{formatMoney(unit.cofinancing2022, true)}</strong></div>}
         {hasMoney(unit.cofinancing2025) && <div className="cofinancing-highlight"><span>Cofinanciamento 2025</span><strong>{formatMoney(unit.cofinancing2025, true)}</strong></div>}
