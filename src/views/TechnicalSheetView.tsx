@@ -47,12 +47,10 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
     || hasValue(unit.openedBedTypes)
     || unit.bedsToOpenAfterRenovation !== null
   );
-  const hasFinancialDetails = hasMoney(unit.cofinancing2022)
-    || hasMoney(unit.cofinancing2025)
-    || unit.cofinancingIncreasePercent !== null
-    || hasMoney(unit.osTransfer2025)
+  const hasFinancialDetails = hasMoney(unit.osTransfer2025)
     || hasValue(unit.professionals)
     || unit.calledProfessionals !== null;
+  const resourcesTitle = hasMoney(unit.osTransfer2025) ? "Repasse e quadro profissional" : "Quadro profissional";
 
   return (
     <article className="technical-sheet">
@@ -75,6 +73,9 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
         {hasValue(unit.managementType) && <div><UsersRound size={22} /><span>Tipo de gestão</span><strong>{unit.managementType}</strong></div>}
         {hasManagementName && <div><span>{isOss ? "Organização social responsável" : "Gestão"}</span><strong>{unit.management}</strong><small>{unit.type}</small></div>}
         {hasMoney(displayedInvestment) && <div><span>{isConstruction ? "Investimento para obra e equipagem" : "Investimento na gestão"}</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>valor disponível na base</small></div>}
+        {hasMoney(unit.cofinancing2022) && <div className="cofinancing-highlight"><span>Cofinanciamento 2022</span><strong>{formatMoney(unit.cofinancing2022, true)}</strong></div>}
+        {hasMoney(unit.cofinancing2025) && <div className="cofinancing-highlight"><span>Cofinanciamento 2025</span><strong>{formatMoney(unit.cofinancing2025, true)}</strong></div>}
+        {unit.cofinancingIncreasePercent !== null && <div className="cofinancing-highlight"><span>Aumento do cofinanciamento</span><strong>{formatPercentage(unit.cofinancingIncreasePercent)}</strong><small>2022 a 2025</small></div>}
       </section>
 
       <div className="sheet-content-grid">
@@ -104,11 +105,8 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
         </DetailBlock>
 
         {hasFinancialDetails && (
-          <DetailBlock title="Recursos e indicadores financeiros" className="financial-detail-block">
+          <DetailBlock title={resourcesTitle} className="financial-detail-block">
             <dl className="detail-list">
-              {hasMoney(unit.cofinancing2022) && <div><dt>Cofinanciamento 2022</dt><dd>{formatMoney(unit.cofinancing2022)}</dd></div>}
-              {hasMoney(unit.cofinancing2025) && <div><dt>Cofinanciamento 2025</dt><dd>{formatMoney(unit.cofinancing2025)}</dd></div>}
-              {unit.cofinancingIncreasePercent !== null && <div><dt>Aumento do cofinanciamento 2022 a 2025</dt><dd>{formatPercentage(unit.cofinancingIncreasePercent)}</dd></div>}
               {hasMoney(unit.osTransfer2025) && <div><dt>Repasse para OS em 2025</dt><dd>{formatMoney(unit.osTransfer2025)}</dd></div>}
               {hasValue(unit.professionals) && <div><dt>Profissionais</dt><dd>{unit.professionals}</dd></div>}
               {unit.calledProfessionals !== null && <div><dt>Profissionais convocados</dt><dd>{formatNumber(unit.calledProfessionals)}</dd></div>}

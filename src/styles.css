@@ -2420,6 +2420,14 @@ b {
   background: #f0f7fa;
 }
 
+.sheet-kpis > .cofinancing-highlight {
+  background: #f7f9fb;
+}
+
+.sheet-kpis > .cofinancing-highlight strong {
+  color: var(--accent-strong);
+}
+
 .sheet-kpis svg {
   color: var(--accent-strong);
 }
