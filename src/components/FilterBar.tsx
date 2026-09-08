@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Search, X } from "lucide-react";
 import type { DashboardData, Filters } from "../types";
 
@@ -21,11 +22,35 @@ export function MultiSelectField({
   options: string[];
   onChange: (values: string[]) => void;
 }) {
+  const [open, setOpen] = useState(false);
+  const detailsRef = useRef<HTMLDetailsElement>(null);
   const summary = values.length === 0
     ? "Todos"
     : values.length === 1
       ? values[0]
       : `${values.length} selecionados`;
+
+  useEffect(() => {
+    if (!open) return;
+
+    const closeWhenClickingOutside = (event: PointerEvent) => {
+      if (!detailsRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      detailsRef.current?.querySelector("summary")?.focus();
+    };
+
+    document.addEventListener("pointerdown", closeWhenClickingOutside);
+    document.addEventListener("keydown", closeWithEscape);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeWhenClickingOutside);
+      document.removeEventListener("keydown", closeWithEscape);
+    };
+  }, [open]);
 
   const toggle = (option: string) => {
     onChange(values.includes(option)
@@ -36,7 +61,13 @@ export function MultiSelectField({
   return (
     <div className={`field multi-select-field field-${id}`}>
       <span id={`${id}-label`}>{label}</span>
-      <details className="multi-select" name="unit-filters">
+      <details
+        ref={detailsRef}
+        className="multi-select"
+        name="unit-filters"
+        open={open}
+        onToggle={(event) => setOpen(event.currentTarget.open)}
+      >
         <summary aria-labelledby={`${id}-label ${id}-summary`}>
           <span id={`${id}-summary`}>{summary}</span>
           <ChevronDown size={17} aria-hidden="true" />
@@ -56,6 +87,10 @@ export function MultiSelectField({
               </label>
             );
           })}
+          <div className="multi-select-menu-actions">
+            <span>{values.length === 0 ? "Todas as opções" : `${values.length} ${values.length === 1 ? "selecionado" : "selecionados"}`}</span>
+            <button type="button" onClick={() => setOpen(false)}>Concluir</button>
+          </div>
         </div>
       </details>
     </div>

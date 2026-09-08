@@ -994,6 +994,47 @@ b {
   outline-offset: -2px;
 }
 
+.multi-select-menu-actions {
+  position: sticky;
+  bottom: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 4px -6px -6px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--line-soft);
+  background: #fff;
+}
+
+.multi-select-menu-actions span {
+  color: #526572;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.multi-select-menu-actions button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--accent-strong);
+  border-radius: 6px;
+  background: var(--accent-strong);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.multi-select-menu-actions button:hover {
+  background: #075d82;
+}
+
+.multi-select-menu-actions button:focus-visible {
+  outline: 3px solid rgba(2, 132, 199, 0.35);
+  outline-offset: 2px;
+}
+
 .input-with-icon {
   display: flex;
   align-items: center;
