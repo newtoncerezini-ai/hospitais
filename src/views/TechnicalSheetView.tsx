@@ -23,6 +23,10 @@ function hasMoney(value: MoneyValue): boolean {
   return value.amount !== null || hasValue(value.label);
 }
 
+function hasMaterialMoney(value: MoneyValue): boolean {
+  return (value.amount !== null && value.amount !== 0) || hasValue(value.label);
+}
+
 function formatPercentage(value: number): string {
   return new Intl.NumberFormat("pt-BR", { style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 }
@@ -51,6 +55,19 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
     || hasValue(unit.professionals)
     || unit.calledProfessionals !== null;
   const resourcesTitle = hasMoney(unit.osTransfer2025) ? "Repasse e quadro profissional" : "Quadro profissional";
+  const financialBreakdown = [
+    ["Obras", unit.financialBreakdown.works],
+    ["Equipagem", unit.financialBreakdown.equipment],
+    ["Manutenção predial", unit.financialBreakdown.buildingMaintenance],
+    ["Mobiliário", unit.financialBreakdown.furniture],
+    ["Emendas parlamentares estaduais", unit.financialBreakdown.stateAmendments],
+    ["Emendas parlamentares federais", unit.financialBreakdown.federalAmendments],
+    ["Plano de investimento da OSS", unit.financialBreakdown.osInvestmentPlan],
+    ["Custos centralizados e contratos de TI", unit.financialBreakdown.centralizedCostsAndIT],
+    ["Folha de terceirizados", unit.financialBreakdown.outsourcedPayroll],
+    ["Folha de servidores", unit.financialBreakdown.serverPayroll],
+  ] as Array<[string, MoneyValue]>;
+  const hasFinancialBreakdown = financialBreakdown.some(([, value]) => hasMaterialMoney(value));
 
   return (
     <article className="technical-sheet">
@@ -69,11 +86,12 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
 
       <section className="sheet-kpis">
         {displayedBeds !== null && <div><Building2 size={22} /><span>{isConstruction ? "Leitos previstos" : "Leitos em funcionamento"}</span><strong>{formatNumber(displayedBeds)}</strong></div>}
-        {hasMoney(unit.maintenanceContract) && <div className="maintenance-highlight"><Wrench size={22} /><span>Contrato de manutenção predial</span><strong>{formatMoney(unit.maintenanceContract, true)}</strong><small>valor anual informado</small></div>}
+        {hasMoney(unit.maintenanceContract) && <div className="maintenance-highlight"><Wrench size={22} /><span>Investimento em manutenção predial</span><strong>{formatMoney(unit.maintenanceContract, true)}</strong><small>2023 a 2026</small></div>}
         {hasValue(unit.managementType) && <div><UsersRound size={22} /><span>Tipo de gestão</span><strong>{unit.managementType}</strong></div>}
         {hasManagementName && <div><span>{isOss ? "Organização social responsável" : "Gestão"}</span><strong>{unit.management}</strong><small>{unit.type}</small></div>}
         {isOss && hasMoney(unit.osTransfer2025) && <div className="os-transfer-highlight"><HandCoins size={22} /><span>Repasse (OS) em 2025</span><strong>{formatMoney(unit.osTransfer2025)}</strong><small>valor informado na base</small></div>}
-        {hasMoney(displayedInvestment) && <div><span>{isConstruction ? "Investimento para obra e equipagem" : "Investimento na gestão"}</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>valor disponível na base</small></div>}
+        {hasMaterialMoney(displayedInvestment) && <div><span>Investimento total</span><strong>{formatMoney(displayedInvestment, true)}</strong><small>2023 a 2026</small></div>}
+        {hasMaterialMoney(unit.costTotal2023To2026) && <div><span>Custeio total</span><strong>{formatMoney(unit.costTotal2023To2026, true)}</strong><small>2023 a 2026</small></div>}
         {hasMoney(unit.cofinancing2022) && <div className="cofinancing-highlight"><span>Cofinanciamento 2022</span><strong>{formatMoney(unit.cofinancing2022, true)}</strong></div>}
         {hasMoney(unit.cofinancing2025) && <div className="cofinancing-highlight"><span>Cofinanciamento 2025</span><strong>{formatMoney(unit.cofinancing2025, true)}</strong></div>}
         {unit.cofinancingIncreasePercent !== null && <div className="cofinancing-highlight"><span>Aumento do cofinanciamento</span><strong>{formatPercentage(unit.cofinancingIncreasePercent)}</strong><small>2022 a 2025</small></div>}
@@ -85,6 +103,7 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
             <div className="sheet-section-heading"><BedDouble size={20} /><h2>Expansão de leitos nesta gestão</h2></div>
             <dl className="detail-list">
               {unit.bedsOpenedInManagement !== null && <div><dt>Leitos abertos nesta gestão</dt><dd>{formatNumber(unit.bedsOpenedInManagement)}</dd></div>}
+              {hasValue(unit.bedsOpenedInManagementNote) && <div><dt>Observação da fonte</dt><dd>{unit.bedsOpenedInManagementNote}</dd></div>}
               {hasValue(unit.openedBedTypes) && <div><dt>Tipos de leitos abertos</dt><dd>{unit.openedBedTypes}</dd></div>}
               {unit.bedsToOpenAfterRenovation !== null && <div><dt>Leitos a abrir com o fim das reformas</dt><dd>{formatNumber(unit.bedsToOpenAfterRenovation)}</dd></div>}
             </dl>
@@ -111,6 +130,16 @@ function TechnicalSheet({ unit, sequence }: { unit: HealthUnit; sequence?: numbe
               {hasMoney(unit.osTransfer2025) && <div><dt>Repasse para OS em 2025</dt><dd>{formatMoney(unit.osTransfer2025)}</dd></div>}
               {hasValue(unit.professionals) && <div><dt>Profissionais</dt><dd>{unit.professionals}</dd></div>}
               {unit.calledProfessionals !== null && <div><dt>Profissionais convocados</dt><dd>{formatNumber(unit.calledProfessionals)}</dd></div>}
+            </dl>
+          </DetailBlock>
+        )}
+
+        {hasFinancialBreakdown && (
+          <DetailBlock title="Composição dos recursos e do custeio" className="financial-detail-block">
+            <dl className="detail-list">
+              {financialBreakdown.filter(([, value]) => hasMaterialMoney(value)).map(([label, value]) => (
+                <div key={label}><dt>{label}</dt><dd>{formatMoney(value, true)}</dd></div>
+              ))}
             </dl>
           </DetailBlock>
         )}

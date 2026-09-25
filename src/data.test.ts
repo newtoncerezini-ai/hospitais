@@ -7,13 +7,14 @@ const dataPath = path.resolve(process.cwd(), "public/data/health-units.json");
 const data = JSON.parse(fs.readFileSync(dataPath, "utf-8")) as DashboardData;
 
 describe("base publicada", () => {
-  it("publica os 98 registros, incluindo a Rede Credenciada, sem IDs duplicados", () => {
-    expect(data.units).toHaveLength(98);
-    expect(new Set(data.units.map((unit) => unit.id)).size).toBe(98);
+  it("publica as 97 unidades únicas do Compilado total", () => {
+    expect(data.units).toHaveLength(97);
+    expect(new Set(data.units.map((unit) => unit.id)).size).toBe(97);
+    expect(new Set(data.units.map((unit) => unit.sourceUnitCode)).size).toBe(97);
     expect(data.meta.activeUnits).toBe(65);
     expect(data.meta.constructionUnits).toBe(8);
-    expect(data.meta.unitsWithoutStatus).toBe(25);
-    expect(data.meta.statusCounts).toEqual({ "Em construção": 8, "Em funcionamento": 65, "Não informado": 25 });
+    expect(data.meta.unitsWithoutStatus).toBe(24);
+    expect(data.meta.statusCounts).toEqual({ "Em construção": 8, "Em funcionamento": 65, "Não informado": 24 });
   });
 
   it("mantém os campos territoriais necessários para busca e mapa", () => {
@@ -24,52 +25,51 @@ describe("base publicada", () => {
       expect(unit.ibgeCode).toMatch(/^26\d{5}$/);
       expect(Boolean(data.map.paths[unit.ibgeCode!] || data.map.fallbackCenters?.[unit.ibgeCode!])).toBe(true);
     }
-    const unitsWithoutGeres = data.units.filter((unit) => unit.geres === "Não informado");
-    expect(unitsWithoutGeres).toHaveLength(6);
-    expect(unitsWithoutGeres.every((unit) => unit.type === "Rede Credenciada" && unit.status === "Não informado")).toBe(true);
+    expect(data.units.filter((unit) => unit.geres === "Não informado")).toHaveLength(0);
   });
 
   it("reconcilia os totais e a cobertura reportada", () => {
     expect(data.meta.totalUnits).toBe(data.units.length);
     expect(data.meta.totalMunicipalities).toBe(new Set(data.units.map((unit) => unit.municipality)).size);
     expect(data.meta.totalBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.beds ?? 0), 0));
-    expect(data.meta.totalBeds).toBe(6796);
+    expect(data.meta.totalBeds).toBe(6709);
     expect(data.meta.plannedBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0));
     expect(data.meta.plannedBeds).toBe(861);
     expect(data.meta.bedsOpenedInManagement).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsOpenedInManagement ?? 0), 0));
-    expect(data.meta.bedsOpenedInManagement).toBe(865);
-    expect(data.meta.unitsWithBedsOpenedInManagement).toBe(38);
+    expect(data.meta.bedsOpenedInManagement).toBe(1258);
+    expect(data.meta.unitsWithBedsOpenedInManagement).toBe(40);
     expect(data.meta.bedsToOpenAfterRenovation).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsToOpenAfterRenovation ?? 0), 0));
     expect(data.meta.bedsToOpenAfterRenovation).toBe(642);
     expect(data.meta.unitsWithBedsToOpenAfterRenovation).toBe(5);
     expect(data.meta.constructionUnitsWithBeds).toBe(5);
     expect(data.meta.constructionMunicipalities).toBe(6);
     expect(data.meta.totalMunicipalities).toBe(30);
-    expect(data.meta.typeCounts).toEqual({ Hospital: 40, "Rede Credenciada": 25, UPA: 14, UPAE: 16, "UPAE-R": 3 });
+    expect(data.meta.typeCounts).toEqual({ Hospital: 40, "Rede Credenciada": 24, UPA: 14, UPAE: 16, "UPAE-R": 3 });
+    expect(data.meta.investmentTotal2023To2026).toBeCloseTo(1_845_951_289.14, 2);
+    expect(data.meta.costTotal2023To2026).toBeCloseTo(4_650_851_993.79, 2);
     expect(data.filters.statuses).toEqual(["Em funcionamento", "Em construção", "Não informado"]);
     expect(data.dataQuality.sourceCoverage).toMatchObject({
       operationalBeds: 50,
       plannedBeds: 5,
       status: 73,
       operationalProfile: 65,
-      plannedProfile: 3,
-      bedsOpenedInManagement: 38,
+      plannedProfile: 7,
+      bedsOpenedInManagement: 40,
       openedBedTypes: 38,
       bedsToOpenAfterRenovation: 5,
-      managementInvestment: 64,
-      constructionInvestment: 0,
+      managementInvestment: 65,
+      constructionInvestment: 8,
       cofinancing2022: 16,
       cofinancing2025: 16,
-      osTransfer2025: 16,
+      osTransfer2025: 44,
+      sourceUnitCode: 97,
+      investmentTotal2023To2026: 97,
+      costTotal2023To2026: 97,
       professionalBreakdown: 39,
     });
-    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(64);
-    expect(data.dataQuality.corrections).toHaveLength(1);
-    expect(data.dataQuality.possibleDuplicates).toEqual([{
-      unitName: "Hospital Memorial de Pernambuco",
-      municipality: "Caruaru",
-      sourceRows: [19, 21],
-    }]);
+    expect(data.units.filter((unit) => unit.managementInvestment.amount !== null)).toHaveLength(65);
+    expect(data.dataQuality.corrections).toHaveLength(0);
+    expect(data.dataQuality.possibleDuplicates).toEqual([]);
   });
 
   it("mantém expansão, estoque operacional e novas obras como medidas distintas", () => {
@@ -79,13 +79,13 @@ describe("base publicada", () => {
 
     expect(barao).toMatchObject({
       type: "Hospital",
-      beds: 311,
-      bedsOpenedInManagement: 10,
-      openedBedTypes: "UTI Pediátrica",
+      beds: 379,
+      bedsOpenedInManagement: 25,
+      openedBedTypes: "10 leitos de UTI Pediátrica 15 leitos de Enfermaria pediátrica",
       bedsToOpenAfterRenovation: 71,
     });
     expect(otavio).toMatchObject({
-      bedsOpenedInManagement: 20,
+      bedsOpenedInManagement: null,
       bedsToOpenAfterRenovation: 146,
     });
     expect(agreste).toMatchObject({ bedsOpenedInManagement: null, bedsToOpenAfterRenovation: 288 });
@@ -98,20 +98,20 @@ describe("base publicada", () => {
 
   it("publica a correção de investimento do Hospital da Restauração", () => {
     const restauracao = data.units.find((unit) => unit.id === "hospital-da-restauracao-hr");
-    expect(restauracao?.managementInvestment).toEqual({ amount: 176_573_825.3, label: null });
+    expect(restauracao?.managementInvestment).toEqual({ amount: 199_166_096.49, label: null });
   });
 
-  it("preserva os repasses de 2025 exclusivamente para hospitais geridos por OSS", () => {
+  it("preserva todos os repasses de 2025 informados pela nova fonte", () => {
     const unitsWithOsTransfer = data.units.filter((unit) => unit.osTransfer2025.amount !== null || unit.osTransfer2025.label !== null);
-    expect(unitsWithOsTransfer).toHaveLength(16);
-    expect(unitsWithOsTransfer.every((unit) => unit.type === "Hospital" && unit.managementType === "OSS")).toBe(true);
-    expect(data.units.find((unit) => unit.id === "hospital-dom-malan")?.osTransfer2025.amount).toBe(100_419_517.1);
+    expect(unitsWithOsTransfer).toHaveLength(44);
+    expect(unitsWithOsTransfer.every((unit) => unit.managementType === "OSS")).toBe(true);
+    expect(data.units.find((unit) => unit.id === "hospital-dom-malan")?.osTransfer2025.amount).toBe(100_419_517.08);
     expect(data.units.find((unit) => unit.id === "hospital-da-mulher-do-agreste")?.osTransfer2025.amount).toBe(44_712_253.07);
   });
 
   it("preserva as lacunas declaradas da Rede Credenciada sem inferir operação", () => {
     const credentialedUnits = data.units.filter((unit) => unit.type === "Rede Credenciada");
-    expect(credentialedUnits).toHaveLength(25);
+    expect(credentialedUnits).toHaveLength(24);
     expect(new Set(credentialedUnits.map((unit) => unit.municipality)).size).toBe(15);
     expect(credentialedUnits.every((unit) => (
       unit.status === "Não informado"
@@ -132,7 +132,7 @@ describe("base publicada", () => {
     expect(constructionUnits.every((unit) => unit.beds === null)).toBe(true);
     expect(constructionUnits.every((unit) => unit.managementInvestment.amount === null)).toBe(true);
     expect(constructionUnits.every((unit) => unit.managementInvestment.label === null)).toBe(true);
-    expect(constructionUnits.every((unit) => unit.source.references.some((reference) => reference.sheet === "UNIDADES EM CONSTRUÇÃO"))).toBe(true);
+    expect(constructionUnits.every((unit) => unit.source.sheet === "Compilado total")).toBe(true);
     expect(constructionUnits.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0)).toBe(861);
 
     const allMapMunicipalities = new Set(data.units.map((unit) => unit.ibgeCode));

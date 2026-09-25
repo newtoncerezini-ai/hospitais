@@ -50,10 +50,13 @@ def validate_payload(payload: dict, previous: dict | None) -> None:
     errors: list[str] = []
     if payload["dataQuality"]["sourceSheet"] != DRIVE_SHEET_NAME:
         errors.append(f"a aba principal não é {DRIVE_SHEET_NAME}")
-    if len(units) < 90:
-        errors.append(f"somente {len(units)} unidades foram produzidas")
+    if len(units) != 97:
+        errors.append(f"eram esperadas 97 unidades únicas, mas {len(units)} foram produzidas")
     if len({unit["id"] for unit in units}) != len(units):
         errors.append("há IDs duplicados")
+    source_codes = [unit.get("sourceUnitCode") for unit in units]
+    if any(not code for code in source_codes) or len(set(source_codes)) != len(units):
+        errors.append("os códigos de unidade estão ausentes ou duplicados")
     for field in ("name", "municipality", "rd", "ibgeCode"):
         missing = [unit["name"] for unit in units if not unit.get(field) or unit.get(field) == "Não informado"]
         if missing:
@@ -65,10 +68,29 @@ def validate_payload(payload: dict, previous: dict | None) -> None:
         errors.append("a rede em funcionamento caiu abaixo de 60 unidades")
     if status_counts["Em construção"] < 8:
         errors.append("obras em construção foram perdidas")
-    if type_counts["Rede Credenciada"] < 25:
+    if type_counts["Rede Credenciada"] < 24:
         errors.append("a Rede Credenciada não foi integralmente incorporada")
     if meta["plannedBeds"] < 800:
         errors.append("o total de leitos previstos ficou abaixo do piso de segurança")
+    if meta.get("investmentTotal2023To2026", 0) <= 0 or meta.get("costTotal2023To2026", 0) <= 0:
+        errors.append("os totais financeiros da nova aba não foram incorporados")
+
+    for unit in units:
+        breakdown = unit.get("financialBreakdown", {})
+        investment_components = (
+            "works", "equipment", "buildingMaintenance", "furniture",
+            "stateAmendments", "federalAmendments", "osInvestmentPlan",
+        )
+        cost_components = ("centralizedCostsAndIT", "outsourcedPayroll", "serverPayroll")
+        expected_investment = sum((breakdown.get(key) or {}).get("amount") or 0 for key in investment_components)
+        expected_cost = sum((breakdown.get(key) or {}).get("amount") or 0 for key in cost_components)
+        expected_cost += (unit.get("osTransfer2025") or {}).get("amount") or 0
+        reported_investment = (unit.get("investmentTotal2023To2026") or {}).get("amount")
+        reported_cost = (unit.get("costTotal2023To2026") or {}).get("amount")
+        if reported_investment is None or abs(reported_investment - expected_investment) > 0.02:
+            errors.append(f"investimento total não reconciliado em {unit['name']}")
+        if reported_cost is None or abs(reported_cost - expected_cost) > 0.02:
+            errors.append(f"custeio total não reconciliado em {unit['name']}")
 
     units_by_key = {canonical_unit_key(unit["name"]): unit for unit in units}
     required_by_column = {

@@ -19,7 +19,8 @@ DEFAULT_MAP_DATA = ROOT / "data" / "reference" / "pernambuco-map.json"
 DEFAULT_OUTPUT = ROOT / "public" / "data" / "health-units.json"
 DEFAULT_QUALITY_OUTPUT = ROOT / "data" / "processed" / "data-quality.json"
 SHEET_NAME = "Consolidado"
-DRIVE_SHEET_NAME = "NÃO MEXER Consolidado"
+DRIVE_SHEET_NAME = "Compilado total"
+LEGACY_DRIVE_SHEET_NAME = "NÃO MEXER Consolidado"
 CONSTRUCTION_SHEET_NAME = "UNIDADES EM CONSTRUÇÃO"
 DRIVE_SOURCE_SHEETS = (
     "Hospitais Regionais e OSS",
@@ -68,8 +69,12 @@ def normalize_status(value: Any) -> str:
 def normalize_unit_type(value: Any) -> str:
     unit_type = clean_text(value) or "Não informado"
     normalized_type = normalize(unit_type)
-    if normalized_type == "hospital":
+    if normalized_type in {"hospital", "hospital6grandes", "na"}:
         return "Hospital"
+    if normalized_type in {"upaeupa", "upaupae"}:
+        return "UPAE"
+    if normalized_type == "redecredenciada":
+        return "Rede Credenciada"
     if normalized_type in {"upaer", "upaerregional"}:
         return "UPAE-R"
     if normalized_type in {"grandeemergencia", "grandesemergencias"}:
@@ -89,6 +94,18 @@ def parse_integer(value: Any) -> int | None:
         return None
     match = re.search(r"\d+", text.replace(".", ""))
     return int(match.group()) if match else None
+
+
+def parse_bed_count(value: Any) -> int | None:
+    if not isinstance(value, str):
+        return parse_integer(value)
+    text = clean_text(value)
+    if not text:
+        return None
+    beds_match = re.search(r"(\d[\d.]*)\s+leitos?\b", text, flags=re.IGNORECASE)
+    if beds_match:
+        return int(re.sub(r"\D", "", beds_match.group(1)))
+    return parse_integer(value)
 
 
 def parse_money(value: Any) -> dict[str, Any]:
@@ -147,6 +164,15 @@ def normalize_ibge(value: Any) -> str | None:
     except (TypeError, ValueError):
         digits = re.sub(r"\D", "", str(value))
         return digits.zfill(7) if digits else None
+
+
+def normalize_source_code(value: Any) -> str | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return str(int(value)) if float(value).is_integer() else clean_text(value)
+    text = clean_text(value)
+    return re.sub(r"\.0$", "", text) if text else None
 
 
 def has_usable_value(value: Any) -> bool:
@@ -244,9 +270,121 @@ def inferred_type(unit_name: str, raw_type: Any, previous: dict[str, Any] | None
     return normalize_unit_type(raw_type)
 
 
+def sum_numeric_values(*values: Any) -> float | None:
+    parsed = [parse_money(value)["amount"] for value in values]
+    numbers = [value for value in parsed if value is not None]
+    return round(sum(numbers), 2) if numbers else None
+
+
+def build_compiled_rows(workbook_path: Path) -> tuple[list[str], list[dict[str, Any]]]:
+    """Adapt the authoritative Compilado total sheet to the stable dashboard schema."""
+    workbook = load_workbook(workbook_path, read_only=False, data_only=True)
+    sheet = workbook[DRIVE_SHEET_NAME]
+    headers, source_rows = read_named_table(sheet, ("UNIDADE DE SAÚDE",))
+    canonical_rows: list[dict[str, Any]] = []
+
+    for source_row in source_rows:
+        unit_name = clean_text(first_value(source_row, "UNIDADE DE SAÚDE")) or "Unidade sem nome"
+        raw_type = first_value(source_row, "TIPO DE UNIDADE")
+        normalized_type = normalize(raw_type)
+        if normalized_type == "emconstrucao":
+            status = "Em construção"
+        elif normalized_type == "redecredenciada":
+            status = "Não informado"
+        else:
+            status = "Em funcionamento"
+
+        unit_type = inferred_type(unit_name, raw_type, None)
+        management_type = first_value(source_row, "TIPO DE GESTÃO")
+        management = first_value(source_row, "OSS ADMINISTRADORA")
+        if not management and normalize(management_type) == "gestaopropria":
+            management = "SES"
+
+        construction_beds = first_value(source_row, "CONSTRUÇÃO - LEITOS PREVISTOS")
+        combined_future_beds = first_value(source_row, "LEITOS A ABRIR COM O FIM DAS REFORMAS/CONSTRUÇÃO")
+        works = first_value(source_row, "INVESTIMENTO - OBRAS")
+        equipment = first_value(source_row, "INVESTIMENTO - EQUIPAGEM")
+        maintenance = first_value(source_row, "INVESTIMENTO - MANUTENÇÃO PREDIAL")
+        furniture = first_value(source_row, "INVESTIMENTO - MOBILIÁRIO")
+        state_amendments = first_value(source_row, "INVESTIMENTO - EMENDAS PARLAMENTARES ESTADUAL")
+        federal_amendments = first_value(source_row, "INVESTIMENTO - EMENDAS PARLAMENTARES FEDERAL")
+        os_investment_plan = first_value(source_row, "OSS - PLANO DE INVESTIMENTO")
+        centralized_costs = first_value(source_row, "CUSTEIO - CUSTO CENTRALIZADO E CONTRATOS DE TI")
+        outsourced_payroll = first_value(source_row, "CUSTEIO - FOLHA DE TERCEIRIZADOS")
+        server_payroll = first_value(source_row, "CUSTEIO - FOLHA DE SERVIDORES")
+        os_transfer = first_value(source_row, "OSS - REPASSE (2025)")
+        reported_investment_total = first_value(source_row, "INVESTIMENTO TOTAL (2023-2026)")
+        reported_cost_total = first_value(source_row, "CUSTEIO TOTAL (2023-2026)")
+        total_investment = sum_numeric_values(works, equipment, maintenance, furniture, state_amendments, federal_amendments, os_investment_plan)
+        total_cost = sum_numeric_values(centralized_costs, outsourced_payroll, server_payroll, os_transfer)
+        opened_beds_raw = first_value(source_row, "LEITOS ABERTOS NA GESTÃO")
+
+        canonical_rows.append(
+            {
+                "CÓDIGO UNIDADE": normalize_source_code(first_value(source_row, "CÓDIGO UNIDADE")),
+                "NOME MUNICIPIO": first_value(source_row, "NOME MUNICIPIO"),
+                "RD": first_value(source_row, "RD"),
+                "GERES": first_value(source_row, "GERES"),
+                "UNIDADE DE SAÚDE": unit_name,
+                "LOCALIZAÇÃO": first_value(source_row, "LOCALIZAÇÃO"),
+                "STATUS": status,
+                "TIPO": unit_type,
+                "TIPO GESTÃO": management_type,
+                "GESTÃO": management,
+                "LEITOS": construction_beds if status == "Em construção" else first_value(source_row, "NÚMERO DE LEITOS ATUAL"),
+                "LEITOS ABERTOS NESTA GESTÃO": opened_beds_raw,
+                "NOTA LEITOS ABERTOS NESTA GESTÃO": clean_text(opened_beds_raw) if isinstance(opened_beds_raw, str) else None,
+                "TIPOS DE LEITOS ABERTOS NESTA GESTÃO": first_value(source_row, "TIPOS DE LEITOS ABERTOS NA GESTÃO"),
+                "LEITOS A ABRIR COM O FIM DA REFORMA": None if status == "Em construção" else combined_future_beds,
+                "PERFIL": first_value(source_row, "PERFIL") or first_value(source_row, "CONSTRUÇÃO - PERFIL"),
+                "PROSSIONAIS": parse_integer(first_value(source_row, "PROFISSIONAIS TOTAL")),
+                "PROFISSIONAIS CONVOCADOS NA GESTÃO": first_value(source_row, "PROFISSIONAIS CONVOCADOS NA GESTÃO"),
+                "CONTRATO DE MANUTENÇÃO PREDIAL": first_value(source_row, "INVESTIMENTO - MANUTENÇÃO PREDIAL"),
+                "INVESTIMENTO NESTA GESTÃO": total_investment,
+                "PRINCIPAIS AVANÇOS": first_value(source_row, "PRINCIPAIS AVANÇOS"),
+                "COFINANCIAMENTO 2022": first_value(source_row, "COFINANCIAMENTO 2022"),
+                "COFINANCIAMENTO 2025": first_value(source_row, "COFINANCIAMENTO 2025"),
+                "AUMENTO COFINANCIAMENTO": first_value(source_row, "AUMENTO COFINANCIAMENTO (2022-2025)"),
+                "REPASSE OS 2025": os_transfer,
+                "INVESTIMENTO OBRA E EQUIPAGEM": sum_numeric_values(works, equipment),
+                "INVESTIMENTO TOTAL 2023-2026": total_investment,
+                "CUSTEIO TOTAL 2023-2026": total_cost,
+                "TOTAL INVESTIMENTO INFORMADO NA FONTE": reported_investment_total,
+                "TOTAL CUSTEIO INFORMADO NA FONTE": reported_cost_total,
+                "INVESTIMENTO OBRAS": works,
+                "INVESTIMENTO EQUIPAGEM": equipment,
+                "INVESTIMENTO MANUTENÇÃO PREDIAL": maintenance,
+                "INVESTIMENTO MOBILIÁRIO": furniture,
+                "EMENDAS ESTADUAIS": state_amendments,
+                "EMENDAS FEDERAIS": federal_amendments,
+                "PLANO DE INVESTIMENTO OSS": os_investment_plan,
+                "CUSTO CENTRALIZADO E TI": centralized_costs,
+                "FOLHA TERCEIRIZADOS": outsourced_payroll,
+                "FOLHA SERVIDORES": server_payroll,
+                "PROFISSIONAIS SERVIDORES": first_value(source_row, "PROFISSIONAIS - SERVIDORES"),
+                "PROFISSIONAIS COMISSIONADOS": first_value(source_row, "PROFISSIONAIS COMISSIONADOS"),
+                "PROFISSIONAIS CLT": first_value(source_row, "PROFISSIONAIS CLT"),
+                "PROFISSIONAIS PJ": first_value(source_row, "PROFISSIONAIS PJ"),
+                "PROFISSIONAIS TERCEIRIZADOS": first_value(source_row, "PROFISSIONAIS TERCEIRIZADOS"),
+                "JOVEM APRENDIZ": first_value(source_row, "JOVEM APRENDIZ"),
+                "CONTRATOS TEMPORÁRIOS": first_value(source_row, "PROFISSIONAIS CONTRATO TEMPORÁRIO"),
+                "CEDIDOS DE OUTROS ÓRGÃOS": first_value(source_row, "PROFISSIONAIS CEDIDOS DE OUTRO ÓRGÃO"),
+                "TEXTO CONSOLIDADO": None,
+                "__ibge_code": normalize_ibge(first_value(source_row, "CÓDIGO DO IBGE")),
+                "__source_row": source_row["__source_row"],
+                "__source_sheet": DRIVE_SHEET_NAME,
+                "__reference_sources": [],
+                "__inherited_fields": [],
+            }
+        )
+
+    workbook.close()
+    return headers, canonical_rows
+
+
 def build_drive_rows(workbook_path: Path) -> tuple[list[str], list[dict[str, Any]]]:
     workbook = load_workbook(workbook_path, read_only=False, data_only=True)
-    consolidated = workbook[DRIVE_SHEET_NAME]
+    consolidated = workbook[LEGACY_DRIVE_SHEET_NAME]
     headers, consolidated_rows = read_named_table(consolidated, ("Unidade",))
     previous_units = load_previous_units()
 
@@ -329,7 +467,7 @@ def build_drive_rows(workbook_path: Path) -> tuple[list[str], list[dict[str, Any
                 "TEXTO CONSOLIDADO": source_text,
                 "__ibge_code": normalize_ibge(first_value(source_row, "CÓDIGO DO IBGE")),
                 "__source_row": source_row["__source_row"],
-                "__source_sheet": DRIVE_SHEET_NAME,
+                "__source_sheet": LEGACY_DRIVE_SHEET_NAME,
                 "__reference_sources": [
                     {"sheet": supplement["__source_sheet"], "row": supplement["__source_row"]}
                 ] if supplement else [],
@@ -380,10 +518,15 @@ def scan_drive_formula_errors(workbook_path: Path) -> list[dict[str, Any]]:
         workbook.close()
         return []
     sheet = workbook[DRIVE_SHEET_NAME]
-    header_row = find_header_row(sheet, {normalize("Unidade")})
+    header_row = find_header_row(sheet, {normalize("UNIDADE DE SAÚDE"), normalize("Unidade")})
+    headers = [normalize(cell.value) for cell in sheet[header_row]]
+    unit_column = next((index + 1 for index, header in enumerate(headers) if header in {normalize("UNIDADE DE SAÚDE"), normalize("Unidade")}), None)
+    if unit_column is None:
+        workbook.close()
+        return []
     errors: list[dict[str, Any]] = []
     for row_number in range(header_row + 1, (sheet.max_row or header_row) + 1):
-        unit_name = clean_text(sheet.cell(row_number, 5).value)
+        unit_name = clean_text(sheet.cell(row_number, unit_column).value)
         if not unit_name:
             continue
         for column in range(1, (sheet.max_column or 20) + 1):
@@ -403,9 +546,12 @@ def read_rows(workbook_path: Path) -> tuple[list[str], list[dict[str, Any]]]:
     workbook = load_workbook(workbook_path, read_only=True, data_only=True)
     if DRIVE_SHEET_NAME in workbook.sheetnames:
         workbook.close()
+        return build_compiled_rows(workbook_path)
+    if LEGACY_DRIVE_SHEET_NAME in workbook.sheetnames:
+        workbook.close()
         return build_drive_rows(workbook_path)
     if SHEET_NAME not in workbook.sheetnames:
-        raise ValueError(f"Aba obrigatória ausente: {SHEET_NAME} ou {DRIVE_SHEET_NAME}")
+        raise ValueError(f"Aba obrigatória ausente: {DRIVE_SHEET_NAME}, {LEGACY_DRIVE_SHEET_NAME} ou {SHEET_NAME}")
     sheet = workbook[SHEET_NAME]
     iterator = sheet.iter_rows(values_only=True)
     headers = [clean_text(value) or "" for value in next(iterator)]
@@ -573,8 +719,10 @@ def money_source_coverage(rows: list[dict[str, Any]], header: str) -> int:
 
 def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     headers, consolidated_rows = read_rows(workbook_path)
-    is_drive_schema = any(row.get("__source_sheet") == DRIVE_SHEET_NAME for row in consolidated_rows)
-    formula_errors = scan_drive_formula_errors(workbook_path) if is_drive_schema else []
+    source_sheet_names = {row.get("__source_sheet") for row in consolidated_rows}
+    is_drive_schema = bool(source_sheet_names & {DRIVE_SHEET_NAME, LEGACY_DRIVE_SHEET_NAME})
+    is_compiled_schema = DRIVE_SHEET_NAME in source_sheet_names
+    formula_errors = scan_drive_formula_errors(workbook_path) if is_compiled_schema else []
     municipality_reference = read_municipality_reference(workbook_path)
     # The Drive consolidated already contains every construction row. Re-reading
     # that tab here would duplicate the works and, because its header spans two
@@ -696,6 +844,7 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
         units.append(
             {
                 "id": unit_id,
+                "sourceUnitCode": clean_text(row.get("CÓDIGO UNIDADE")),
                 "ibgeCode": row.get("__ibge_code") or (municipality_ref["code"] if municipality_ref else None),
                 "name": unit_name,
                 "municipality": municipality,
@@ -709,20 +858,39 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
                 "management": clean_text(row.get("GESTÃO")),
                 "beds": None if is_construction else parse_integer(row.get("LEITOS")),
                 "plannedBeds": parse_integer(row.get("LEITOS")) if is_construction else None,
-                "bedsOpenedInManagement": None if is_construction else parse_integer(row.get("LEITOS ABERTOS NESTA GESTÃO")),
+                "bedsOpenedInManagement": None if is_construction else parse_bed_count(row.get("LEITOS ABERTOS NESTA GESTÃO")),
+                "bedsOpenedInManagementNote": None if is_construction else clean_text(row.get("NOTA LEITOS ABERTOS NESTA GESTÃO")),
                 "openedBedTypes": None if is_construction or not has_substantive_value(row.get("TIPOS DE LEITOS ABERTOS NESTA GESTÃO")) else clean_text(row.get("TIPOS DE LEITOS ABERTOS NESTA GESTÃO")),
                 "bedsToOpenAfterRenovation": None if is_construction else parse_integer(row.get("LEITOS A ABRIR COM O FIM DA REFORMA")),
                 "profile": clean_text(row.get("PERFIL")),
                 "professionals": clean_text(row.get("PROSSIONAIS")),
                 "calledProfessionals": parse_integer(row.get("PROFISSIONAIS CONVOCADOS NA GESTÃO")),
                 "maintenanceContract": parse_money(row.get("CONTRATO DE MANUTENÇÃO PREDIAL")),
-                "managementInvestment": {"amount": None, "label": None} if is_construction else parsed_investment,
-                "constructionInvestment": works_and_equipment_investment if is_construction else {"amount": None, "label": None},
+                "managementInvestment": parsed_investment if status == "Em funcionamento" else {"amount": None, "label": None},
+                "constructionInvestment": parse_money(row.get("INVESTIMENTO TOTAL 2023-2026")) if is_construction else {"amount": None, "label": None},
                 "cofinancing2022": parse_money(row.get("COFINANCIAMENTO 2022")),
                 "cofinancing2025": parse_money(row.get("COFINANCIAMENTO 2025")),
                 "cofinancingIncreasePercent": parse_percentage(row.get("AUMENTO COFINANCIAMENTO")),
                 "osTransfer2025": parse_money(row.get("REPASSE OS 2025")),
                 "worksAndEquipmentInvestment": works_and_equipment_investment,
+                "investmentTotal2023To2026": parse_money(row.get("INVESTIMENTO TOTAL 2023-2026")),
+                "costTotal2023To2026": parse_money(row.get("CUSTEIO TOTAL 2023-2026")),
+                "sourceReportedFinancialTotals": {
+                    "investment": parse_money(row.get("TOTAL INVESTIMENTO INFORMADO NA FONTE")),
+                    "cost": parse_money(row.get("TOTAL CUSTEIO INFORMADO NA FONTE")),
+                },
+                "financialBreakdown": {
+                    "works": parse_money(row.get("INVESTIMENTO OBRAS")),
+                    "equipment": parse_money(row.get("INVESTIMENTO EQUIPAGEM")),
+                    "buildingMaintenance": parse_money(row.get("INVESTIMENTO MANUTENÇÃO PREDIAL")),
+                    "furniture": parse_money(row.get("INVESTIMENTO MOBILIÁRIO")),
+                    "stateAmendments": parse_money(row.get("EMENDAS ESTADUAIS")),
+                    "federalAmendments": parse_money(row.get("EMENDAS FEDERAIS")),
+                    "osInvestmentPlan": parse_money(row.get("PLANO DE INVESTIMENTO OSS")),
+                    "centralizedCostsAndIT": parse_money(row.get("CUSTO CENTRALIZADO E TI")),
+                    "outsourcedPayroll": parse_money(row.get("FOLHA TERCEIRIZADOS")),
+                    "serverPayroll": parse_money(row.get("FOLHA SERVIDORES")),
+                },
                 "professionalBreakdown": {
                     "servers": parse_integer(row.get("PROFISSIONAIS SERVIDORES")),
                     "commissioned": parse_integer(row.get("PROFISSIONAIS COMISSIONADOS")),
@@ -779,6 +947,8 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
     cofinancing_2025 = [unit["cofinancing2025"]["amount"] for unit in units if unit["cofinancing2025"]["amount"] is not None]
     os_transfers_2025 = [unit["osTransfer2025"]["amount"] for unit in units if unit["osTransfer2025"]["amount"] is not None]
     works_investments = [unit["worksAndEquipmentInvestment"]["amount"] for unit in units if unit["worksAndEquipmentInvestment"]["amount"] is not None]
+    investment_totals = [unit["investmentTotal2023To2026"]["amount"] for unit in units if unit["investmentTotal2023To2026"]["amount"] is not None]
+    cost_totals = [unit["costTotal2023To2026"]["amount"] for unit in units if unit["costTotal2023To2026"]["amount"] is not None]
     active_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em funcionamento"]
     construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) == "Em construção"]
     non_construction_source_rows = [row for row in raw_rows if normalize_status(row.get("STATUS")) != "Em construção"]
@@ -795,10 +965,11 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
         if len(matches) > 1
     ]
 
+    primary_source_sheet = DRIVE_SHEET_NAME if is_compiled_schema else LEGACY_DRIVE_SHEET_NAME if is_drive_schema else SHEET_NAME
     quality = {
         "sourceFile": workbook_path.name,
-        "sourceSheet": DRIVE_SHEET_NAME if is_drive_schema else SHEET_NAME,
-        "sourceSheets": [DRIVE_SHEET_NAME, *DRIVE_SOURCE_SHEETS] if is_drive_schema else [SHEET_NAME, CONSTRUCTION_SHEET_NAME],
+        "sourceSheet": primary_source_sheet,
+        "sourceSheets": [DRIVE_SHEET_NAME, "0_Template_Cod_Mun_RD"] if is_compiled_schema else [LEGACY_DRIVE_SHEET_NAME, *DRIVE_SOURCE_SHEETS] if is_drive_schema else [SHEET_NAME, CONSTRUCTION_SHEET_NAME],
         "generatedAt": date.today().isoformat(),
         "sourceSha256": hashlib.sha256(workbook_path.read_bytes()).hexdigest(),
         "sourceRows": len(raw_rows),
@@ -827,6 +998,9 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "cofinancingIncreasePercent": sum(1 for row in raw_rows if parse_percentage(row.get("AUMENTO COFINANCIAMENTO")) is not None),
             "osTransfer2025": money_source_coverage(raw_rows, "REPASSE OS 2025"),
             "worksAndEquipmentInvestment": money_source_coverage(raw_rows, "INVESTIMENTO OBRA E EQUIPAGEM"),
+            "investmentTotal2023To2026": money_source_coverage(raw_rows, "INVESTIMENTO TOTAL 2023-2026"),
+            "costTotal2023To2026": money_source_coverage(raw_rows, "CUSTEIO TOTAL 2023-2026"),
+            "sourceUnitCode": source_coverage(raw_rows, "CÓDIGO UNIDADE"),
             "professionalBreakdown": sum(1 for unit in units if any(value is not None for value in unit["professionalBreakdown"].values())),
             "coordinates": 0,
         },
@@ -845,14 +1019,16 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
             "Valores ausentes permanecem nulos e são exibidos como Não informado.",
             "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
-            f"{len(construction_units)} unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
+            f"{len(construction_units)} unidades são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
             "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
-            "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
+            "Rótulos hospitalares e combinações UPAE/UPA foram normalizados para preservar a taxonomia do painel.",
             f"{len(units_without_status)} unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
-            f"{len(possible_duplicates)} possível duplicidade por nome e município foi preservada e registrada para validação da área responsável.",
-            "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
+            f"{len(possible_duplicates)} possível duplicidade por nome e município foi registrada para validação da área responsável.",
+            *(["Status foi derivado de Tipo de unidade porque a aba Compilado total não possui uma coluna própria de status."] if is_compiled_schema else []),
+            *(["Valores textuais com números foram normalizados para os indicadores e preservados em campos de observação ou rótulo."] if is_compiled_schema else []),
+            *(["Totais financeiros foram recalculados pelos componentes normalizados; os totais das fórmulas da planilha permanecem preservados para auditoria."] if is_compiled_schema else []),
             *([f"{len(formula_errors)} erro(s) de fórmula foram encontrados no consolidado do Drive; campos equivalentes foram recuperados das abas de origem quando disponíveis."] if formula_errors else []),
-            *(["Campos ausentes no consolidado são complementados pelas abas de origem e, apenas quando necessário, pelo último JSON válido; a procedência fica registrada por unidade."] if is_drive_schema else []),
+            *(["Campos ausentes no consolidado legado são complementados pelas abas de origem e, apenas quando necessário, pelo último JSON válido; a procedência fica registrada por unidade."] if is_drive_schema and not is_compiled_schema else []),
         ],
         "headers": headers,
     }
@@ -885,6 +1061,10 @@ def build_payload(workbook_path: Path, map_path: Path) -> dict[str, Any]:
             "unitsWithOsTransfers2025": len(os_transfers_2025),
             "worksAndEquipmentInvestment": sum(works_investments),
             "unitsWithWorksAndEquipmentInvestment": len(works_investments),
+            "investmentTotal2023To2026": sum(investment_totals),
+            "unitsWithInvestmentTotal2023To2026": len(investment_totals),
+            "costTotal2023To2026": sum(cost_totals),
+            "unitsWithCostTotal2023To2026": len(cost_totals),
             "typeCounts": dict(sorted(type_counts.items())),
             "typeCountsByStatus": type_counts_by_status,
             "statusCounts": dict(status_counts),

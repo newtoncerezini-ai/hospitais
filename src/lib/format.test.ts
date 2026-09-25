@@ -5,6 +5,7 @@ import { filterUnits, formatMoney, normalizeSearch } from "./format";
 
 const makeUnit = (overrides: Partial<HealthUnit> = {}): HealthUnit => ({
   id: "hospital-agamenon-magalhaes",
+  sourceUnitCode: "HOSP-001",
   ibgeCode: "2611606",
   name: "Hospital Agamenon Magalhães",
   municipality: "Recife",
@@ -19,6 +20,7 @@ const makeUnit = (overrides: Partial<HealthUnit> = {}): HealthUnit => ({
   beds: 382,
   plannedBeds: null,
   bedsOpenedInManagement: null,
+  bedsOpenedInManagementNote: null,
   openedBedTypes: null,
   bedsToOpenAfterRenovation: null,
   profile: "Urgência e emergência",
@@ -32,6 +34,21 @@ const makeUnit = (overrides: Partial<HealthUnit> = {}): HealthUnit => ({
   cofinancingIncreasePercent: null,
   osTransfer2025: { amount: null, label: null },
   worksAndEquipmentInvestment: { amount: null, label: null },
+  investmentTotal2023To2026: { amount: null, label: null },
+  costTotal2023To2026: { amount: null, label: null },
+  sourceReportedFinancialTotals: { investment: { amount: null, label: null }, cost: { amount: null, label: null } },
+  financialBreakdown: {
+    works: { amount: null, label: null },
+    equipment: { amount: null, label: null },
+    buildingMaintenance: { amount: null, label: null },
+    furniture: { amount: null, label: null },
+    stateAmendments: { amount: null, label: null },
+    federalAmendments: { amount: null, label: null },
+    osInvestmentPlan: { amount: null, label: null },
+    centralizedCostsAndIT: { amount: null, label: null },
+    outsourcedPayroll: { amount: null, label: null },
+    serverPayroll: { amount: null, label: null },
+  },
   professionalBreakdown: {
     servers: null,
     commissioned: null,

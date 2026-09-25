@@ -9,6 +9,7 @@ export type HealthUnitStatus = "Em funcionamento" | "Em construção" | "Não in
 
 export type HealthUnit = {
   id: string;
+  sourceUnitCode: string | null;
   ibgeCode: string | null;
   name: string;
   municipality: string;
@@ -23,6 +24,7 @@ export type HealthUnit = {
   beds: number | null;
   plannedBeds: number | null;
   bedsOpenedInManagement: number | null;
+  bedsOpenedInManagementNote: string | null;
   openedBedTypes: string | null;
   bedsToOpenAfterRenovation: number | null;
   profile: string | null;
@@ -36,6 +38,24 @@ export type HealthUnit = {
   cofinancingIncreasePercent: number | null;
   osTransfer2025: MoneyValue;
   worksAndEquipmentInvestment: MoneyValue;
+  investmentTotal2023To2026: MoneyValue;
+  costTotal2023To2026: MoneyValue;
+  sourceReportedFinancialTotals: {
+    investment: MoneyValue;
+    cost: MoneyValue;
+  };
+  financialBreakdown: {
+    works: MoneyValue;
+    equipment: MoneyValue;
+    buildingMaintenance: MoneyValue;
+    furniture: MoneyValue;
+    stateAmendments: MoneyValue;
+    federalAmendments: MoneyValue;
+    osInvestmentPlan: MoneyValue;
+    centralizedCostsAndIT: MoneyValue;
+    outsourcedPayroll: MoneyValue;
+    serverPayroll: MoneyValue;
+  };
   professionalBreakdown: {
     servers: number | null;
     commissioned: number | null;
@@ -128,6 +148,10 @@ export type DashboardData = {
     unitsWithOsTransfers2025: number;
     worksAndEquipmentInvestment: number;
     unitsWithWorksAndEquipmentInvestment: number;
+    investmentTotal2023To2026: number;
+    unitsWithInvestmentTotal2023To2026: number;
+    costTotal2023To2026: number;
+    unitsWithCostTotal2023To2026: number;
     typeCounts: Record<string, number>;
     typeCountsByStatus: Record<string, Record<string, number>>;
     statusCounts: Record<string, number>;

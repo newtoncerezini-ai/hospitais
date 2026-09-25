@@ -1,175 +1,112 @@
 {
   "sourceFile": "health-units.xlsx",
-  "sourceSheet": "NÃO MEXER Consolidado",
+  "sourceSheet": "Compilado total",
   "sourceSheets": [
-    "NÃO MEXER Consolidado",
-    "Hospitais Regionais e OSS",
-    "Os Seis Grandes",
-    "UPA e UPA-E",
-    "Rede Credenciada",
-    "UNIDADES EM CONSTRUÇÃO"
+    "Compilado total",
+    "0_Template_Cod_Mun_RD"
   ],
-  "generatedAt": "2026-09-08",
-  "sourceSha256": "3b716f8a8515bc99b754c3909a753e35cda4b8eb9747aea6d2645d0b1aa9132e",
-  "sourceRows": 98,
+  "generatedAt": "2026-09-25",
+  "sourceSha256": "8bc54c4b490d8f8f697af6aed53f66967f8975dd9b39081dcba35df60700afc4",
+  "sourceRows": 97,
   "constructionRows": 0,
-  "publishedUnits": 98,
+  "publishedUnits": 97,
   "municipalities": 30,
   "sourceCoverage": {
-    "municipality": 98,
+    "municipality": 97,
     "status": 73,
-    "rd": 98,
-    "geres": 86,
-    "address": 66,
+    "rd": 97,
+    "geres": 97,
+    "address": 65,
     "operationalBeds": 50,
     "plannedBeds": 5,
-    "bedsOpenedInManagement": 38,
+    "bedsOpenedInManagement": 40,
     "openedBedTypes": 38,
     "bedsToOpenAfterRenovation": 5,
     "operationalProfile": 65,
-    "plannedProfile": 3,
-    "maintenanceContract": 16,
-    "managementInvestment": 64,
-    "constructionInvestment": 0,
+    "plannedProfile": 7,
+    "maintenanceContract": 17,
+    "managementInvestment": 65,
+    "constructionInvestment": 8,
     "mainAdvances": 64,
     "cofinancing2022": 16,
     "cofinancing2025": 16,
     "cofinancingIncreasePercent": 16,
-    "osTransfer2025": 16,
-    "worksAndEquipmentInvestment": 0,
+    "osTransfer2025": 44,
+    "worksAndEquipmentInvestment": 41,
+    "investmentTotal2023To2026": 97,
+    "costTotal2023To2026": 97,
+    "sourceUnitCode": 97,
     "professionalBreakdown": 39,
     "coordinates": 0
   },
   "enrichment": {
     "rdFromWorkbookMunicipalityTemplate": 0,
-    "geresFromMunicipalityMode": 6,
+    "geresFromMunicipalityMode": 0,
     "investmentFromSourceSheets": 0,
     "constructionDetailsFromSheet": 0,
-    "documentedCorrections": 1,
-    "fieldsInheritedFromPreviousSnapshot": 131
+    "documentedCorrections": 0,
+    "fieldsInheritedFromPreviousSnapshot": 0
   },
-  "formulaErrors": [
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "I25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "J25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "K25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "L25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "M25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "N25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "O25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "P25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "Q25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "R25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    },
-    {
-      "sheet": "NÃO MEXER Consolidado",
-      "cell": "T25",
-      "unitName": "Hospital Prof. Agamenon Magalhães",
-      "error": "#N/A"
-    }
-  ],
-  "corrections": [
-    {
-      "sourceRow": 25,
-      "field": "geres",
-      "sourceValue": "I",
-      "normalizedValue": "XI",
-      "reason": "A unidade está em Serra Talhada, município da XI GERES; a célula I diverge das demais referências territoriais.",
-      "evidenceUrl": "https://cartadeservicos.saude.pe.gov.br/endereco-geres/"
-    }
-  ],
-  "possibleDuplicates": [
-    {
-      "unitName": "Hospital Memorial de Pernambuco",
-      "municipality": "Caruaru",
-      "sourceRows": [
-        19,
-        21
-      ]
-    }
-  ],
+  "formulaErrors": [],
+  "corrections": [],
+  "possibleDuplicates": [],
   "warnings": [
     "A planilha não contém latitude/longitude; os marcadores do mapa representam o município, não o endereço exato.",
     "Valores ausentes permanecem nulos e são exibidos como Não informado.",
     "RD e código IBGE foram normalizados pela aba 0_Template_Cod_Mun_RD da própria planilha para permitir busca consistente.",
-    "8 unidades da aba UNIDADES EM CONSTRUÇÃO são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
+    "8 unidades são publicadas com status Em construção; seus leitos são tratados como previstos e excluídos do total operacional.",
     "Leitos abertos nesta gestão e leitos a abrir após reformas são indicadores de expansão e não são somados ao estoque de leitos em funcionamento nem aos leitos previstos de novas obras.",
-    "O rótulo Grandes Emergências na coluna Tipo foi normalizado como Hospital para preservar a taxonomia de unidades do painel.",
-    "25 unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
-    "1 possível duplicidade por nome e município foi preservada e registrada para validação da área responsável.",
-    "O valor Especializado em Tipo Gestão (Hemope) foi preservado, mas requer validação semântica pela área responsável.",
-    "11 erro(s) de fórmula foram encontrados no consolidado do Drive; campos equivalentes foram recuperados das abas de origem quando disponíveis.",
-    "Campos ausentes no consolidado são complementados pelas abas de origem e, apenas quando necessário, pelo último JSON válido; a procedência fica registrada por unidade."
+    "Rótulos hospitalares e combinações UPAE/UPA foram normalizados para preservar a taxonomia do painel.",
+    "24 unidades da Rede Credenciada não possuem status na fonte e permanecem como Não informado.",
+    "0 possível duplicidade por nome e município foi registrada para validação da área responsável.",
+    "Status foi derivado de Tipo de unidade porque a aba Compilado total não possui uma coluna própria de status.",
+    "Valores textuais com números foram normalizados para os indicadores e preservados em campos de observação ou rótulo.",
+    "Totais financeiros foram recalculados pelos componentes normalizados; os totais das fórmulas da planilha permanecem preservados para auditoria."
   ],
   "headers": [
+    "CÓDIGO UNIDADE",
+    "UNIDADE DE SAÚDE",
     "CÓDIGO DO IBGE",
-    "MUNICIPIO",
+    "NOME MUNICIPIO",
     "RD",
-    "Tipo",
-    "Unidade",
-    "Texto",
-    "Tipo de Gestão",
+    "TIPO DE UNIDADE",
+    "INVESTIMENTO TOTAL (2023-2026)",
+    "CUSTEIO TOTAL (2023-2026)",
+    "COFINANCIAMENTO 2022",
+    "COFINANCIAMENTO 2025",
+    "AUMENTO COFINANCIAMENTO (2022-2025)",
+    "INVESTIMENTO - OBRAS",
+    "INVESTIMENTO - EQUIPAGEM",
+    "INVESTIMENTO - MANUTENÇÃO PREDIAL",
+    "INVESTIMENTO - MOBILIÁRIO",
+    "INVESTIMENTO - EMENDAS PARLAMENTARES ESTADUAL",
+    "INVESTIMENTO - EMENDAS PARLAMENTARES FEDERAL",
+    "OSS - PLANO DE INVESTIMENTO",
+    "CUSTEIO - CUSTO CENTRALIZADO E CONTRATOS DE TI",
+    "CUSTEIO - FOLHA DE TERCEIRIZADOS",
+    "CUSTEIO - FOLHA DE SERVIDORES",
+    "OSS - REPASSE (2025)",
+    "TIPO DE GESTÃO",
+    "OSS ADMINISTRADORA",
+    "LOCALIZAÇÃO",
     "GERES",
-    "Nº de Leitos",
-    "Perfil",
-    "Nº Profissionais Total",
-    "Nº Profissionais convocados nesta gestão",
-    "Valor do contrato de manutenção predial (Anual)",
-    "Investimento nesta gestão",
-    "Cofinanciamento 2022 (Apenas Gestão Própria)",
-    "Cofinanciamento 2025 (Apenas Gestão Própria)",
-    "Aumento Cofinanciamento (2022 a 2025) % (Apenas Gestão Própria)",
-    "Repasse (OS) em 2025",
-    "Investimento para obra e equipagem",
-    "Principais avanços nessa gestão",
-    ""
+    "NÚMERO DE LEITOS ATUAL",
+    "LEITOS ABERTOS NA GESTÃO",
+    "TIPOS DE LEITOS ABERTOS NA GESTÃO",
+    "LEITOS A ABRIR COM O FIM DAS REFORMAS/CONSTRUÇÃO",
+    "PERFIL",
+    "PROFISSIONAIS TOTAL",
+    "PROFISSIONAIS CONVOCADOS NA GESTÃO",
+    "PROFISSIONAIS - SERVIDORES",
+    "PROFISSIONAIS COMISSIONADOS",
+    "PROFISSIONAIS CLT",
+    "PROFISSIONAIS PJ",
+    "PROFISSIONAIS TERCEIRIZADOS",
+    "JOVEM APRENDIZ",
+    "PROFISSIONAIS CONTRATO TEMPORÁRIO",
+    "PROFISSIONAIS CEDIDOS DE OUTRO ÓRGÃO",
+    "PRINCIPAIS AVANÇOS",
+    "CONSTRUÇÃO - PERFIL",
+    "CONSTRUÇÃO - LEITOS PREVISTOS"
   ]
 }

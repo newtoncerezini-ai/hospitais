@@ -43,7 +43,7 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
               <table>
                 <thead>
                   <tr>
-                    <th>Unidade de saúde</th><th>Status</th><th>Município</th><th>Endereço</th><th>RD</th><th>GERES</th><th>Leitos em funcionamento</th><th>Leitos previstos</th><th>Expansão de leitos</th><th>Perfil</th><th>Tipo</th><th>Tipo de gestão</th><th>Gestão</th><th>Contrato de manutenção</th><th>Investimento na gestão</th><th>Investimento da obra</th><th>Principais avanços</th><th><span className="sr-only">Ações</span></th>
+                    <th>Unidade de saúde</th><th>Status</th><th>Município</th><th>Endereço</th><th>RD</th><th>GERES</th><th>Leitos em funcionamento</th><th>Leitos previstos</th><th>Expansão de leitos</th><th>Perfil</th><th>Tipo</th><th>Tipo de gestão</th><th>Gestão</th><th>Manutenção predial</th><th>Investimento total</th><th>Custeio total</th><th>Principais avanços</th><th><span className="sr-only">Ações</span></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -63,8 +63,8 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
                       <td>{displayValue(unit.managementType)}</td>
                       <td>{displayValue(unit.management)}</td>
                       <td className="money-cell">{formatMoney(unit.maintenanceContract, true)}</td>
-                      <td className="money-cell">{formatMoney(unit.managementInvestment, true)}</td>
-                      <td className="money-cell">{formatMoney(unit.constructionInvestment, true)}</td>
+                      <td className="money-cell">{formatMoney(unit.investmentTotal2023To2026, true)}</td>
+                      <td className="money-cell">{formatMoney(unit.costTotal2023To2026, true)}</td>
                       <td>{cellText(unit.mainAdvances)}</td>
                       <td><button type="button" className="icon-button" aria-label={`Abrir ficha de ${unit.name}`} onClick={() => onOpenUnit(unit)}><Eye size={18} /></button></td>
                     </tr>
@@ -94,8 +94,8 @@ export function UnitsView({ data, units, filters, onFiltersChange, onOpenUnit }:
                       <div><dt>Leitos abertos nesta gestão</dt><dd>{displayValue(unit.bedsOpenedInManagement)}</dd></div>
                       <div><dt>Tipos de leitos abertos</dt><dd>{displayValue(unit.openedBedTypes)}</dd></div>
                       <div><dt>Leitos a abrir após reformas</dt><dd>{displayValue(unit.bedsToOpenAfterRenovation)}</dd></div>
-                      <div><dt>Contrato de manutenção</dt><dd>{formatMoney(unit.maintenanceContract)}</dd></div>
-                      <div><dt>{isConstructionStatus(unit.status) ? "Investimento para obra e equipagem" : "Investimento na gestão"}</dt><dd>{formatMoney(isConstructionStatus(unit.status) ? unit.constructionInvestment : unit.managementInvestment)}</dd></div>
+                      <div><dt>Investimento em manutenção predial</dt><dd>{formatMoney(unit.maintenanceContract)}</dd></div>
+                      <div><dt>Investimento total (2023–2026)</dt><dd>{formatMoney(isConstructionStatus(unit.status) ? unit.constructionInvestment : unit.managementInvestment)}</dd></div>
                       <div><dt>Principais avanços</dt><dd>{displayValue(unit.mainAdvances)}</dd></div>
                     </dl>
                   </details>
