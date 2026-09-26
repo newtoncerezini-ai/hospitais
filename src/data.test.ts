@@ -32,7 +32,7 @@ describe("base publicada", () => {
     expect(data.meta.totalUnits).toBe(data.units.length);
     expect(data.meta.totalMunicipalities).toBe(new Set(data.units.map((unit) => unit.municipality)).size);
     expect(data.meta.totalBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.beds ?? 0), 0));
-    expect(data.meta.totalBeds).toBe(6709);
+    expect(data.meta.totalBeds).toBe(6782);
     expect(data.meta.plannedBeds).toBe(data.units.reduce((sum, unit) => sum + (unit.plannedBeds ?? 0), 0));
     expect(data.meta.plannedBeds).toBe(861);
     expect(data.meta.bedsOpenedInManagement).toBe(data.units.reduce((sum, unit) => sum + (unit.bedsOpenedInManagement ?? 0), 0));
